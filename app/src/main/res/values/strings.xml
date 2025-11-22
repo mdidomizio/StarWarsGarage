@@ -1,3 +1,20 @@
 <resources>
     <string name="app_name">StarWarsGarage</string>
+    <string name="starship_catalog_title">Starship Catalog</string>
+    <string name="error_fetching_starships">Error fetching starships</string>
+    <string name="error_fetching_starship_details">Error fetching starship details</string>
+    <string name="back_button_content_description">Back</string>
+    <string name="name_label">Name</string>
+    <string name="model_label">Model</string>
+    <string name="manufacturer_label">Manufacturer</string>
+    <string name="cost_label">Cost</string>
+    <string name="length_label">Length</string>
+    <string name="max_atmosphering_speed_label">Max Atmosphering Speed</string>
+    <string name="crew_label">Crew</string>
+    <string name="passengers_label">Passengers</string>
+    <string name="cargo_capacity_label">Cargo Capacity</string>
+    <string name="consumables_label">Consumables</string>
+    <string name="hyperdrive_rating_label">Hyperdrive Rating</string>
+    <string name="mglt_label">MGLT</string>
+    <string name="starship_class_label">Starship Class</string>
 </resources>

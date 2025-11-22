@@ -21,9 +21,11 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
+import com.example.starwarsgarage.R
 import com.example.starwarsgarage.data.remote.Starship
 import com.example.starwarsgarage.ui.StarshipsListUiState
 import com.example.starwarsgarage.ui.StarshipsViewModel
@@ -36,7 +38,7 @@ fun StarshipsScreen(viewModel: StarshipsViewModel, navController: NavHostControl
 
     Scaffold(
         topBar = {
-            TopAppBar(title = { Text(text = "Starship Catalog") })
+            TopAppBar(title = { Text(text = stringResource(id = R.string.starship_catalog_title)) })
         },
         modifier = modifier
     ) { innerPadding ->
@@ -48,7 +50,7 @@ fun StarshipsScreen(viewModel: StarshipsViewModel, navController: NavHostControl
             }
             is StarshipsListUiState.Error -> {
                 Box(modifier = Modifier.fillMaxSize().padding(innerPadding), contentAlignment = Alignment.Center) {
-                    Text(text = "Error fetching starships")
+                    Text(text = stringResource(id = R.string.error_fetching_starships))
                 }
             }
             is StarshipsListUiState.Success -> {
@@ -93,8 +95,8 @@ fun StarshipCard(starship: Starship, onClick: () -> Unit, modifier: Modifier = M
             .clickable(onClick = onClick)
     ) {
         Column(modifier = Modifier.padding(16.dp)) {
-            Text(text = "Name: ${starship.name}")
-            Text(text = "Model: ${starship.model}")
+            Text(text = stringResource(id = R.string.name_label) + ": ${starship.name}")
+            Text(text = stringResource(id = R.string.model_label) + ": ${starship.model}")
         }
     }
 }
