@@ -14,6 +14,12 @@ sealed interface StarshipsListUiState {
     object Loading : StarshipsListUiState
 }
 
+sealed interface StarshipDetailUiState {
+    data class Success(val starship: Starship) : StarshipDetailUiState
+    object Error : StarshipDetailUiState
+    object Loading : StarshipDetailUiState
+}
+
 class StarshipsViewModel : ViewModel() {
 
     private val repository = NetworkModule.starshipRepository
@@ -21,8 +27,8 @@ class StarshipsViewModel : ViewModel() {
     private val _uiState = MutableStateFlow<StarshipsListUiState>(StarshipsListUiState.Loading)
     val uiState: StateFlow<StarshipsListUiState> = _uiState
 
-    private val _starship = MutableStateFlow<Starship?>(null)
-    val starship: StateFlow<Starship?> = _starship
+    private val _starshipUiState = MutableStateFlow<StarshipDetailUiState>(StarshipDetailUiState.Loading)
+    val starshipUiState: StateFlow<StarshipDetailUiState> = _starshipUiState
 
     private var currentPage = 1
     private var isFetching = false
@@ -66,10 +72,11 @@ class StarshipsViewModel : ViewModel() {
 
     fun getStarship(id: String) {
         viewModelScope.launch {
+            _starshipUiState.value = StarshipDetailUiState.Loading
             try {
-                _starship.value = repository.getStarshipById(id)
+                _starshipUiState.value = StarshipDetailUiState.Success(repository.getStarshipById(id))
             } catch (e: Exception) {
-                // Handle error
+                _starshipUiState.value = StarshipDetailUiState.Error
             }
         }
     }

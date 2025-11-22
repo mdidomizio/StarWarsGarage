@@ -11,7 +11,10 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.Card
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -26,46 +29,54 @@ import com.example.starwarsgarage.ui.StarshipsListUiState
 import com.example.starwarsgarage.ui.StarshipsViewModel
 import com.example.starwarsgarage.ui.theme.StarWarsGarageTheme
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun StarshipsScreen(viewModel: StarshipsViewModel, navController: NavHostController, modifier: Modifier = Modifier) {
     val uiState by viewModel.uiState.collectAsState()
 
-    when (val state = uiState) {
-        is StarshipsListUiState.Loading -> {
-            Box(modifier = modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                CircularProgressIndicator()
-            }
-        }
-        is StarshipsListUiState.Error -> {
-            Box(modifier = modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                Text(text = "Error fetching starships")
-            }
-        }
-        is StarshipsListUiState.Success -> {
-            val listState = rememberLazyListState()
-            LazyColumn(modifier = modifier, state = listState) {
-                items(state.starships) { starship ->
-                    StarshipCard(starship = starship, onClick = {
-                        val id = starship.url.split("/").dropLast(1).last()
-                        navController.navigate("starship_detail/$id")
-                    })
+    Scaffold(
+        topBar = {
+            TopAppBar(title = { Text(text = "Starship Catalog") })
+        },
+        modifier = modifier
+    ) { innerPadding ->
+        when (val state = uiState) {
+            is StarshipsListUiState.Loading -> {
+                Box(modifier = Modifier.fillMaxSize().padding(innerPadding), contentAlignment = Alignment.Center) {
+                    CircularProgressIndicator()
                 }
-                if (state.isLoadingMore) {
-                    item {
-                        Box(modifier = Modifier.fillMaxWidth().padding(16.dp), contentAlignment = Alignment.Center) {
-                            CircularProgressIndicator()
+            }
+            is StarshipsListUiState.Error -> {
+                Box(modifier = Modifier.fillMaxSize().padding(innerPadding), contentAlignment = Alignment.Center) {
+                    Text(text = "Error fetching starships")
+                }
+            }
+            is StarshipsListUiState.Success -> {
+                val listState = rememberLazyListState()
+                LazyColumn(modifier = Modifier.padding(innerPadding), state = listState) {
+                    items(state.starships) { starship ->
+                        StarshipCard(starship = starship, onClick = {
+                            val id = starship.url.split("/").dropLast(1).last()
+                            navController.navigate("starship_detail/$id")
+                        })
+                    }
+                    if (state.isLoadingMore) {
+                        item {
+                            Box(modifier = Modifier.fillMaxWidth().padding(16.dp), contentAlignment = Alignment.Center) {
+                                CircularProgressIndicator()
+                            }
                         }
                     }
                 }
-            }
 
-            val layoutInfo = listState.layoutInfo
-            val visibleItemsInfo = layoutInfo.visibleItemsInfo
-            if (visibleItemsInfo.isNotEmpty()) {
-                val lastVisibleItemIndex = visibleItemsInfo.last().index
-                if (lastVisibleItemIndex == state.starships.size - 1 && state.hasMore && !state.isLoadingMore) {
-                    LaunchedEffect(lastVisibleItemIndex) {
-                        viewModel.loadMoreStarships()
+                val layoutInfo = listState.layoutInfo
+                val visibleItemsInfo = layoutInfo.visibleItemsInfo
+                if (visibleItemsInfo.isNotEmpty()) {
+                    val lastVisibleItemIndex = visibleItemsInfo.last().index
+                    if (lastVisibleItemIndex == state.starships.size - 1 && state.hasMore && !state.isLoadingMore) {
+                        LaunchedEffect(lastVisibleItemIndex) {
+                            viewModel.loadMoreStarships()
+                        }
                     }
                 }
             }
