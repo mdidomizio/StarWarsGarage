@@ -2,6 +2,7 @@ package com.example.starwarsgarage.data.remote
 
 import retrofit2.http.GET
 import retrofit2.http.Path
+import retrofit2.http.Query
 
 data class StarshipResponse(
     val count: Int,
@@ -12,7 +13,7 @@ data class StarshipResponse(
 
 interface StarshipApi {
     @GET("starships")
-    suspend fun getStarships(): StarshipResponse
+    suspend fun getStarships(@Query("page") page: Int): StarshipResponse
 
     @GET("starships/{id}")
     suspend fun getStarshipById(@Path("id") id: String): Starship
