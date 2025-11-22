@@ -17,4 +17,6 @@
     <string name="hyperdrive_rating_label">Hyperdrive Rating</string>
     <string name="mglt_label">MGLT</string>
     <string name="starship_class_label">Starship Class</string>
+    <string name="go_to_catalog_button">Go to Catalog</string>
+    <string name="home_screen_title">Star Wars Garage</string>
 </resources>

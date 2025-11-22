@@ -13,6 +13,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.starwarsgarage.ui.StarshipsViewModel
+import com.example.starwarsgarage.ui.home.HomeScreen
 import com.example.starwarsgarage.ui.starshipdetail.StarshipDetailScreen
 import com.example.starwarsgarage.ui.starships.StarshipsScreen
 import com.example.starwarsgarage.ui.theme.StarWarsGarageTheme
@@ -28,7 +29,10 @@ class MainActivity : ComponentActivity() {
             StarWarsGarageTheme {
                 val navController = rememberNavController()
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    NavHost(navController = navController, startDestination = "starships_list", modifier = Modifier.padding(innerPadding)) {
+                    NavHost(navController = navController, startDestination = "home", modifier = Modifier.padding(innerPadding)) {
+                        composable("home") {
+                            HomeScreen(navController = navController)
+                        }
                         composable("starships_list") {
                             StarshipsScreen(viewModel = viewModel, navController = navController)
                         }
