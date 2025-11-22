@@ -12,10 +12,16 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.Card
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -48,7 +54,7 @@ class MainActivity : ComponentActivity() {
                         composable("starship_detail/{starshipId}") { backStackEntry ->
                             val starshipId = backStackEntry.arguments?.getString("starshipId")
                             if (starshipId != null) {
-                                StarshipDetailScreen(starshipId = starshipId)
+                                StarshipDetailScreen(starshipId = starshipId, navController = navController)
                             }
                         }
                     }
@@ -86,23 +92,43 @@ fun StarshipsScreen(modifier: Modifier = Modifier, viewModel: StarshipsViewModel
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun StarshipDetailScreen(modifier: Modifier = Modifier, viewModel: StarshipsViewModel = StarshipsViewModel(), starshipId: String) {
+fun StarshipDetailScreen(modifier: Modifier = Modifier, viewModel: StarshipsViewModel = StarshipsViewModel(), starshipId: String, navController: NavHostController) {
     LaunchedEffect(starshipId) {
         viewModel.getStarship(starshipId)
     }
     val starship by viewModel.starship.collectAsState()
 
-    Box(modifier = modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-        starship?.let {
-            Column {
-                Text(text = "Name: ${it.name}")
-                Text(text = "Model: ${it.model}")
-                Text(text = "Manufacturer: ${it.manufacturer}")
-                Text(text = "Cost: ${it.costInCredits}")
+    Scaffold(
+        topBar = {
+            TopAppBar(
+                title = { Text(text = starship?.name ?: "") },
+                navigationIcon = {
+                    IconButton(onClick = { navController.popBackStack() }) {
+                        Icon(Icons.Filled.ArrowBack, contentDescription = "Back")
+                    }
+                }
+            )
+        },
+        modifier = modifier
+    ) { innerPadding ->
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(innerPadding),
+            contentAlignment = Alignment.Center
+        ) {
+            starship?.let {
+                Column {
+                    Text(text = "Name: ${it.name}")
+                    Text(text = "Model: ${it.model}")
+                    Text(text = "Manufacturer: ${it.manufacturer}")
+                    Text(text = "Cost: ${it.costInCredits}")
+                }
             }
+                ?: CircularProgressIndicator()
         }
-            ?: CircularProgressIndicator()
     }
 }
 
