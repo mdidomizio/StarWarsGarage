@@ -8,12 +8,18 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
+sealed interface StarshipsListUiState {
+    data class Success(val starships: List<Starship>) : StarshipsListUiState
+    object Error : StarshipsListUiState
+    object Loading : StarshipsListUiState
+}
+
 class StarshipsViewModel : ViewModel() {
 
     private val repository = NetworkModule.starshipRepository
 
-    private val _starships = MutableStateFlow<List<Starship>>(emptyList())
-    val starships: StateFlow<List<Starship>> = _starships
+    private val _uiState = MutableStateFlow<StarshipsListUiState>(StarshipsListUiState.Loading)
+    val uiState: StateFlow<StarshipsListUiState> = _uiState
 
     private val _starship = MutableStateFlow<Starship?>(null)
     val starship: StateFlow<Starship?> = _starship
@@ -22,12 +28,13 @@ class StarshipsViewModel : ViewModel() {
         getStarships()
     }
 
-    private fun getStarships() {
+    fun getStarships() {
         viewModelScope.launch {
+            _uiState.value = StarshipsListUiState.Loading
             try {
-                _starships.value = repository.getStarships()
+                _uiState.value = StarshipsListUiState.Success(repository.getStarships())
             } catch (e: Exception) {
-                // Handle error
+                _uiState.value = StarshipsListUiState.Error
             }
         }
     }

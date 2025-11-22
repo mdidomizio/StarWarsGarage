@@ -58,6 +58,9 @@ dependencies {
     // Moshi
     implementation("com.squareup.moshi:moshi-kotlin:1.13.0")
 
+    // Navigation
+    implementation("androidx.navigation:navigation-compose:2.7.7")
+
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
