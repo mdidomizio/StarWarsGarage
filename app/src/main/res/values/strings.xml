@@ -19,4 +19,5 @@
     <string name="starship_class_label">Starship Class</string>
     <string name="go_to_catalog_button">Go to Catalog</string>
     <string name="home_screen_title">Star Wars Garage</string>
+    <string name="home_screen_subtitle">The best place to find your next starship</string>
 </resources>
