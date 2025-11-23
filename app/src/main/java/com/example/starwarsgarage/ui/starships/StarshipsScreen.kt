@@ -7,6 +7,10 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material.pullrefresh.PullRefreshIndicator
+import androidx.compose.material.pullrefresh.pullRefresh
+import androidx.compose.material.pullrefresh.rememberPullRefreshState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.Card
@@ -29,10 +33,12 @@ import com.example.starwarsgarage.R
 import com.example.starwarsgarage.data.remote.Starship
 import com.example.starwarsgarage.ui.StarshipsViewModel
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterialApi::class)
 @Composable
 fun StarshipsScreen(viewModel: StarshipsViewModel, navController: NavHostController, modifier: Modifier = Modifier) {
     val lazyPagingItems = viewModel.starships.collectAsLazyPagingItems()
+    val isRefreshing = lazyPagingItems.loadState.refresh is LoadState.Loading
+    val pullRefreshState = rememberPullRefreshState(isRefreshing, { lazyPagingItems.refresh() })
 
     Scaffold(
         topBar = {
@@ -47,51 +53,56 @@ fun StarshipsScreen(viewModel: StarshipsViewModel, navController: NavHostControl
         },
         modifier = modifier
     ) { innerPadding ->
-        LazyColumn(
-            modifier = Modifier.padding(innerPadding)
+        Box(
+            modifier = Modifier
+                .padding(innerPadding)
+                .pullRefresh(pullRefreshState)
         ) {
-            items(lazyPagingItems.itemCount) { index ->
-                val starship = lazyPagingItems[index]
-                if (starship != null) {
-                    StarshipCard(starship = starship, onClick = {
-                        val id = starship.url.split("/").dropLast(1).last()
-                        navController.navigate("starship_detail/$id")
-                    })
+            if (lazyPagingItems.loadState.refresh is LoadState.Error && lazyPagingItems.itemCount == 0) {
+                Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                    Text(text = stringResource(id = R.string.error_fetching_starships))
+                }
+            } else {
+                LazyColumn(
+                    modifier = Modifier.fillMaxSize()
+                ) {
+                    items(lazyPagingItems.itemCount) { index ->
+                        val starship = lazyPagingItems[index]
+                        if (starship != null) {
+                            StarshipCard(starship = starship, onClick = {
+                                val id = starship.url.split("/").dropLast(1).last()
+                                navController.navigate("starship_detail/$id")
+                            })
+                        }
+                    }
+
+                    lazyPagingItems.loadState.append.let { 
+                        when (it) {
+                            is LoadState.Loading -> {
+                                item {
+                                    Box(modifier = Modifier.fillMaxWidth().padding(16.dp), contentAlignment = Alignment.Center) {
+                                        CircularProgressIndicator()
+                                    }
+                                }
+                            }
+                            is LoadState.Error -> {
+                                item {
+                                    Box(modifier = Modifier.fillMaxWidth().padding(16.dp), contentAlignment = Alignment.Center) {
+                                        Text(text = stringResource(id = R.string.error_fetching_starships))
+                                    }
+                                }
+                            }
+                            else -> {}
+                        }
+                    }
                 }
             }
 
-            lazyPagingItems.apply {
-                when {
-                    loadState.refresh is LoadState.Loading -> {
-                        item {
-                            Box(modifier = Modifier.fillParentMaxSize(), contentAlignment = Alignment.Center) {
-                                CircularProgressIndicator()
-                            }
-                        }
-                    }
-                    loadState.append is LoadState.Loading -> {
-                        item {
-                            Box(modifier = Modifier.fillMaxWidth().padding(16.dp), contentAlignment = Alignment.Center) {
-                                CircularProgressIndicator()
-                            }
-                        }
-                    }
-                    loadState.refresh is LoadState.Error -> {
-                        item {
-                            Box(modifier = Modifier.fillParentMaxSize(), contentAlignment = Alignment.Center) {
-                                Text(text = stringResource(id = R.string.error_fetching_starships))
-                            }
-                        }
-                    }
-                    loadState.append is LoadState.Error -> {
-                        item {
-                            Box(modifier = Modifier.fillMaxWidth().padding(16.dp), contentAlignment = Alignment.Center) {
-                                Text(text = stringResource(id = R.string.error_fetching_starships))
-                            }
-                        }
-                    }
-                }
-            }
+            PullRefreshIndicator(
+                refreshing = isRefreshing,
+                state = pullRefreshState,
+                modifier = Modifier.align(Alignment.TopCenter)
+            )
         }
     }
 }
