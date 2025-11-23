@@ -46,7 +46,7 @@ fun HomeScreen(navController: NavHostController, modifier: Modifier = Modifier) 
                 Icon(
                     Icons.Filled.ArrowForward,
                     contentDescription = stringResource(id = R.string.go_to_catalog_button),
-                    modifier.padding(start = 8.dp),
+                    modifier = Modifier.padding(start = 8.dp),
                 )
             }
         }
