@@ -7,8 +7,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.Card
@@ -20,25 +18,21 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
+import androidx.paging.LoadState
+import androidx.paging.compose.collectAsLazyPagingItems
 import com.example.starwarsgarage.R
 import com.example.starwarsgarage.data.remote.Starship
-import com.example.starwarsgarage.ui.StarshipsListUiState
 import com.example.starwarsgarage.ui.StarshipsViewModel
-import com.example.starwarsgarage.ui.theme.StarWarsGarageTheme
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun StarshipsScreen(viewModel: StarshipsViewModel, navController: NavHostController, modifier: Modifier = Modifier) {
-    val uiState by viewModel.uiState.collectAsState()
+    val lazyPagingItems = viewModel.starships.collectAsLazyPagingItems()
 
     Scaffold(
         topBar = {
@@ -53,42 +47,47 @@ fun StarshipsScreen(viewModel: StarshipsViewModel, navController: NavHostControl
         },
         modifier = modifier
     ) { innerPadding ->
-        when (val state = uiState) {
-            is StarshipsListUiState.Loading -> {
-                Box(modifier = Modifier.fillMaxSize().padding(innerPadding), contentAlignment = Alignment.Center) {
-                    CircularProgressIndicator()
+        LazyColumn(
+            modifier = Modifier.padding(innerPadding)
+        ) {
+            items(lazyPagingItems.itemCount) { index ->
+                val starship = lazyPagingItems[index]
+                if (starship != null) {
+                    StarshipCard(starship = starship, onClick = {
+                        val id = starship.url.split("/").dropLast(1).last()
+                        navController.navigate("starship_detail/$id")
+                    })
                 }
             }
-            is StarshipsListUiState.Error -> {
-                Box(modifier = Modifier.fillMaxSize().padding(innerPadding), contentAlignment = Alignment.Center) {
-                    Text(text = stringResource(id = R.string.error_fetching_starships))
-                }
-            }
-            is StarshipsListUiState.Success -> {
-                val listState = rememberLazyListState()
-                LazyColumn(modifier = Modifier.padding(innerPadding), state = listState) {
-                    items(state.starships) { starship ->
-                        StarshipCard(starship = starship, onClick = {
-                            val id = starship.url.split("/").dropLast(1).last()
-                            navController.navigate("starship_detail/$id")
-                        })
+
+            lazyPagingItems.apply {
+                when {
+                    loadState.refresh is LoadState.Loading -> {
+                        item {
+                            Box(modifier = Modifier.fillParentMaxSize(), contentAlignment = Alignment.Center) {
+                                CircularProgressIndicator()
+                            }
+                        }
                     }
-                    if (state.isLoadingMore) {
+                    loadState.append is LoadState.Loading -> {
                         item {
                             Box(modifier = Modifier.fillMaxWidth().padding(16.dp), contentAlignment = Alignment.Center) {
                                 CircularProgressIndicator()
                             }
                         }
                     }
-                }
-
-                val layoutInfo = listState.layoutInfo
-                val visibleItemsInfo = layoutInfo.visibleItemsInfo
-                if (visibleItemsInfo.isNotEmpty()) {
-                    val lastVisibleItemIndex = visibleItemsInfo.last().index
-                    if (lastVisibleItemIndex == state.starships.size - 1 && state.hasMore && !state.isLoadingMore) {
-                        LaunchedEffect(lastVisibleItemIndex) {
-                            viewModel.loadMoreStarships()
+                    loadState.refresh is LoadState.Error -> {
+                        item {
+                            Box(modifier = Modifier.fillParentMaxSize(), contentAlignment = Alignment.Center) {
+                                Text(text = stringResource(id = R.string.error_fetching_starships))
+                            }
+                        }
+                    }
+                    loadState.append is LoadState.Error -> {
+                        item {
+                            Box(modifier = Modifier.fillMaxWidth().padding(16.dp), contentAlignment = Alignment.Center) {
+                                Text(text = stringResource(id = R.string.error_fetching_starships))
+                            }
                         }
                     }
                 }
@@ -109,13 +108,5 @@ fun StarshipCard(starship: Starship, onClick: () -> Unit, modifier: Modifier = M
             Text(text = stringResource(id = R.string.name_label) + ": ${starship.name}")
             Text(text = stringResource(id = R.string.model_label) + ": ${starship.model}")
         }
-    }
-}
-
-@Preview(showBackground = true)
-@Composable
-fun StarshipsScreenPreview() {
-    StarWarsGarageTheme {
-        // Cannot preview screen with NavController
     }
 }

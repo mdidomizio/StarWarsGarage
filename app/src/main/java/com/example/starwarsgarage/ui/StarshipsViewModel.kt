@@ -2,17 +2,14 @@ package com.example.starwarsgarage.ui
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.paging.PagingData
+import androidx.paging.cachedIn
 import com.example.starwarsgarage.data.remote.Starship
 import com.example.starwarsgarage.di.NetworkModule
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
-
-sealed interface StarshipsListUiState {
-    data class Success(val starships: List<Starship>, val hasMore: Boolean, val isLoadingMore: Boolean = false) : StarshipsListUiState
-    object Error : StarshipsListUiState
-    object Loading : StarshipsListUiState
-}
 
 sealed interface StarshipDetailUiState {
     data class Success(val starship: Starship) : StarshipDetailUiState
@@ -24,51 +21,11 @@ class StarshipsViewModel : ViewModel() {
 
     private val repository = NetworkModule.starshipRepository
 
-    private val _uiState = MutableStateFlow<StarshipsListUiState>(StarshipsListUiState.Loading)
-    val uiState: StateFlow<StarshipsListUiState> = _uiState
+    val starships: Flow<PagingData<Starship>> = repository.getStarshipsStream()
+        .cachedIn(viewModelScope)
 
     private val _starshipUiState = MutableStateFlow<StarshipDetailUiState>(StarshipDetailUiState.Loading)
     val starshipUiState: StateFlow<StarshipDetailUiState> = _starshipUiState
-
-    private var currentPage = 1
-    private var isFetching = false
-
-    init {
-        getStarships()
-    }
-
-    fun getStarships() {
-        viewModelScope.launch {
-            _uiState.value = StarshipsListUiState.Loading
-            try {
-                val response = repository.getStarships(1)
-                _uiState.value = StarshipsListUiState.Success(response.results, response.next != null)
-                currentPage = 1
-            } catch (e: Exception) {
-                _uiState.value = StarshipsListUiState.Error
-            }
-        }
-    }
-
-    fun loadMoreStarships() {
-        if (isFetching) return
-
-        viewModelScope.launch {
-            isFetching = true
-            val currentState = _uiState.value
-            if (currentState is StarshipsListUiState.Success && currentState.hasMore) {
-                _uiState.value = currentState.copy(isLoadingMore = true)
-                try {
-                    val response = repository.getStarships(++currentPage)
-                    val newList = currentState.starships + response.results
-                    _uiState.value = StarshipsListUiState.Success(newList, response.next != null)
-                } catch (e: Exception) {
-                    _uiState.value = currentState.copy(isLoadingMore = false) // Keep old state on error
-                }
-            }
-            isFetching = false
-        }
-    }
 
     fun getStarship(id: String) {
         viewModelScope.launch {
