@@ -18,8 +18,8 @@ import com.example.starwarsgarage.navigation.AppDestinations.PDP_SCREEN_ROUTE
 import com.example.starwarsgarage.navigation.AppDestinations.STARSHIP_ID_KEY
 import com.example.starwarsgarage.ui.StarshipsViewModel
 import com.example.starwarsgarage.ui.home.HomeScreen
-import com.example.starwarsgarage.ui.starshipdetail.StarshipPdpScreen
-import com.example.starwarsgarage.ui.starships.StarshipsCatalogScreen
+import com.example.starwarsgarage.ui.pdp.StarshipPdpScreen
+import com.example.starwarsgarage.ui.catalog.StarshipsCatalogScreen
 import com.example.starwarsgarage.ui.theme.StarWarsGarageTheme
 
 /*private const val HOME_SCREEN_ROUTE = "home"

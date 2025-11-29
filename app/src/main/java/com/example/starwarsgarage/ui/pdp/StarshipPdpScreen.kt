@@ -1,4 +1,4 @@
-package com.example.starwarsgarage.ui.starshipdetail
+package com.example.starwarsgarage.ui.pdp
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement

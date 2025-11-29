@@ -1,4 +1,4 @@
-package com.example.starwarsgarage.ui.starships
+package com.example.starwarsgarage.ui.catalog
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
