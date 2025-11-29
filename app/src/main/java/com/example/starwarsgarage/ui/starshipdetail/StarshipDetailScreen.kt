@@ -3,7 +3,6 @@ package com.example.starwarsgarage.ui.starshipdetail
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -12,13 +11,12 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
@@ -35,7 +33,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.example.starwarsgarage.R
-import com.example.starwarsgarage.data.remote.Starship
 import com.example.starwarsgarage.ui.StarshipDetailUiState
 import com.example.starwarsgarage.ui.StarshipsViewModel
 
@@ -53,7 +50,7 @@ fun StarshipDetailScreen(viewModel: StarshipsViewModel, starshipId: String, navC
                 title = { Text(text = (uiState as? StarshipDetailUiState.Success)?.starship?.name ?: "") },
                 navigationIcon = {
                     IconButton(onClick = { navController.popBackStack() }) {
-                        Icon(Icons.Filled.ArrowBack, contentDescription = stringResource(id = R.string.back_button_content_description))
+                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = stringResource(id = R.string.back_button_content_description))
                     }
                 }
             )
@@ -112,5 +109,5 @@ fun StarshipProperty(label: String, value: String, modifier: Modifier = Modifier
         Text(text = label, fontWeight = FontWeight.Bold, fontSize = 16.sp)
         Text(text = value, fontSize = 16.sp)
     }
-    Divider()
+    HorizontalDivider()
 }

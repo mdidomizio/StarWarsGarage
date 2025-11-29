@@ -21,4 +21,7 @@ data class Starship(
     val created: String,
     val edited: String,
     val url: String
-)
+) {
+    val id: String
+        get() = url.split("/").dropLast(1).last()
+}

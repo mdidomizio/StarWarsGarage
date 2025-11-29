@@ -8,7 +8,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowForward
+import androidx.compose.material.icons.automirrored.filled.ArrowForward
 import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
@@ -44,7 +44,7 @@ fun HomeScreen(navController: NavHostController, modifier: Modifier = Modifier) 
             Button(onClick = { navController.navigate("starships_list") }) {
                 Text(text = stringResource(id = R.string.go_to_catalog_button))
                 Icon(
-                    Icons.Filled.ArrowForward,
+                    Icons.AutoMirrored.Filled.ArrowForward,
                     contentDescription = stringResource(id = R.string.go_to_catalog_button),
                     modifier = Modifier.padding(start = 8.dp),
                 )
