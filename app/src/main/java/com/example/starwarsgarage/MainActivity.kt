@@ -18,8 +18,8 @@ import com.example.starwarsgarage.navigation.AppDestinations.PDP_SCREEN_ROUTE
 import com.example.starwarsgarage.navigation.AppDestinations.STARSHIP_ID_KEY
 import com.example.starwarsgarage.ui.StarshipsViewModel
 import com.example.starwarsgarage.ui.home.HomeScreen
-import com.example.starwarsgarage.ui.starshipdetail.StarshipDetailScreen
-import com.example.starwarsgarage.ui.starships.StarshipsScreen
+import com.example.starwarsgarage.ui.starshipdetail.StarshipPdpScreen
+import com.example.starwarsgarage.ui.starships.StarshipsCatalogScreen
 import com.example.starwarsgarage.ui.theme.StarWarsGarageTheme
 
 /*private const val HOME_SCREEN_ROUTE = "home"
@@ -44,12 +44,12 @@ class MainActivity : ComponentActivity() {
                             HomeScreen(navController = navController)
                         }
                         composable(CATALOG_SCREEN_ROUTE) {
-                            StarshipsScreen(viewModel = viewModel, navController = navController)
+                            StarshipsCatalogScreen(viewModel = viewModel, navController = navController)
                         }
                         composable("${PDP_SCREEN_ROUTE}/{${STARSHIP_ID_KEY}}") { backStackEntry ->
                             val starshipId = backStackEntry.arguments?.getString(STARSHIP_ID_KEY)
                             if (starshipId != null) {
-                                StarshipDetailScreen(
+                                StarshipPdpScreen(
                                     viewModel = viewModel,
                                     starshipId = starshipId,
                                     navController = navController

@@ -42,7 +42,7 @@ import com.example.starwarsgarage.ui.StarshipsViewModel
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterialApi::class)
 @Composable
-fun StarshipsScreen(viewModel: StarshipsViewModel, navController: NavHostController, modifier: Modifier = Modifier) {
+fun StarshipsCatalogScreen(viewModel: StarshipsViewModel, navController: NavHostController, modifier: Modifier = Modifier) {
     val lazyPagingItems = viewModel.starships.collectAsLazyPagingItems()
     val isRefreshing = lazyPagingItems.loadState.refresh is LoadState.Loading
     val pullRefreshState = rememberPullRefreshState(isRefreshing, { lazyPagingItems.refresh() })

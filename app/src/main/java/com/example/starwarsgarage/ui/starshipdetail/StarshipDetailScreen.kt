@@ -38,7 +38,7 @@ import com.example.starwarsgarage.ui.StarshipsViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun StarshipDetailScreen(viewModel: StarshipsViewModel, starshipId: String, navController: NavHostController, modifier: Modifier = Modifier) {
+fun StarshipPdpScreen(viewModel: StarshipsViewModel, starshipId: String, navController: NavHostController, modifier: Modifier = Modifier) {
     LaunchedEffect(starshipId) {
         viewModel.getStarship(starshipId)
     }
