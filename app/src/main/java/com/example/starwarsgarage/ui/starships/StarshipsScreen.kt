@@ -37,6 +37,7 @@ import androidx.paging.LoadState
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.example.starwarsgarage.R
 import com.example.starwarsgarage.data.remote.Starship
+import com.example.starwarsgarage.navigation.AppDestinations.PDP_SCREEN_ROUTE
 import com.example.starwarsgarage.ui.StarshipsViewModel
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterialApi::class)
@@ -76,8 +77,7 @@ fun StarshipsScreen(viewModel: StarshipsViewModel, navController: NavHostControl
                         val starship = lazyPagingItems[index]
                         if (starship != null) {
                             StarshipCard(starship = starship, onClick = {
-                                val id = starship.id
-                                navController.navigate("starship_detail/$id")
+                                navController.navigate("${PDP_SCREEN_ROUTE}/${starship.id}")
                             })
                         }
                     }

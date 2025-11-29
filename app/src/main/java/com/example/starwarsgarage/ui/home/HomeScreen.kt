@@ -21,6 +21,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.example.starwarsgarage.R
+import com.example.starwarsgarage.navigation.AppDestinations.CATALOG_SCREEN_ROUTE
 
 @Composable
 fun HomeScreen(navController: NavHostController, modifier: Modifier = Modifier) {
@@ -41,7 +42,7 @@ fun HomeScreen(navController: NavHostController, modifier: Modifier = Modifier) 
                 textAlign = TextAlign.Center
             )
             Spacer(modifier = Modifier.height(16.dp))
-            Button(onClick = { navController.navigate("starships_list") }) {
+            Button(onClick = { navController.navigate(CATALOG_SCREEN_ROUTE) }) {
                 Text(text = stringResource(id = R.string.go_to_catalog_button))
                 Icon(
                     Icons.AutoMirrored.Filled.ArrowForward,
