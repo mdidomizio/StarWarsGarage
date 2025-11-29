@@ -2,14 +2,27 @@ package com.example.starwarsgarage.data.remote
 
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
+import java.io.IOException
 
 class StarshipPagingSource(
     private val starshipApi: StarshipApi
 ) : PagingSource<Int, Starship>() {
+    // --- START: Temporary change for testing retry ---
+    companion object {
+        private var shouldFail = true
+    }
+    // --- END: Temporary change ---
 
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, Starship> {
-        val page = params.key ?: 1
+        // --- START: Temporary change for testing retry ---
+        if (params.key == null && shouldFail) {
+            shouldFail = false // Make the next attempt succeed
+            return LoadResult.Error(IOException("Simulated initial load failure"))
+        }
+        // --- END: Temporary change ---
+
         return try {
+            val page = params.key ?: 1
             val response = starshipApi.getStarships(page)
             val starships = response.results
             LoadResult.Page(

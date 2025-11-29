@@ -1,5 +1,6 @@
 package com.example.starwarsgarage.ui
 
+import androidx.compose.foundation.lazy.staggeredgrid.rememberLazyStaggeredGridState
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
@@ -11,10 +12,10 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
-sealed interface StarshipDetailUiState {
-    data class Success(val starship: Starship) : StarshipDetailUiState
-    object Error : StarshipDetailUiState
-    object Loading : StarshipDetailUiState
+sealed interface UiState {
+    data class Success(val starship: Starship) : UiState
+    object Error : UiState
+    object Loading : UiState
 }
 
 class StarshipsViewModel : ViewModel() {
@@ -24,16 +25,18 @@ class StarshipsViewModel : ViewModel() {
     val starships: Flow<PagingData<Starship>> = repository.getStarshipsStream()
         .cachedIn(viewModelScope)
 
-    private val _starshipUiState = MutableStateFlow<StarshipDetailUiState>(StarshipDetailUiState.Loading)
-    val starshipUiState: StateFlow<StarshipDetailUiState> = _starshipUiState
+    private val _starshipUiState =
+        MutableStateFlow<UiState>(UiState.Loading)
+    val starshipUiState: StateFlow<UiState> = _starshipUiState
 
     fun getStarship(id: String) {
         viewModelScope.launch {
-            _starshipUiState.value = StarshipDetailUiState.Loading
+            _starshipUiState.value = UiState.Loading
             try {
-                _starshipUiState.value = StarshipDetailUiState.Success(repository.getStarshipById(id))
+                _starshipUiState.value =
+                    UiState.Success(repository.getStarshipById(id))
             } catch (e: Exception) {
-                _starshipUiState.value = StarshipDetailUiState.Error
+                _starshipUiState.value = UiState.Error
             }
         }
     }

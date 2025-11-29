@@ -38,11 +38,16 @@ import androidx.paging.compose.collectAsLazyPagingItems
 import com.example.starwarsgarage.R
 import com.example.starwarsgarage.data.remote.Starship
 import com.example.starwarsgarage.navigation.AppDestinations.PDP_SCREEN_ROUTE
+import com.example.starwarsgarage.ui.ErrorScreen
 import com.example.starwarsgarage.ui.StarshipsViewModel
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterialApi::class)
 @Composable
-fun StarshipsCatalogScreen(viewModel: StarshipsViewModel, navController: NavHostController, modifier: Modifier = Modifier) {
+fun StarshipsCatalogScreen(
+    viewModel: StarshipsViewModel,
+    navController: NavHostController,
+    modifier: Modifier = Modifier
+) {
     val lazyPagingItems = viewModel.starships.collectAsLazyPagingItems()
     val isRefreshing = lazyPagingItems.loadState.refresh is LoadState.Loading
     val pullRefreshState = rememberPullRefreshState(isRefreshing, { lazyPagingItems.refresh() })
@@ -53,7 +58,10 @@ fun StarshipsCatalogScreen(viewModel: StarshipsViewModel, navController: NavHost
                 title = { Text(text = stringResource(id = R.string.starship_catalog_title)) },
                 navigationIcon = {
                     IconButton(onClick = { navController.popBackStack() }) {
-                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = stringResource(id = R.string.back_button_content_description))
+                        Icon(
+                            Icons.AutoMirrored.Filled.ArrowBack,
+                            contentDescription = stringResource(id = R.string.back_button_content_description)
+                        )
                     }
                 }
             )
@@ -66,9 +74,10 @@ fun StarshipsCatalogScreen(viewModel: StarshipsViewModel, navController: NavHost
                 .pullRefresh(pullRefreshState)
         ) {
             if (lazyPagingItems.loadState.refresh is LoadState.Error && lazyPagingItems.itemCount == 0) {
-                Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                    Text(text = stringResource(id = R.string.error_fetching_starships))
-                }
+                ErrorScreen(
+                    onRetry = { lazyPagingItems.retry() },
+                    message = stringResource(id = R.string.error_fetching_starships)
+                )
             } else {
                 LazyColumn(
                     modifier = Modifier.fillMaxSize()
@@ -82,20 +91,26 @@ fun StarshipsCatalogScreen(viewModel: StarshipsViewModel, navController: NavHost
                         }
                     }
 
-                    lazyPagingItems.loadState.append.let { 
+                    lazyPagingItems.loadState.append.let {
                         when (it) {
                             is LoadState.Loading -> {
                                 item {
-                                    Box(modifier = Modifier.fillMaxWidth().padding(16.dp), contentAlignment = Alignment.Center) {
+                                    Box(
+                                        modifier = Modifier
+                                            .fillMaxWidth()
+                                            .padding(16.dp),
+                                        contentAlignment = Alignment.Center
+                                    ) {
                                         CircularProgressIndicator()
                                     }
                                 }
                             }
                             is LoadState.Error -> {
                                 item {
-                                    Box(modifier = Modifier.fillMaxWidth().padding(16.dp), contentAlignment = Alignment.Center) {
-                                        Text(text = stringResource(id = R.string.error_fetching_starships))
-                                    }
+                                    ErrorScreen(
+                                        message = stringResource(id = R.string.error_fetching_starships),
+                                        onRetry = { lazyPagingItems.retry() }
+                                    )
                                 }
                             }
                             else -> {}

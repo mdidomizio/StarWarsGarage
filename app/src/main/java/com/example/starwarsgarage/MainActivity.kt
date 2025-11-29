@@ -22,8 +22,6 @@ import com.example.starwarsgarage.ui.pdp.StarshipPdpScreen
 import com.example.starwarsgarage.ui.catalog.StarshipsCatalogScreen
 import com.example.starwarsgarage.ui.theme.StarWarsGarageTheme
 
-/*private const val HOME_SCREEN_ROUTE = "home"
-const val CATALOG_SCREEN_ROUTE = "starships_catalog"*/
 class MainActivity : ComponentActivity() {
 
     private val viewModel: StarshipsViewModel by viewModels()

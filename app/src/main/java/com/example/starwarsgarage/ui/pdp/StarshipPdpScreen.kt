@@ -33,7 +33,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.example.starwarsgarage.R
-import com.example.starwarsgarage.ui.StarshipDetailUiState
+import com.example.starwarsgarage.ui.UiState
 import com.example.starwarsgarage.ui.StarshipsViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -47,7 +47,7 @@ fun StarshipPdpScreen(viewModel: StarshipsViewModel, starshipId: String, navCont
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text(text = (uiState as? StarshipDetailUiState.Success)?.starship?.name ?: "") },
+                title = { Text(text = (uiState as? UiState.Success)?.starship?.name ?: "") },
                 navigationIcon = {
                     IconButton(onClick = { navController.popBackStack() }) {
                         Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = stringResource(id = R.string.back_button_content_description))
@@ -58,17 +58,17 @@ fun StarshipPdpScreen(viewModel: StarshipsViewModel, starshipId: String, navCont
         modifier = modifier
     ) { innerPadding ->
         when (val state = uiState) {
-            is StarshipDetailUiState.Loading -> {
+            is UiState.Loading -> {
                 Box(modifier = Modifier.fillMaxSize().padding(innerPadding), contentAlignment = Alignment.Center) {
                     CircularProgressIndicator()
                 }
             }
-            is StarshipDetailUiState.Error -> {
+            is UiState.Error -> {
                 Box(modifier = Modifier.fillMaxSize().padding(innerPadding), contentAlignment = Alignment.Center) {
                     Text(text = stringResource(id = R.string.error_fetching_starship_details))
                 }
             }
-            is StarshipDetailUiState.Success -> {
+            is UiState.Success -> {
                 LazyColumn(modifier = Modifier.padding(innerPadding).padding(16.dp)) {
                     item {
                         Box(
