@@ -3,6 +3,7 @@ package com.example.starwarsgarage.ui.pdp
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -10,6 +11,8 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.CircularProgressIndicator
@@ -30,17 +33,25 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.example.starwarsgarage.R
+import com.example.starwarsgarage.data.remote.Starship
 import com.example.starwarsgarage.ui.ErrorScreen
 import com.example.starwarsgarage.ui.UiState
 import com.example.starwarsgarage.ui.StarshipsViewModel
+import com.example.starwarsgarage.ui.theme.starJediFontFamily
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun StarshipPdpScreen(viewModel: StarshipsViewModel, starshipId: String, navController: NavHostController, modifier: Modifier = Modifier) {
+fun StarshipPdpScreen(
+    viewModel: StarshipsViewModel,
+    starshipId: String,
+    navController: NavHostController,
+    modifier: Modifier = Modifier
+) {
     LaunchedEffect(starshipId) {
         viewModel.getStarship(starshipId)
     }
@@ -52,7 +63,10 @@ fun StarshipPdpScreen(viewModel: StarshipsViewModel, starshipId: String, navCont
                 title = { Text(text = (uiState as? UiState.Success)?.starship?.name ?: "") },
                 navigationIcon = {
                     IconButton(onClick = { navController.popBackStack() }) {
-                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = stringResource(id = R.string.back_button_content_description))
+                        Icon(
+                            Icons.AutoMirrored.Filled.ArrowBack,
+                            contentDescription = stringResource(id = R.string.back_button_content_description)
+                        )
                     }
                 }
             )
@@ -61,20 +75,26 @@ fun StarshipPdpScreen(viewModel: StarshipsViewModel, starshipId: String, navCont
     ) { innerPadding ->
         when (val state = uiState) {
             is UiState.Loading -> {
-                Box(modifier = Modifier
-                    .fillMaxSize()
-                    .padding(innerPadding), contentAlignment = Alignment.Center) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(innerPadding), contentAlignment = Alignment.Center
+                ) {
                     CircularProgressIndicator()
                 }
             }
+
             is UiState.Error -> ErrorScreen(
                 message = stringResource(id = R.string.error_fetching_starship_details),
                 onRetry = { viewModel.retry(starshipId) }
             )
+
             is UiState.Success -> {
-                LazyColumn(modifier = Modifier
-                    .padding(innerPadding)
-                    .padding(16.dp)) {
+                LazyColumn(
+                    modifier = Modifier
+                        .padding(innerPadding)
+                        .padding(16.dp)
+                ) {
                     item {
                         Box(
                             modifier = Modifier
@@ -83,19 +103,66 @@ fun StarshipPdpScreen(viewModel: StarshipsViewModel, starshipId: String, navCont
                                 .background(Color.Gray)
                         ) // Placeholder for image
                     }
+                    val starship: Starship = state.starship
                     item { Spacer(modifier = Modifier.height(16.dp)) }
-                    item { StarshipProperty(label = stringResource(id = R.string.model_label), value = state.starship.model) }
-                    item { StarshipProperty(label = stringResource(id = R.string.manufacturer_label), value = state.starship.manufacturer) }
-                    item { StarshipProperty(label = stringResource(id = R.string.cost_label), value = state.starship.costInCredits) }
-                    item { StarshipProperty(label = stringResource(id = R.string.length_label), value = state.starship.length) }
-                    item { StarshipProperty(label = stringResource(id = R.string.max_atmosphering_speed_label), value = state.starship.maxAtmospheringSpeed) }
-                    item { StarshipProperty(label = stringResource(id = R.string.crew_label), value = state.starship.crew) }
-                    item { StarshipProperty(label = stringResource(id = R.string.passengers_label), value = state.starship.passengers) }
-                    item { StarshipProperty(label = stringResource(id = R.string.cargo_capacity_label), value = state.starship.cargoCapacity) }
-                    item { StarshipProperty(label = stringResource(id = R.string.consumables_label), value = state.starship.consumables) }
-                    item { StarshipProperty(label = stringResource(id = R.string.hyperdrive_rating_label), value = state.starship.hyperdriveRating) }
-                    item { StarshipProperty(label = stringResource(id = R.string.mglt_label), value = state.starship.mglt) }
-                    item { StarshipProperty(label = stringResource(id = R.string.starship_class_label), value = state.starship.starshipClass) }
+                    item {
+                        StarshipProperty(
+                            label = stringResource(id = R.string.model_label),
+                            value = starship.model
+                        )
+                    }
+                    item {
+                        StarshipProperty(
+                            label = stringResource(id = R.string.manufacturer_label),
+                            value = starship.manufacturer
+                        )
+                    }
+                    item {
+                        StarshipProperty(
+                            label = stringResource(id = R.string.cost_label),
+                            value = starship.costInCredits
+                        )
+                    }
+                    item {
+                        StarshipProperty(
+                            label = stringResource(id = R.string.length_label),
+                            value = starship.length
+                        )
+                    }
+                    item {
+                        StarshipProperty(
+                            label = stringResource(id = R.string.max_atmosphering_speed_label),
+                            value = starship.maxAtmospheringSpeed
+                        )
+                    }
+                    item {
+                        Column {
+                            CrewAndPassengersGrid(
+                                crew = starship.crew,
+                                passengers = starship.passengers,
+                            )
+                            StarshipProperty(
+                                label = stringResource(id = R.string.cargo_capacity_label),
+                                value = state.starship.cargoCapacity
+                            )
+                            StarshipProperty(
+                                label = stringResource(id = R.string.consumables_label),
+                                value = state.starship.consumables
+                            )
+                            StarshipProperty(
+                                label = stringResource(id = R.string.hyperdrive_rating_label),
+                                value = state.starship.hyperdriveRating
+                            )
+                            StarshipProperty(
+                                label = stringResource(id = R.string.mglt_label),
+                                value = state.starship.mglt
+                            )
+                            StarshipProperty(
+                                label = stringResource(id = R.string.starship_class_label),
+                                value = state.starship.starshipClass
+                            )
+                        }
+                    }
                 }
             }
         }
@@ -111,7 +178,65 @@ fun StarshipProperty(label: String, value: String, modifier: Modifier = Modifier
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
         Text(text = label, fontSize = 16.sp)
-        Text(text = value, fontSize = 16.sp, fontFamily = FontFamily.Default, fontWeight = FontWeight.Bold)
+        Text(
+            text = value,
+            fontSize = 16.sp,
+            fontFamily = FontFamily.Default,
+            fontWeight = FontWeight.Bold
+        )
     }
     HorizontalDivider()
+}
+
+@Composable
+fun CrewAndPassengersGrid(
+    crew: String,
+    passengers: String,
+    modifier: Modifier = Modifier,
+) {
+    val items = listOf(
+        stringResource(id = R.string.crew_label) to crew,
+        stringResource(id = R.string.passengers_label) to passengers
+    )
+
+    LazyVerticalGrid(
+        columns = GridCells.Fixed(2),
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(60.dp),
+        horizontalArrangement = Arrangement.spacedBy(16.dp),
+        userScrollEnabled = false
+    ) {
+        items(items.size) { index ->
+            val (title, value) = items[index]
+            InfoCard(
+                title = title,
+                value = value as String
+            )
+        }
+    }
+}
+
+@Composable
+fun InfoCard(title: String, value: String) {
+    Column(
+        modifier = Modifier.padding(vertical = 8.dp)
+    ) {
+        Text(
+            text = title,
+            fontSize = 16.sp,
+            maxLines = 1,
+            fontFamily = starJediFontFamily,
+            overflow = TextOverflow.Ellipsis
+        )
+        Text(
+            text = value,
+            fontSize = 16.sp,
+            fontWeight = FontWeight.Bold,
+            fontFamily = FontFamily.Default,
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis
+        )
+        HorizontalDivider()
+    }
 }

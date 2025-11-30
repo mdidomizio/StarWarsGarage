@@ -18,8 +18,6 @@ data class Starship(
     @Json(name = "starship_class") val starshipClass: String,
     val pilots: List<String>,
     val films: List<String>,
-    val created: String,
-    val edited: String,
     val url: String
 ) {
     val id: String
