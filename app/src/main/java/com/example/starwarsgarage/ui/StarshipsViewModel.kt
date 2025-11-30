@@ -1,13 +1,11 @@
 package com.example.starwarsgarage.ui
 
-import androidx.compose.foundation.lazy.staggeredgrid.rememberLazyStaggeredGridState
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import com.example.starwarsgarage.data.remote.Starship
 import com.example.starwarsgarage.data.repository.StarshipRepository
-import com.example.starwarsgarage.di.NetworkModule
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
