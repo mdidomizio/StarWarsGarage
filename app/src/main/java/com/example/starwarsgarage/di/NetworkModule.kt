@@ -1,8 +1,6 @@
 package com.example.starwarsgarage.di
 
 import com.example.starwarsgarage.data.remote.StarshipApi
-import com.example.starwarsgarage.data.repository.StarshipRepository
-import com.example.starwarsgarage.data.repository.StarshipRepositoryImpl
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import dagger.Module
@@ -40,9 +38,4 @@ object NetworkModule {
     @Singleton
     fun provideStarshipApi (retrofit: Retrofit): StarshipApi
     = retrofit.create(StarshipApi::class.java)
-
-    @Provides
-    @Singleton
-    fun provideStarshipRepository(starshipApi: StarshipApi) : StarshipRepository
-    = StarshipRepositoryImpl(starshipApi)
 }

@@ -7,13 +7,14 @@ import com.example.starwarsgarage.data.remote.Starship
 import com.example.starwarsgarage.data.remote.StarshipApi
 import com.example.starwarsgarage.data.remote.StarshipPagingSource
 import kotlinx.coroutines.flow.Flow
+import javax.inject.Inject
 
 interface StarshipRepository {
     fun getStarshipsStream(): Flow<PagingData<Starship>>
     suspend fun getStarshipById(id: String): Starship
 }
 
-class StarshipRepositoryImpl(
+class StarshipRepositoryImpl @Inject constructor(
     private val starshipApi: StarshipApi
 ) : StarshipRepository {
 
