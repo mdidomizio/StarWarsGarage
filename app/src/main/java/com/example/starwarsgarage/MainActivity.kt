@@ -21,7 +21,9 @@ import com.example.starwarsgarage.ui.home.HomeScreen
 import com.example.starwarsgarage.ui.pdp.StarshipPdpScreen
 import com.example.starwarsgarage.ui.catalog.StarshipsCatalogScreen
 import com.example.starwarsgarage.ui.theme.StarWarsGarageTheme
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
 
     private val viewModel: StarshipsViewModel by viewModels()

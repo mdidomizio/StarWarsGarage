@@ -1,27 +1,41 @@
 package com.example.starwarsgarage.di
 
 import com.example.starwarsgarage.data.remote.StarshipApi
-import com.example.starwarsgarage.data.repository.StarshipRepository
-import com.example.starwarsgarage.data.repository.StarshipRepositoryImpl
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
+import dagger.Module
+import dagger.Provides
+import dagger.hilt.InstallIn
+import dagger.hilt.components.SingletonComponent
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
+import javax.inject.Singleton
 
+@Module
+@InstallIn(SingletonComponent::class)
 object NetworkModule {
 
     private const val BASE_URL = "https://swapi.dev/api/"
 
-    private val moshi = Moshi.Builder()
-        .add(KotlinJsonAdapterFactory())
-        .build()
+    @Provides
+    @Singleton
+    fun provideMoshi() : Moshi {
+        return Moshi.Builder()
+            .add(KotlinJsonAdapterFactory())
+            .build()
+    }
 
-    private val retrofit = Retrofit.Builder()
-        .baseUrl(BASE_URL)
-        .addConverterFactory(MoshiConverterFactory.create(moshi))
-        .build()
+    @Provides
+    @Singleton
+    fun provideRetrofit(moshi: Moshi) : Retrofit{
+        return Retrofit.Builder()
+            .baseUrl(BASE_URL)
+            .addConverterFactory(MoshiConverterFactory.create(moshi))
+            .build()
+    }
 
-    private val starshipApi: StarshipApi = retrofit.create(StarshipApi::class.java)
-
-    val starshipRepository: StarshipRepository = StarshipRepositoryImpl(starshipApi)
+    @Provides
+    @Singleton
+    fun provideStarshipApi (retrofit: Retrofit): StarshipApi
+    = retrofit.create(StarshipApi::class.java)
 }

@@ -6,11 +6,14 @@ import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import com.example.starwarsgarage.data.remote.Starship
+import com.example.starwarsgarage.data.repository.StarshipRepository
 import com.example.starwarsgarage.di.NetworkModule
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
 sealed interface UiState {
     data class Success(val starship: Starship) : UiState
@@ -18,9 +21,10 @@ sealed interface UiState {
     object Loading : UiState
 }
 
-class StarshipsViewModel : ViewModel() {
-
-    private val repository = NetworkModule.starshipRepository
+@HiltViewModel
+class StarshipsViewModel @Inject constructor(
+    private val repository: StarshipRepository
+): ViewModel() {
 
     val starships: Flow<PagingData<Starship>> = repository.getStarshipsStream()
         .cachedIn(viewModelScope)

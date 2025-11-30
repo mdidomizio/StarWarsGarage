@@ -1,8 +1,10 @@
 package com.example.starwarsgarage
 
 import android.app.Application
+import dagger.hilt.android.HiltAndroidApp
 import timber.log.Timber
 
+@HiltAndroidApp
 class StarWarsGarageApp : Application() {
 
     override fun onCreate() {
