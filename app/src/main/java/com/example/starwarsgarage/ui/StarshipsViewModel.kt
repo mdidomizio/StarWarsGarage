@@ -44,4 +44,7 @@ class StarshipsViewModel @Inject constructor(
             }
         }
     }
+    fun retry(id: String) {
+        getStarship(id)
+    }
 }

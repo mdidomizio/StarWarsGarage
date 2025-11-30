@@ -33,6 +33,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.example.starwarsgarage.R
+import com.example.starwarsgarage.ui.ErrorScreen
 import com.example.starwarsgarage.ui.UiState
 import com.example.starwarsgarage.ui.StarshipsViewModel
 
@@ -59,17 +60,20 @@ fun StarshipPdpScreen(viewModel: StarshipsViewModel, starshipId: String, navCont
     ) { innerPadding ->
         when (val state = uiState) {
             is UiState.Loading -> {
-                Box(modifier = Modifier.fillMaxSize().padding(innerPadding), contentAlignment = Alignment.Center) {
+                Box(modifier = Modifier
+                    .fillMaxSize()
+                    .padding(innerPadding), contentAlignment = Alignment.Center) {
                     CircularProgressIndicator()
                 }
             }
-            is UiState.Error -> {
-                Box(modifier = Modifier.fillMaxSize().padding(innerPadding), contentAlignment = Alignment.Center) {
-                    Text(text = stringResource(id = R.string.error_fetching_starship_details))
-                }
-            }
+            is UiState.Error -> ErrorScreen(
+                message = stringResource(id = R.string.error_fetching_starship_details),
+                onRetry = { viewModel.retry(starshipId) }
+            )
             is UiState.Success -> {
-                LazyColumn(modifier = Modifier.padding(innerPadding).padding(16.dp)) {
+                LazyColumn(modifier = Modifier
+                    .padding(innerPadding)
+                    .padding(16.dp)) {
                     item {
                         Box(
                             modifier = Modifier
