@@ -40,6 +40,7 @@ import com.example.starwarsgarage.data.remote.Starship
 import com.example.starwarsgarage.navigation.AppDestinations.PDP_SCREEN_ROUTE
 import com.example.starwarsgarage.ui.ErrorScreen
 import com.example.starwarsgarage.ui.StarshipsViewModel
+import com.example.starwarsgarage.ui.theme.starJediFontFamily
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterialApi::class)
 @Composable
@@ -144,7 +145,7 @@ fun StarshipCard(starship: Starship, onClick: () -> Unit, modifier: Modifier = M
             )
             Spacer(modifier = Modifier.width(16.dp))
             Column {
-                Text(text = starship.name, style = MaterialTheme.typography.titleMedium)
+                Text(text = starship.name, style = MaterialTheme.typography.titleMedium, fontFamily = starJediFontFamily)
                 Text(text = starship.model, style = MaterialTheme.typography.bodyMedium)
                 Text(text = starship.manufacturer, style = MaterialTheme.typography.bodySmall)
             }

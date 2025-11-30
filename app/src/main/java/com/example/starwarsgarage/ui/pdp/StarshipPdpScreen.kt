@@ -28,6 +28,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -83,7 +84,6 @@ fun StarshipPdpScreen(viewModel: StarshipsViewModel, starshipId: String, navCont
                         ) // Placeholder for image
                     }
                     item { Spacer(modifier = Modifier.height(16.dp)) }
-                    item { StarshipProperty(label = stringResource(id = R.string.name_label), value = state.starship.name) }
                     item { StarshipProperty(label = stringResource(id = R.string.model_label), value = state.starship.model) }
                     item { StarshipProperty(label = stringResource(id = R.string.manufacturer_label), value = state.starship.manufacturer) }
                     item { StarshipProperty(label = stringResource(id = R.string.cost_label), value = state.starship.costInCredits) }
@@ -110,8 +110,8 @@ fun StarshipProperty(label: String, value: String, modifier: Modifier = Modifier
             .padding(vertical = 8.dp),
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
-        Text(text = label, fontWeight = FontWeight.Bold, fontSize = 16.sp)
-        Text(text = value, fontSize = 16.sp)
+        Text(text = label, fontSize = 16.sp)
+        Text(text = value, fontSize = 16.sp, fontFamily = FontFamily.Default, fontWeight = FontWeight.Bold)
     }
     HorizontalDivider()
 }
