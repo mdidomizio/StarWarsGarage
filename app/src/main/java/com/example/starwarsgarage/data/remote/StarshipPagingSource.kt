@@ -2,7 +2,6 @@ package com.example.starwarsgarage.data.remote
 
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
-import java.io.IOException
 
 class StarshipPagingSource(
     private val starshipApi: StarshipApi

@@ -1,10 +1,12 @@
 package com.example.starwarsgarage.ui
 
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import com.example.starwarsgarage.data.remote.Starship
+import com.example.starwarsgarage.data.remote.StarshipProduct
 import com.example.starwarsgarage.data.repository.StarshipRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.Flow
@@ -14,14 +16,14 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 sealed interface UiState {
-    data class Success(val starship: Starship) : UiState
+    data class Success(val starship: StarshipProduct) : UiState
     object Error : UiState
     object Loading : UiState
 }
 
 @HiltViewModel
 class StarshipsViewModel @Inject constructor(
-    private val repository: StarshipRepository
+    private val repository: StarshipRepository,
 ): ViewModel() {
 
     val starships: Flow<PagingData<Starship>> = repository.getStarshipsStream()
@@ -34,12 +36,13 @@ class StarshipsViewModel @Inject constructor(
     fun getStarship(id: String) {
         viewModelScope.launch {
             _starshipUiState.value = UiState.Loading
-            try {
-                _starshipUiState.value =
-                    UiState.Success(repository.getStarshipById(id))
-            } catch (e: Exception) {
-                _starshipUiState.value = UiState.Error
-            }
+            repository.getStarshipProduct(id)
+                .onSuccess { product ->
+                    _starshipUiState.value = UiState.Success(product)
+                }
+                .onFailure {
+                    _starshipUiState.value = UiState.Error
+                }
         }
     }
     fun retry(id: String) {

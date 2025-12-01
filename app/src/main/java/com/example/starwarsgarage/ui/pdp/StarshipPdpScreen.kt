@@ -39,6 +39,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.example.starwarsgarage.R
 import com.example.starwarsgarage.data.remote.Starship
+import com.example.starwarsgarage.data.remote.StarshipProduct
 import com.example.starwarsgarage.ui.ErrorScreen
 import com.example.starwarsgarage.ui.UiState
 import com.example.starwarsgarage.ui.StarshipsViewModel
@@ -103,7 +104,7 @@ fun StarshipPdpScreen(
                                 .background(Color.Gray)
                         ) // Placeholder for image
                     }
-                    val starship: Starship = state.starship
+                    val starship: StarshipProduct = state.starship
                     item { Spacer(modifier = Modifier.height(16.dp)) }
                     item {
                         StarshipProperty(
