@@ -2,7 +2,8 @@ package com.example.starwarsgarage.data.remote
 
 import com.squareup.moshi.Json
 
-data class StarshipProduct(
+// domain model for ui
+data class Starship(
     val id: String,
     val name: String,
     val model: String,
@@ -25,7 +26,8 @@ data class StarshipProduct(
     val isPdpLoaded: Boolean = false
 )
 
-data class Starship(
+// first api response
+data class StarshipBasic(
     val name: String,
     val model: String,
     val manufacturer: String,

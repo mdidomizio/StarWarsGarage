@@ -1,12 +1,11 @@
 package com.example.starwarsgarage.ui
 
-import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
+import com.example.starwarsgarage.data.remote.StarshipBasic
 import com.example.starwarsgarage.data.remote.Starship
-import com.example.starwarsgarage.data.remote.StarshipProduct
 import com.example.starwarsgarage.data.repository.StarshipRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.Flow
@@ -16,7 +15,7 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 sealed interface UiState {
-    data class Success(val starship: StarshipProduct) : UiState
+    data class Success(val starshipProduct: Starship) : UiState
     object Error : UiState
     object Loading : UiState
 }
@@ -26,7 +25,7 @@ class StarshipsViewModel @Inject constructor(
     private val repository: StarshipRepository,
 ): ViewModel() {
 
-    val starships: Flow<PagingData<Starship>> = repository.getStarshipsStream()
+    val starships: Flow<PagingData<StarshipBasic>> = repository.getStarshipsStream()
         .cachedIn(viewModelScope)
 
     private val _starshipUiState =

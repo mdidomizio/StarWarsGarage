@@ -1,6 +1,5 @@
 package com.example.starwarsgarage.ui.pdp
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -29,7 +28,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
@@ -37,9 +36,9 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
+import coil.compose.AsyncImage
 import com.example.starwarsgarage.R
 import com.example.starwarsgarage.data.remote.Starship
-import com.example.starwarsgarage.data.remote.StarshipProduct
 import com.example.starwarsgarage.ui.ErrorScreen
 import com.example.starwarsgarage.ui.UiState
 import com.example.starwarsgarage.ui.StarshipsViewModel
@@ -61,7 +60,7 @@ fun StarshipPdpScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text(text = (uiState as? UiState.Success)?.starship?.name ?: "") },
+                title = { Text(text = (uiState as? UiState.Success)?.starshipProduct?.name ?: "") },
                 navigationIcon = {
                     IconButton(onClick = { navController.popBackStack() }) {
                         Icon(
@@ -91,21 +90,36 @@ fun StarshipPdpScreen(
             )
 
             is UiState.Success -> {
+                val starship: Starship = state.starshipProduct
                 LazyColumn(
                     modifier = Modifier
                         .padding(innerPadding)
                         .padding(16.dp)
                 ) {
                     item {
-                        Box(
+                        AsyncImage(
+                            model = starship.image,
+                            contentDescription = stringResource(
+                                id = R.string.starship_image_description,
+                                starship.name
+                            ),
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .height(200.dp)
-                                .background(Color.Gray)
-                        ) // Placeholder for image
+                                .height(250.dp),
+                            contentScale = ContentScale.Crop
+                        )
                     }
-                    val starship: StarshipProduct = state.starship
+
                     item { Spacer(modifier = Modifier.height(16.dp)) }
+                    item {
+                        Text(
+                            text = starship.description ?: stringResource(id = R.string.no_description_available),
+                            fontSize = 16.sp,
+                            fontFamily = FontFamily.Default,
+                            modifier = Modifier.padding(bottom = 8.dp)
+                        )
+                        HorizontalDivider()
+                    }
                     item {
                         StarshipProperty(
                             label = stringResource(id = R.string.model_label),
@@ -144,23 +158,23 @@ fun StarshipPdpScreen(
                             )
                             StarshipProperty(
                                 label = stringResource(id = R.string.cargo_capacity_label),
-                                value = state.starship.cargoCapacity
+                                value = starship.cargoCapacity
                             )
                             StarshipProperty(
                                 label = stringResource(id = R.string.consumables_label),
-                                value = state.starship.consumables
+                                value = starship.consumables
                             )
                             StarshipProperty(
                                 label = stringResource(id = R.string.hyperdrive_rating_label),
-                                value = state.starship.hyperdriveRating
+                                value = starship.hyperdriveRating
                             )
                             StarshipProperty(
                                 label = stringResource(id = R.string.mglt_label),
-                                value = state.starship.mglt
+                                value = starship.mglt
                             )
                             StarshipProperty(
                                 label = stringResource(id = R.string.starship_class_label),
-                                value = state.starship.starshipClass
+                                value = starship.starshipClass
                             )
                         }
                     }

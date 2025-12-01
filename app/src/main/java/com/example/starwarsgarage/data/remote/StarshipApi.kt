@@ -8,7 +8,7 @@ data class StarshipResponse(
     val count: Int,
     val next: String?,
     val previous: String?,
-    val results: List<Starship>
+    val results: List<StarshipBasic>
 )
 
 interface StarshipApi {
@@ -16,5 +16,5 @@ interface StarshipApi {
     suspend fun getStarships(@Query("page") page: Int): StarshipResponse
 
     @GET("starships/{id}")
-    suspend fun getStarshipById(@Path("id") id: String): Starship
+    suspend fun getStarshipById(@Path("id") id: String): StarshipBasic
 }

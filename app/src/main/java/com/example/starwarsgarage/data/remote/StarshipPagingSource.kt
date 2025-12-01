@@ -5,8 +5,8 @@ import androidx.paging.PagingState
 
 class StarshipPagingSource(
     private val starshipApi: StarshipApi
-) : PagingSource<Int, Starship>() {
-    override suspend fun load(params: LoadParams<Int>): LoadResult<Int, Starship> {
+) : PagingSource<Int, StarshipBasic>() {
+    override suspend fun load(params: LoadParams<Int>): LoadResult<Int, StarshipBasic> {
         return try {
             val page = params.key ?: 1
             val response = starshipApi.getStarships(page)
@@ -21,7 +21,7 @@ class StarshipPagingSource(
         }
     }
 
-    override fun getRefreshKey(state: PagingState<Int, Starship>): Int? {
+    override fun getRefreshKey(state: PagingState<Int, StarshipBasic>): Int? {
         return state.anchorPosition?.let {
             state.closestPageToPosition(it)?.prevKey?.plus(1)
                 ?: state.closestPageToPosition(it)?.nextKey?.minus(1)

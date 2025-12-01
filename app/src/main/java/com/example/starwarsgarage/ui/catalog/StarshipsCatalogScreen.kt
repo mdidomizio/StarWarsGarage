@@ -36,7 +36,7 @@ import androidx.navigation.NavHostController
 import androidx.paging.LoadState
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.example.starwarsgarage.R
-import com.example.starwarsgarage.data.remote.Starship
+import com.example.starwarsgarage.data.remote.StarshipBasic
 import com.example.starwarsgarage.navigation.AppDestinations.PDP_SCREEN_ROUTE
 import com.example.starwarsgarage.ui.ErrorScreen
 import com.example.starwarsgarage.ui.StarshipsViewModel
@@ -130,7 +130,7 @@ fun StarshipsCatalogScreen(
 }
 
 @Composable
-fun StarshipCard(starship: Starship, onClick: () -> Unit, modifier: Modifier = Modifier) {
+fun StarshipCard(starship: StarshipBasic, onClick: () -> Unit, modifier: Modifier = Modifier) {
     Card(
         modifier = modifier
             .padding(8.dp)
