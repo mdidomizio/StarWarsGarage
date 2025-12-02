@@ -25,8 +25,8 @@ annotation class StarshipVehicleDetailsRetrofit
 @InstallIn(SingletonComponent::class)
 object NetworkModule {
 
-    private const val BASE_URL_STARSHIP = "https://swapi.dev/api/"
-    private const val BASE_URL_STARSHIP_VEHICLE_DETAILS = "https://starwars-databank-server.vercel.app/"
+    private const val BASE_URL_STARSHIP = "https://starwars-databank-server.vercel.app/"
+    private const val BASE_URL_STARSHIP_VEHICLE_DETAILS = "https://swapi.dev/api/"
 
     @Provides
     @Singleton

@@ -4,8 +4,9 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
-import com.example.starwarsgarage.data.remote.StarshipBasic
+import com.example.starwarsgarage.data.remote.StarshipDetails
 import com.example.starwarsgarage.data.remote.Starship
+import com.example.starwarsgarage.data.remote.StarshipBasic
 import com.example.starwarsgarage.data.repository.StarshipRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.Flow

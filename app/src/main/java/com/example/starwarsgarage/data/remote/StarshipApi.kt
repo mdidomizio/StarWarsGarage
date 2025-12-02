@@ -4,17 +4,22 @@ import retrofit2.http.GET
 import retrofit2.http.Path
 import retrofit2.http.Query
 
-data class StarshipResponse(
-    val count: Int,
+data class StarshipListInfo(
+    val count: Int?,
+    val pages: Int?,
     val next: String?,
-    val previous: String?,
-    val results: List<StarshipBasic>
+    val prev: String?
+)
+
+data class StarshipResponse(
+    val info: StarshipListInfo,
+    val data: List<StarshipBasic>
 )
 
 interface StarshipApi {
-    @GET("starships")
+    @GET("api/v1/vehicles")
     suspend fun getStarships(@Query("page") page: Int): StarshipResponse
 
-    @GET("starships/{id}")
+    @GET("api/v1/vehicles/{id}")
     suspend fun getStarshipById(@Path("id") id: String): StarshipBasic
 }

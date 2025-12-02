@@ -109,7 +109,7 @@ fun StarshipPdpScreen(
                             model = imageRequest,
                             contentDescription = stringResource(
                                 id = R.string.starship_image_description,
-                                starship.name
+                                starship.name ?: ""
                             ),
                             modifier = Modifier
                                 .fillMaxWidth()
@@ -193,7 +193,7 @@ fun StarshipPdpScreen(
 }
 
 @Composable
-fun StarshipProperty(label: String, value: String, modifier: Modifier = Modifier) {
+fun StarshipProperty(label: String, value: String?, modifier: Modifier = Modifier) {
     Row(
         modifier = modifier
             .fillMaxWidth()
@@ -202,7 +202,7 @@ fun StarshipProperty(label: String, value: String, modifier: Modifier = Modifier
     ) {
         Text(text = label, fontSize = 16.sp)
         Text(
-            text = value,
+            text = value ?: "N/A",
             fontSize = 16.sp,
             fontFamily = FontFamily.Default,
             fontWeight = FontWeight.Bold
@@ -213,8 +213,8 @@ fun StarshipProperty(label: String, value: String, modifier: Modifier = Modifier
 
 @Composable
 fun CrewAndPassengersGrid(
-    crew: String,
-    passengers: String,
+    crew: String?,
+    passengers: String?,
     modifier: Modifier = Modifier,
 ) {
     val items = listOf(
@@ -234,14 +234,14 @@ fun CrewAndPassengersGrid(
             val (title, value) = items[index]
             InfoCard(
                 title = title,
-                value = value as String
+                value = value
             )
         }
     }
 }
 
 @Composable
-fun InfoCard(title: String, value: String) {
+fun InfoCard(title: String, value: String?) {
     Column(
         modifier = Modifier.padding(vertical = 8.dp)
     ) {
@@ -253,7 +253,7 @@ fun InfoCard(title: String, value: String) {
             overflow = TextOverflow.Ellipsis
         )
         Text(
-            text = value,
+            text = value ?: "N/A",
             fontSize = 16.sp,
             fontWeight = FontWeight.Bold,
             fontFamily = FontFamily.Default,

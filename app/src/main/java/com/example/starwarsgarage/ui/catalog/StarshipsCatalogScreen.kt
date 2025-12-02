@@ -36,11 +36,14 @@ import androidx.navigation.NavHostController
 import androidx.paging.LoadState
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.example.starwarsgarage.R
+import com.example.starwarsgarage.data.remote.Starship
 import com.example.starwarsgarage.data.remote.StarshipBasic
+import com.example.starwarsgarage.data.remote.StarshipDetails
 import com.example.starwarsgarage.navigation.AppDestinations.PDP_SCREEN_ROUTE
 import com.example.starwarsgarage.ui.ErrorScreen
 import com.example.starwarsgarage.ui.StarshipsViewModel
 import com.example.starwarsgarage.ui.theme.starJediFontFamily
+import timber.log.Timber
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterialApi::class)
 @Composable
@@ -87,6 +90,7 @@ fun StarshipsCatalogScreen(
                         val starship = lazyPagingItems[index]
                         if (starship != null) {
                             StarshipCard(starship = starship, onClick = {
+                                Timber.tag("miriam").d("Navigating to PDP with starshipId: %s", starship.id)
                                 navController.navigate("${PDP_SCREEN_ROUTE}/${starship.id}")
                             })
                         }
@@ -145,9 +149,9 @@ fun StarshipCard(starship: StarshipBasic, onClick: () -> Unit, modifier: Modifie
             )
             Spacer(modifier = Modifier.width(16.dp))
             Column {
-                Text(text = starship.name, style = MaterialTheme.typography.titleMedium, fontFamily = starJediFontFamily)
-                Text(text = starship.model, style = MaterialTheme.typography.bodyMedium)
-                Text(text = starship.manufacturer, style = MaterialTheme.typography.bodySmall)
+                starship.name?.let { Text(text = it, style = MaterialTheme.typography.titleMedium, fontFamily = starJediFontFamily) }
+                /*starship.model?.let { Text(text = it, style = MaterialTheme.typography.bodyMedium) }
+                starship.manufacturer?.let { Text(text = it, style = MaterialTheme.typography.bodySmall) }*/
             }
         }
     }

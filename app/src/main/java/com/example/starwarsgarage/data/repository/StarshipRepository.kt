@@ -6,6 +6,7 @@ import androidx.paging.PagingData
 import com.example.starwarsgarage.data.remote.Starship
 import com.example.starwarsgarage.data.remote.StarshipApi
 import com.example.starwarsgarage.data.remote.StarshipBasic
+import com.example.starwarsgarage.data.remote.StarshipDetails
 import com.example.starwarsgarage.data.remote.StarshipPagingSource
 import com.example.starwarsgarage.data.remote.StarshipVehicleDetailsApi
 import kotlinx.coroutines.flow.Flow
@@ -33,37 +34,39 @@ class StarshipRepositoryImpl @Inject constructor(
         return try {
             val baseStarship = starshipApi.getStarshipById(id)
             Timber.tag("miriam").d("First API call starship name: ${baseStarship.name}")
-            val vehicleDetails = try {
-                val detailsList = starshipVehicleDetailsApi.getStarshipVehicleDetailsByName(baseStarship.name)
-                Timber.tag("miriam").d("Second API call starship name for details: ${baseStarship.name}")
-                detailsList.firstOrNull()
-            } catch (e: Exception) {
-                Timber.tag("miriam").e(e, "Failed to get vehicle details for ${baseStarship.name}")
-                null
+            val vehicleDetails = baseStarship.name?.let { name ->
+                try {
+                    val detailsList = starshipVehicleDetailsApi.getStarshipVehicleDetailsByName(name)
+                    Timber.tag("miriam").d("Second API call starship name for details: $name")
+                    detailsList.firstOrNull()
+                } catch (e: Exception) {
+                    Timber.tag("miriam").e(e, "Failed to get vehicle details for $name")
+                    null
+                }
             }
 
             Timber.tag("miriam").d("vehicleDetails name: ${vehicleDetails?.name}")
 
             val starship = Starship(
-                id = id,
-                name = vehicleDetails?.name ?: baseStarship.name,
-                model = baseStarship.model,
-                manufacturer = baseStarship.manufacturer,
-                costInCredits = baseStarship.costInCredits,
-                length = baseStarship.length,
-                maxAtmospheringSpeed = baseStarship.maxAtmospheringSpeed,
-                crew = baseStarship.crew,
-                passengers = baseStarship.passengers,
-                cargoCapacity = baseStarship.cargoCapacity,
-                consumables = baseStarship.consumables,
-                hyperdriveRating = baseStarship.hyperdriveRating,
-                mglt = baseStarship.mglt,
-                starshipClass = baseStarship.starshipClass,
-                pilots = baseStarship.pilots,
-                films = baseStarship.films,
-                url = baseStarship.url,
-                description = vehicleDetails?.description,
-                image = vehicleDetails?.image,
+                id = baseStarship.id,
+                name = baseStarship.name,
+                model = vehicleDetails?.model,
+                manufacturer = vehicleDetails?.manufacturer,
+                costInCredits = vehicleDetails?.costInCredits,
+                length = vehicleDetails?.length,
+                maxAtmospheringSpeed = vehicleDetails?.maxAtmospheringSpeed,
+                crew = vehicleDetails?.crew,
+                passengers = vehicleDetails?.passengers,
+                cargoCapacity = vehicleDetails?.cargoCapacity,
+                consumables = vehicleDetails?.consumables,
+                hyperdriveRating = vehicleDetails?.hyperdriveRating,
+                mglt = vehicleDetails?.mglt,
+                starshipClass = vehicleDetails?.starshipClass,
+                pilots = vehicleDetails?.pilots,
+                films = vehicleDetails?.films,
+                url = vehicleDetails?.url,
+                description = baseStarship?.description,
+                image = baseStarship?.image,
                 isPdpLoaded = true
             )
             Result.success(starship)

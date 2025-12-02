@@ -5,5 +5,5 @@ import retrofit2.http.Path
 
 interface StarshipVehicleDetailsApi {
     @GET("api/v1/vehicles/name/{vehicleName}")
-    suspend fun getStarshipVehicleDetailsByName(@Path("vehicleName") vehicleName: String): List<StarshipVehicleDetails>
+    suspend fun getStarshipVehicleDetailsByName(@Path("vehicleName") vehicleName: String): List<StarshipDetails>
 }
