@@ -42,9 +42,11 @@ class StarshipRepositoryImpl @Inject constructor(
                 null
             }
 
-            val product = Starship(
-                id = id, // Use the id passed to the function
-                name = baseStarship.name,
+            Timber.tag("miriam").d("vehicleDetails name: ${vehicleDetails?.name}")
+
+            val starship = Starship(
+                id = id,
+                name = vehicleDetails?.name ?: baseStarship.name,
                 model = baseStarship.model,
                 manufacturer = baseStarship.manufacturer,
                 costInCredits = baseStarship.costInCredits,
@@ -62,9 +64,9 @@ class StarshipRepositoryImpl @Inject constructor(
                 url = baseStarship.url,
                 description = vehicleDetails?.description,
                 image = vehicleDetails?.image,
-                isPdpLoaded = true // Mark that we have the detailed data
+                isPdpLoaded = true
             )
-            Result.success(product)
+            Result.success(starship)
         } catch (e: Exception) {
             Timber.tag("miriam").e(e, "Failed to get starship product for id $id")
             Result.failure(e)

@@ -29,6 +29,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
@@ -37,6 +38,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import coil.compose.AsyncImage
+import coil.request.ImageRequest
 import com.example.starwarsgarage.R
 import com.example.starwarsgarage.data.remote.Starship
 import com.example.starwarsgarage.ui.ErrorScreen
@@ -97,8 +99,14 @@ fun StarshipPdpScreen(
                         .padding(16.dp)
                 ) {
                     item {
+                        val context = LocalContext.current
+                        val imageRequest = ImageRequest.Builder(context)
+                            .data(starship.image)
+                            .crossfade(enable = true)
+                            .build()
+
                         AsyncImage(
-                            model = starship.image,
+                            model = imageRequest,
                             contentDescription = stringResource(
                                 id = R.string.starship_image_description,
                                 starship.name
