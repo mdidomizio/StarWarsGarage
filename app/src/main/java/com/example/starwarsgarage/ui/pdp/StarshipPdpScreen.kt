@@ -44,7 +44,7 @@ import androidx.navigation.NavHostController
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.example.starwarsgarage.R
-import com.example.starwarsgarage.data.remote.Starship
+import com.example.starwarsgarage.domain.model.Starship
 import com.example.starwarsgarage.ui.ErrorScreen
 import com.example.starwarsgarage.ui.UiState
 import com.example.starwarsgarage.ui.StarshipsViewModel

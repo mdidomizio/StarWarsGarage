@@ -1,7 +1,7 @@
 package com.example.starwarsgarage.di
 
-import com.example.starwarsgarage.data.repository.StarshipRepository
 import com.example.starwarsgarage.data.repository.StarshipRepositoryImpl
+import com.example.starwarsgarage.domain.repository.StarshipRepository
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn

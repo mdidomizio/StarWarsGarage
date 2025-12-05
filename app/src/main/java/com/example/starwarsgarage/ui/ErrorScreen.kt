@@ -37,7 +37,7 @@ fun ErrorScreen(
     ) {
         Image(
             painter = painterResource(id = R.drawable.udm27h95f7l51),
-            contentDescription = ""
+            contentDescription = null // Decorative image, ignored by screen readers
         )
         Spacer(modifier = Modifier.height(16.dp))
         Text(
