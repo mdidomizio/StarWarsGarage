@@ -2,6 +2,8 @@ package com.example.starwarsgarage.data.remote
 
 import com.squareup.moshi.Json
 
+// Data Transfer Object (DTO) design pattern
+
 // BASE_URL_STARSHIP = https://starwars-databank-server.vercel.app/
 data class StarshipBasic(
     @property:Json(name = "_id") val id: String,

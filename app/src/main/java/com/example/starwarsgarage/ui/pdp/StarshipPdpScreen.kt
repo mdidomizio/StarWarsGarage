@@ -1,6 +1,7 @@
 package com.example.starwarsgarage.ui.pdp
 
-import androidx.compose.foundation.background
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -10,12 +11,14 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.ArrowDropDown
+import androidx.compose.material.icons.filled.KeyboardArrowDown
+import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
@@ -28,9 +31,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
@@ -135,70 +141,82 @@ fun StarshipPdpScreen(
 
                     item { Spacer(modifier = Modifier.height(16.dp)) }
                     item {
+
+                        StarshipTextBlock(
+                            label = stringResource(id = R.string.descriprion_label),
+                            value = starship.description
+                        )
+                        /*HorizontalDivider()
+                        Text(
+                            text = stringResource(id = R.string.descriprion_label)
+                        )
+                        HorizontalDivider()
                         Text(
                             text = starship.description ?: stringResource(id = R.string.no_description_available),
                             fontSize = 16.sp,
                             fontFamily = FontFamily.Default,
                             modifier = Modifier.padding(bottom = 8.dp)
                         )
-                        HorizontalDivider()
+                        HorizontalDivider()*/
                     }
-                    item {
-                        StarshipProperty(
-                            label = stringResource(id = R.string.model_label),
-                            value = starship.model
-                        )
-                    }
-                    item {
-                        StarshipProperty(
-                            label = stringResource(id = R.string.manufacturer_label),
-                            value = starship.manufacturer
-                        )
-                    }
-                    item {
-                        StarshipProperty(
-                            label = stringResource(id = R.string.cost_label),
-                            value = starship.costInCredits
-                        )
-                    }
-                    item {
-                        StarshipProperty(
-                            label = stringResource(id = R.string.length_label),
-                            value = starship.length
-                        )
-                    }
-                    item {
-                        StarshipProperty(
-                            label = stringResource(id = R.string.max_atmosphering_speed_label),
-                            value = starship.maxAtmospheringSpeed
-                        )
-                    }
-                    item {
-                        Column {
-                            CrewAndPassengersGrid(
-                                crew = starship.crew,
-                                passengers = starship.passengers,
-                            )
+                    if (starship.isPdpLoaded) {
+                        item {
                             StarshipProperty(
-                                label = stringResource(id = R.string.cargo_capacity_label),
-                                value = starship.cargoCapacity
+                                label = stringResource(id = R.string.model_label),
+                                value = starship.model
                             )
+                        }
+                        item {
                             StarshipProperty(
-                                label = stringResource(id = R.string.consumables_label),
-                                value = starship.consumables
+                                label = stringResource(id = R.string.manufacturer_label),
+                                value = starship.manufacturer
                             )
+                        }
+                        item {
                             StarshipProperty(
-                                label = stringResource(id = R.string.hyperdrive_rating_label),
-                                value = starship.hyperdriveRating
+                                label = stringResource(id = R.string.cost_label),
+                                value = starship.costInCredits
                             )
+                        }
+                        item {
                             StarshipProperty(
-                                label = stringResource(id = R.string.mglt_label),
-                                value = starship.mglt
+                                label = stringResource(id = R.string.length_label),
+                                value = starship.length
                             )
+                        }
+                        item {
                             StarshipProperty(
-                                label = stringResource(id = R.string.starship_class_label),
-                                value = starship.starshipClass
+                                label = stringResource(id = R.string.max_atmosphering_speed_label),
+                                value = starship.maxAtmospheringSpeed
                             )
+                        }
+                        item {
+                            Column {
+                                CrewAndPassengersGrid(
+                                    crew = starship.crew,
+                                    passengers = starship.passengers,
+                                )
+                                StarshipProperty(
+                                    label = stringResource(id = R.string.cargo_capacity_label),
+                                    value = starship.cargoCapacity
+                                )
+                                StarshipProperty(
+                                    label = stringResource(id = R.string.consumables_label),
+                                    value = starship.consumables
+                                )
+                                StarshipProperty(
+                                    label = stringResource(id = R.string.hyperdrive_rating_label),
+                                    value = starship.hyperdriveRating
+                                )
+                                StarshipProperty(
+                                    label = stringResource(id = R.string.mglt_label),
+                                    value = starship.mglt
+                                )
+                                StarshipProperty(
+                                    label = stringResource(id = R.string.starship_class_label),
+                                    value = starship.starshipClass
+                                )
+                            }
                         }
                     }
                 }
@@ -208,7 +226,11 @@ fun StarshipPdpScreen(
 }
 
 @Composable
-fun StarshipProperty(label: String, value: String?, modifier: Modifier = Modifier) {
+fun StarshipProperty(
+    label: String,
+    value: String?,
+    modifier: Modifier = Modifier
+) {
     Row(
         modifier = modifier
             .fillMaxWidth()
@@ -222,6 +244,49 @@ fun StarshipProperty(label: String, value: String?, modifier: Modifier = Modifie
             fontFamily = FontFamily.Default,
             fontWeight = FontWeight.Bold
         )
+    }
+    HorizontalDivider()
+}
+
+@Composable
+fun StarshipTextBlock(
+    label: String,
+    value: String?,
+    modifier: Modifier = Modifier
+) {
+    var expanded by remember { mutableStateOf(false) }
+
+    Column(
+        modifier = modifier
+            .fillMaxWidth()
+            .clickable { expanded = !expanded },
+    ) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(vertical = 8.dp),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Text(
+                text = label,
+                fontSize = 16.sp
+            )
+            Icon(
+                imageVector =
+                    if (expanded) Icons.Default.KeyboardArrowUp else Icons.Default.KeyboardArrowDown,
+                contentDescription = if (expanded) "Collapse" else "Expand"
+            )
+        }
+        HorizontalDivider()
+        AnimatedVisibility (visible = expanded) {
+            Text(
+                modifier = Modifier.padding(top = 8.dp, bottom = 8.dp),
+                text = value ?: "N/A",
+                fontSize = 16.sp,
+                fontFamily = FontFamily.Default
+            )
+        }
     }
     HorizontalDivider()
 }

@@ -15,8 +15,8 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
-// A map where the key is the name from the basic API and the value is the ID from swapi.dev
-private val STARSHIP_ID_MAP = mapOf(
+// key = name from the basic API, value = ID from swapi.dev
+private val STARSHIP_ID_MAP = hashMapOf(
     "Imperial Star Destroyer" to 3,
     "Millennium Falcon" to 10,
     "Imperial Shuttle" to 22,
@@ -60,7 +60,9 @@ class StarshipRepositoryImpl @Inject constructor(
     override suspend fun getStarshipProduct(id: String): Result<Starship> = runCatching {
         val baseStarship = starshipApi.getStarshipById(id)
         val vehicleDetails = baseStarship.name?.let { STARSHIP_ID_MAP[it] }?.let {
-            runCatching { starshipVehicleDetailsApi.getStarshipVehicleDetailsById(it.toString()) }.getOrNull()
+            runCatching {
+                starshipVehicleDetailsApi.getStarshipVehicleDetailsById(it.toString())
+            }.getOrNull()
         }
         baseStarship.toStarship(vehicleDetails)
     }

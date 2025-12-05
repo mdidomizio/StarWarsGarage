@@ -23,4 +23,5 @@
     <string name="retry_button_text">Retry</string>
     <string name="starship_image_description">Image of %1$s</string>
     <string name="no_description_available">No description available</string>
+    <string name="descriprion_label">Description</string>
 </resources>
