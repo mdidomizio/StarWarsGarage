@@ -6,6 +6,7 @@ import androidx.paging.PagingData
 import com.example.starwarsgarage.data.remote.Starship
 import com.example.starwarsgarage.data.remote.StarshipApi
 import com.example.starwarsgarage.data.remote.StarshipBasic
+import com.example.starwarsgarage.data.remote.StarshipDetails
 import com.example.starwarsgarage.data.remote.StarshipPagingSource
 import com.example.starwarsgarage.data.remote.StarshipVehicleDetailsApi
 import kotlinx.coroutines.flow.Flow
@@ -59,30 +60,24 @@ class StarshipRepositoryImpl @Inject constructor(
         return try {
             val baseStarship = starshipApi.getStarshipById(id)
             Timber.tag("miriam").d("First API call starship name: ${baseStarship.name}")
-            val vehicleDetails = baseStarship.name?.let { name ->
+
+            var vehicleDetails: StarshipDetails? = null
+            val vehicleId = baseStarship.name?.let { STARSHIP_ID_MAP[it] }
+
+            if (vehicleId != null) {
                 try {
-
-                    val vehicleId = STARSHIP_ID_MAP[name]
-                    val details = vehicleId?.let {
-                        starshipVehicleDetailsApi.getStarshipVehicleDetailsById(it.toString())
-                    }
-                    details
-
-                    /*// if name exists in keys of hashmap, do call to get more data
-                    val hashMapOfShipIDs = HashMap<String, Int>()
-                    // Name is from Large API, id is from small API, corresponding
-                    hashMapOfShipIDs["Imperial Star Destroyer"] = 3
-
-                    val id = hashMapOfShipIDs["Imperial Star Destroyer"]
-                    // NEED ID HERE - eg "4"
-
-                    val details = starshipVehicleDetailsApi.getStarshipVehicleDetailsByName(*//*id*//*)
-                    Timber.tag("miriam").d("Second API call starship name for details: $name")
-                    details*/
+                    Timber.tag("miriam")
+                        .d("Name found in map. Fetching details for ID: $vehicleId")
+                    vehicleDetails =
+                        starshipVehicleDetailsApi.getStarshipVehicleDetailsById(vehicleId.toString())
                 } catch (e: Exception) {
-                    Timber.tag("miriam").e(e, "Failed to get vehicle details for $name")
-                    null
+                    Timber.tag("miriam")
+                        .e(e, "Failed to get vehicle details for ${baseStarship.name}")
+                    // vehicleDetails remains null, which is handled below
                 }
+            } else {
+                Timber.tag("miriam")
+                    .d("Name '${baseStarship.name}' not found in STARSHIP_ID_MAP. Skipping details call.")
             }
 
             Timber.tag("miriam").d("vehicleDetails name: ${vehicleDetails?.name}")
