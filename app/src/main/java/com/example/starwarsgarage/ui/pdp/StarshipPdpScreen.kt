@@ -16,7 +16,6 @@ import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.material3.CircularProgressIndicator
@@ -36,12 +35,12 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -142,7 +141,7 @@ fun StarshipPdpScreen(
                     item { Spacer(modifier = Modifier.height(16.dp)) }
                     item {
 
-                        StarshipTextBlock(
+                        StarshipExpandableDescriptionBlock(
                             label = stringResource(id = R.string.descriprion_label),
                             value = starship.description
                         )
@@ -242,14 +241,14 @@ fun StarshipProperty(
             text = value ?: "N/A",
             fontSize = 16.sp,
             fontFamily = FontFamily.Default,
-            fontWeight = FontWeight.Bold
+            fontWeight = FontWeight.Bold,
         )
     }
     HorizontalDivider()
 }
 
 @Composable
-fun StarshipTextBlock(
+fun StarshipExpandableDescriptionBlock(
     label: String,
     value: String?,
     modifier: Modifier = Modifier
@@ -284,7 +283,8 @@ fun StarshipTextBlock(
                 modifier = Modifier.padding(top = 8.dp, bottom = 8.dp),
                 text = value ?: "N/A",
                 fontSize = 16.sp,
-                fontFamily = FontFamily.Default
+                fontFamily = FontFamily.Default,
+                textAlign = TextAlign.Justify
             )
         }
     }
