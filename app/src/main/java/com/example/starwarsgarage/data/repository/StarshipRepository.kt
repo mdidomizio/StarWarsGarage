@@ -6,7 +6,6 @@ import androidx.paging.PagingData
 import com.example.starwarsgarage.data.remote.Starship
 import com.example.starwarsgarage.data.remote.StarshipApi
 import com.example.starwarsgarage.data.remote.StarshipBasic
-import com.example.starwarsgarage.data.remote.StarshipDetails
 import com.example.starwarsgarage.data.remote.StarshipPagingSource
 import com.example.starwarsgarage.data.remote.StarshipVehicleDetailsApi
 import kotlinx.coroutines.flow.Flow
@@ -17,6 +16,32 @@ interface StarshipRepository {
     fun getStarshipsStream(): Flow<PagingData<StarshipBasic>>
     suspend fun getStarshipProduct(id: String): Result<Starship>
 }
+
+// A map where the key is the name from the basic API and the value is the ID from swapi.dev
+private val STARSHIP_ID_MAP = mapOf(
+    "Imperial Star Destroyer" to 3,
+    "Millennium Falcon" to 10,
+    "Imperial Shuttle" to 22,
+    "Resistance X-Wing" to 12,
+    "Resistance Y-wing starfighter" to 11,
+    "Y-wing Starfighter" to 11,
+    "X-wing Starfighter" to 12,
+    "Slave I" to 21,
+    "Executor" to 15,
+    "A-wing Fighter" to 28,
+    "B-wing Fighter" to 29,
+    "Republic Cruiser" to 31,
+    "Naboo N-1 Starfighter" to 39,
+    "Naboo Royal Starship" to 40,
+    "Nebulon-B Frigate" to 23,
+    "Mon Calamari Star Cruiser" to 27,
+    "GR-75 Medium Transport" to 17,
+    "Tantive IV" to 2,
+    "Darth Vader's TIE Fighter" to 13,
+    "TIE Fighter" to 13,
+    "TIE Interceptor" to 13,
+    "Trade Federation Battleship" to 32
+)
 
 class StarshipRepositoryImpl @Inject constructor(
     private val starshipApi: StarshipApi,
@@ -36,9 +61,24 @@ class StarshipRepositoryImpl @Inject constructor(
             Timber.tag("miriam").d("First API call starship name: ${baseStarship.name}")
             val vehicleDetails = baseStarship.name?.let { name ->
                 try {
-                    val detailsList = starshipVehicleDetailsApi.getStarshipVehicleDetailsByName(name)
+
+                    val vehicleId = STARSHIP_ID_MAP[name]
+                    val details = vehicleId?.let {
+                        starshipVehicleDetailsApi.getStarshipVehicleDetailsById(it.toString())
+                    }
+                    details
+
+                    /*// if name exists in keys of hashmap, do call to get more data
+                    val hashMapOfShipIDs = HashMap<String, Int>()
+                    // Name is from Large API, id is from small API, corresponding
+                    hashMapOfShipIDs["Imperial Star Destroyer"] = 3
+
+                    val id = hashMapOfShipIDs["Imperial Star Destroyer"]
+                    // NEED ID HERE - eg "4"
+
+                    val details = starshipVehicleDetailsApi.getStarshipVehicleDetailsByName(*//*id*//*)
                     Timber.tag("miriam").d("Second API call starship name for details: $name")
-                    detailsList.firstOrNull()
+                    details*/
                 } catch (e: Exception) {
                     Timber.tag("miriam").e(e, "Failed to get vehicle details for $name")
                     null
