@@ -43,7 +43,6 @@ import com.example.starwarsgarage.navigation.AppDestinations.PDP_SCREEN_ROUTE
 import com.example.starwarsgarage.ui.ErrorScreen
 import com.example.starwarsgarage.ui.StarshipsViewModel
 import com.example.starwarsgarage.ui.theme.starJediFontFamily
-import timber.log.Timber
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterialApi::class)
 @Composable
@@ -90,7 +89,6 @@ fun StarshipsCatalogScreen(
                         val starship = lazyPagingItems[index]
                         if (starship != null) {
                             StarshipCard(starship = starship, onClick = {
-                                Timber.tag("miriam").d("Navigating to PDP with starshipId: %s", starship.id)
                                 navController.navigate("${PDP_SCREEN_ROUTE}/${starship.id}")
                             })
                         }

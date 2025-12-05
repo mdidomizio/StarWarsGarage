@@ -10,7 +10,6 @@ import com.example.starwarsgarage.data.remote.StarshipDetails
 import com.example.starwarsgarage.data.remote.StarshipPagingSource
 import com.example.starwarsgarage.data.remote.StarshipVehicleDetailsApi
 import kotlinx.coroutines.flow.Flow
-import timber.log.Timber
 import javax.inject.Inject
 
 interface StarshipRepository {
@@ -59,28 +58,16 @@ class StarshipRepositoryImpl @Inject constructor(
     override suspend fun getStarshipProduct(id: String): Result<Starship> {
         return try {
             val baseStarship = starshipApi.getStarshipById(id)
-            Timber.tag("miriam").d("First API call starship name: ${baseStarship.name}")
 
             var vehicleDetails: StarshipDetails? = null
             val vehicleId = baseStarship.name?.let { STARSHIP_ID_MAP[it] }
 
             if (vehicleId != null) {
                 try {
-                    Timber.tag("miriam")
-                        .d("Name found in map. Fetching details for ID: $vehicleId")
                     vehicleDetails =
                         starshipVehicleDetailsApi.getStarshipVehicleDetailsById(vehicleId.toString())
-                } catch (e: Exception) {
-                    Timber.tag("miriam")
-                        .e(e, "Failed to get vehicle details for ${baseStarship.name}")
-                    // vehicleDetails remains null, which is handled below
-                }
-            } else {
-                Timber.tag("miriam")
-                    .d("Name '${baseStarship.name}' not found in STARSHIP_ID_MAP. Skipping details call.")
+                } catch (e: Exception) { }
             }
-
-            Timber.tag("miriam").d("vehicleDetails name: ${vehicleDetails?.name}")
 
             val starship = Starship(
                 id = baseStarship.id,
@@ -106,7 +93,6 @@ class StarshipRepositoryImpl @Inject constructor(
             )
             Result.success(starship)
         } catch (e: Exception) {
-            Timber.tag("miriam").e(e, "Failed to get starship product for id $id")
             Result.failure(e)
         }
     }
