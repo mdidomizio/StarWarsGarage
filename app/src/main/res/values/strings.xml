@@ -18,6 +18,7 @@
     <string name="mglt_label">MGLT</string>
     <string name="starship_class_label">Starship Class</string>
     <string name="go_to_catalog_button">Go to Catalog</string>
+    <string name="go_to_favourites_button">Go to Favourites</string>
     <string name="home_screen_title">Star Wars Garage</string>
     <string name="home_screen_subtitle">The best place to find your next starship</string>
     <string name="retry_button_text">Retry</string>

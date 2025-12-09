@@ -22,6 +22,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.example.starwarsgarage.R
 import com.example.starwarsgarage.navigation.AppDestinations.CATALOG_SCREEN_ROUTE
+import com.example.starwarsgarage.navigation.AppDestinations.FAVOURITES_SCREEN_ROUTE
 
 @Composable
 fun HomeScreen(navController: NavHostController, modifier: Modifier = Modifier) {
@@ -47,6 +48,16 @@ fun HomeScreen(navController: NavHostController, modifier: Modifier = Modifier) 
                 Icon(
                     Icons.AutoMirrored.Filled.ArrowForward,
                     contentDescription = stringResource(id = R.string.go_to_catalog_button),
+                    modifier = Modifier.padding(start = 8.dp),
+                )
+            }
+            Spacer(modifier = Modifier.height(8.dp))
+            Button(onClick = { navController.navigate(FAVOURITES_SCREEN_ROUTE) }) {
+                Text(text = stringResource(id = R.string.go_to_favourites_button),
+                    modifier = Modifier.padding(start = 8.dp))
+                Icon(
+                    Icons.AutoMirrored.Filled.ArrowForward,
+                    contentDescription = stringResource(id = R.string.go_to_favourites_button),
                     modifier = Modifier.padding(start = 8.dp),
                 )
             }
