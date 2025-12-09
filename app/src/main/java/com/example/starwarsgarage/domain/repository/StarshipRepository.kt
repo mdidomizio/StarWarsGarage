@@ -7,4 +7,5 @@ import kotlinx.coroutines.flow.Flow
 interface StarshipRepository {
     fun getStarshipsStream(): Flow<PagingData<Starship>>
     suspend fun getStarshipProduct(id: String): Result<Starship>
+    suspend fun getAllStarships(): List<Starship>
 }

@@ -66,6 +66,27 @@ class StarshipRepositoryImpl @Inject constructor(
         }
         baseStarship.toStarship(vehicleDetails)
     }
+
+    override suspend fun getAllStarships(): List<Starship> {
+        return try {
+            val allStarships = mutableListOf<StarshipBasic>()
+            var page = 1
+            var hasMorePages = true
+
+            while (hasMorePages) {
+                val response = starshipApi.getStarships(page = page)
+                val fetchedItems = response.data
+
+                allStarships.addAll(fetchedItems)
+                if (response.info.next != null) page++ else hasMorePages = false
+            }
+            allStarships.map { starshipBasic ->
+                starshipBasic.toStarship(null)
+            }
+        } catch (e: Exception) {
+            emptyList()
+        }
+    }
 }
 
 private fun StarshipBasic.toStarship(details: StarshipDetails?) = Starship(

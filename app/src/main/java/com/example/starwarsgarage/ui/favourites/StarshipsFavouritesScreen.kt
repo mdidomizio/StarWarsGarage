@@ -10,12 +10,12 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton // Use M3 import
-import androidx.compose.material3.MaterialTheme // Import MaterialTheme for colors
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar // Use M3 import
-import androidx.compose.material3.TopAppBarDefaults // Import for colors
+import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -46,13 +46,11 @@ fun StarshipsFavouritesScreen(
     modifier: Modifier = Modifier
 ) {
     val favouriteIds by favouritesViewModel.favouriteStarships.collectAsState()
-    val allStarships = starshipsViewModel.starships.collectAsLazyPagingItems()
-    var favouriteStarships by remember { mutableStateOf<List<Starship>> (emptyList()) }
-
-    LaunchedEffect(favouriteIds, allStarships.itemSnapshotList) {
-        val allItems = allStarships.itemSnapshotList.items
-        favouriteStarships = allItems.filter { starship -> favouriteIds.contains(starship.id) }
+    val allStarships by starshipsViewModel.allStarships.collectAsState()
+    var favouriteStarships = remember(favouriteIds, allStarships) {
+        allStarships.filter { starship -> favouriteIds.contains(starship.id) }
     }
+
     Scaffold(
         topBar = {
             TopAppBar(
@@ -88,11 +86,9 @@ fun StarshipsFavouritesScreen(
                 ) { starship ->
                     StarshipCard(
                         starship = starship,
-                        isFavourite = true,
                         onClick = {
                             navController.navigate("${AppDestinations.PDP_SCREEN_ROUTE}/${starship.id}")
-                        },
-                        onFavouriteClick = { favouritesViewModel.toggleFavourite(starship.id)}
+                        }
                     )
                 }
             }

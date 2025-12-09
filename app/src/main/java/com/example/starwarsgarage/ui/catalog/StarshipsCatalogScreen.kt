@@ -32,6 +32,7 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.key
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -41,6 +42,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import androidx.paging.LoadState
 import androidx.paging.compose.collectAsLazyPagingItems
+import androidx.paging.compose.itemKey
 import com.example.starwarsgarage.R
 import com.example.starwarsgarage.domain.model.Starship
 import com.example.starwarsgarage.navigation.AppDestinations.PDP_SCREEN_ROUTE
@@ -52,7 +54,6 @@ import com.example.starwarsgarage.ui.theme.starJediFontFamily
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterialApi::class)
 @Composable
 fun StarshipsCatalogScreen(
-    favoritesViewModel: FavoritesViewModel = hiltViewModel(),
     starshipsViewModel: StarshipsViewModel = hiltViewModel(),
     navController: NavHostController,
     modifier: Modifier = Modifier
@@ -63,7 +64,6 @@ fun StarshipsCatalogScreen(
         isRefreshing,
         onRefresh = { lazyPagingItems.refresh() }
     )
-    val favoriteStarships by favoritesViewModel.favouriteStarships.collectAsState()
     Scaffold(
         topBar = {
             TopAppBar(
@@ -94,18 +94,16 @@ fun StarshipsCatalogScreen(
                 LazyColumn(
                     modifier = Modifier.fillMaxSize()
                 ) {
-                    items(lazyPagingItems.itemCount) { index ->
+                    items(
+                        count =lazyPagingItems.itemCount,
+                        key = lazyPagingItems.itemKey { it.id }
+                    ) { index ->
                         val starship = lazyPagingItems[index]
-                        val isFavourite = favoriteStarships.contains(starship?.id)
                         if (starship != null) {
                             StarshipCard(
                                 starship = starship,
                                 onClick = {
                                 navController.navigate("${PDP_SCREEN_ROUTE}/${starship.id}")
-                            },
-                                isFavourite = isFavourite,
-                                onFavouriteClick = {
-                                    favoritesViewModel.toggleFavourite(starship.id)
                                 }
                             )
                         }
@@ -153,10 +151,11 @@ fun StarshipsCatalogScreen(
 fun StarshipCard(
     starship: Starship,
     onClick: () -> Unit,
-    isFavourite: Boolean,
-    onFavouriteClick: () -> Unit,
+    favoritesViewModel: FavoritesViewModel = hiltViewModel(),
     modifier: Modifier = Modifier
 ) {
+    val favouriteIds by favoritesViewModel.favouriteStarships.collectAsState()
+    val isFavourite = favouriteIds.contains(starship.id)
     Card(
         modifier = modifier
             .padding(8.dp)
@@ -175,13 +174,11 @@ fun StarshipCard(
                 Spacer(modifier = Modifier.width(16.dp))
                 Column {
                     starship.name?.let { Text(text = it, style = MaterialTheme.typography.titleMedium, fontFamily = starJediFontFamily) }
-                    /*starship.model?.let { Text(text = it, style = MaterialTheme.typography.bodyMedium) }
-                    starship.manufacturer?.let { Text(text = it, style = MaterialTheme.typography.bodySmall) }*/
                 }
             }
 
             IconButton(
-                onClick = onFavouriteClick,
+                onClick = { favoritesViewModel.toggleFavourite(starship.id) },
                 modifier = Modifier
                     .align(Alignment.TopEnd)
                     .padding(8.dp)

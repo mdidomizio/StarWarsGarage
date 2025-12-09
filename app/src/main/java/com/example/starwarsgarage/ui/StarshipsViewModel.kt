@@ -1,5 +1,6 @@
 package com.example.starwarsgarage.ui
 
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
@@ -10,6 +11,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -26,10 +28,23 @@ class StarshipsViewModel @Inject constructor(
 
     val starships: Flow<PagingData<Starship>> = repository.getStarshipsStream()
         .cachedIn(viewModelScope)
+    private val _allStarships = MutableStateFlow<List<Starship>>(emptyList())
+    val allStarships: StateFlow<List<Starship>> = _allStarships.asStateFlow()
 
     private val _starshipUiState =
         MutableStateFlow<UiState>(UiState.Loading)
     val starshipUiState: StateFlow<UiState> = _starshipUiState
+
+    init {
+        fetchAllStarships()
+    }
+
+    private fun fetchAllStarships() {
+        viewModelScope.launch {
+            val allItems = repository.getAllStarships()
+            _allStarships.value = allItems
+        }
+    }
 
     fun getStarship(id: String) {
         viewModelScope.launch {

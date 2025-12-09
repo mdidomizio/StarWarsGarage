@@ -1,12 +1,16 @@
 package com.example.starwarsgarage.data.remote
 
+import androidx.compose.foundation.text.input.TextFieldLineLimits
 import retrofit2.http.GET
 import retrofit2.http.Path
 import retrofit2.http.Query
 
 interface StarshipApi {
     @GET("api/v1/vehicles")
-    suspend fun getStarships(@Query("page") page: Int): StarshipResponse
+    suspend fun getStarships(
+        @Query("page") page: Int,
+        @Query("limit") limit:Int = 10
+    ): StarshipResponse
 
     @GET("api/v1/vehicles/{id}")
     suspend fun getStarshipById(@Path("id") id: String): StarshipBasic
