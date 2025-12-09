@@ -22,5 +22,6 @@ data class Starship(
     val pilots: List<String>?,
     val films: List<String>?,
     val url: String?,
-    val isPdpLoaded: Boolean = false
+    val isPdpLoaded: Boolean = false,
+    val isFavourite: Boolean = false
 )
