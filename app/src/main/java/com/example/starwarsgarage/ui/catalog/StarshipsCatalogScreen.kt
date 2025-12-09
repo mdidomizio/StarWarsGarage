@@ -48,7 +48,6 @@ import com.example.starwarsgarage.ui.ErrorScreen
 import com.example.starwarsgarage.ui.FavoritesViewModel
 import com.example.starwarsgarage.ui.StarshipsViewModel
 import com.example.starwarsgarage.ui.theme.starJediFontFamily
-import timber.log.Timber
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterialApi::class)
 @Composable
@@ -58,7 +57,6 @@ fun StarshipsCatalogScreen(
     navController: NavHostController,
     modifier: Modifier = Modifier
 ) {
-    Timber.tag("miriam").d("StarshipsCatalogScreen recomposed")
     val lazyPagingItems = starshipsViewModel.starships.collectAsLazyPagingItems()
     val favouriteIds by favoritesViewModel.favouriteStarships.collectAsState()
     val isRefreshing = lazyPagingItems.loadState.refresh is LoadState.Loading
@@ -190,10 +188,7 @@ fun StarshipCard(
             }
 
             IconButton(
-                onClick = { 
-                    Timber.tag("miriam").d("Toggling favorite for starship id: ${starship.id}")
-                    onToggleFavourite() 
-                },
+                onClick = onToggleFavourite,
                 modifier = Modifier
                     .align(Alignment.TopEnd)
                     .padding(8.dp)
