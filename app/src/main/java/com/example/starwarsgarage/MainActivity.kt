@@ -13,6 +13,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.starwarsgarage.navigation.AppDestinations.CATALOG_SCREEN_ROUTE
+import com.example.starwarsgarage.navigation.AppDestinations.FAVOURITES_SCREEN_ROUTE
 import com.example.starwarsgarage.navigation.AppDestinations.HOME_SCREEN_ROUTE
 import com.example.starwarsgarage.navigation.AppDestinations.PDP_SCREEN_ROUTE
 import com.example.starwarsgarage.navigation.AppDestinations.STARSHIP_ID_KEY
@@ -20,6 +21,7 @@ import com.example.starwarsgarage.ui.StarshipsViewModel
 import com.example.starwarsgarage.ui.home.HomeScreen
 import com.example.starwarsgarage.ui.pdp.StarshipPdpScreen
 import com.example.starwarsgarage.ui.catalog.StarshipsCatalogScreen
+import com.example.starwarsgarage.ui.favourites.StarshipsFavouritesScreen
 import com.example.starwarsgarage.ui.theme.StarWarsGarageTheme
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -44,7 +46,7 @@ class MainActivity : ComponentActivity() {
                             HomeScreen(navController = navController)
                         }
                         composable(CATALOG_SCREEN_ROUTE) {
-                            StarshipsCatalogScreen(viewModel = viewModel, navController = navController)
+                            StarshipsCatalogScreen(starshipsViewModel = viewModel, navController = navController)
                         }
                         composable("${PDP_SCREEN_ROUTE}/{${STARSHIP_ID_KEY}}") { backStackEntry ->
                             val starshipId = backStackEntry.arguments?.getString(STARSHIP_ID_KEY)
@@ -55,6 +57,9 @@ class MainActivity : ComponentActivity() {
                                     navController = navController
                                 )
                             }
+                        }
+                        composable(FAVOURITES_SCREEN_ROUTE) {
+                            StarshipsFavouritesScreen(navController = navController)
                         }
                     }
                 }

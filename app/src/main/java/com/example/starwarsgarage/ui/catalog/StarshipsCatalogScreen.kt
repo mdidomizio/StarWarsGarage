@@ -37,7 +37,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import androidx.paging.LoadState
 import androidx.paging.compose.collectAsLazyPagingItems
@@ -52,12 +52,12 @@ import com.example.starwarsgarage.ui.theme.starJediFontFamily
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterialApi::class)
 @Composable
 fun StarshipsCatalogScreen(
-    favoritesViewModel: FavoritesViewModel = viewModel(),
-    viewModel: StarshipsViewModel,
+    favoritesViewModel: FavoritesViewModel = hiltViewModel(),
+    starshipsViewModel: StarshipsViewModel = hiltViewModel(),
     navController: NavHostController,
     modifier: Modifier = Modifier
 ) {
-    val lazyPagingItems = viewModel.starships.collectAsLazyPagingItems()
+    val lazyPagingItems = starshipsViewModel.starships.collectAsLazyPagingItems()
     val isRefreshing = lazyPagingItems.loadState.refresh is LoadState.Loading
     val pullRefreshState = rememberPullRefreshState(
         isRefreshing,
@@ -147,6 +147,7 @@ fun StarshipsCatalogScreen(
         }
     }
 }
+
 
 @Composable
 fun StarshipCard(

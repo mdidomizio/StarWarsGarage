@@ -24,4 +24,6 @@
     <string name="starship_image_description">Image of %1$s</string>
     <string name="no_description_available">No description available</string>
     <string name="descriprion_label">Description</string>
+    <string name="favorites_title">My Favorites</string>
+    <string name="no_favorites_yet">You haven\'t added any favorites yet.\nTap the heart icon on a starship to add it here.</string>
 </resources>
