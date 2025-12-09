@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.ui.Modifier
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
@@ -17,6 +18,7 @@ import com.example.starwarsgarage.navigation.AppDestinations.FAVOURITES_SCREEN_R
 import com.example.starwarsgarage.navigation.AppDestinations.HOME_SCREEN_ROUTE
 import com.example.starwarsgarage.navigation.AppDestinations.PDP_SCREEN_ROUTE
 import com.example.starwarsgarage.navigation.AppDestinations.STARSHIP_ID_KEY
+import com.example.starwarsgarage.ui.FavoritesViewModel
 import com.example.starwarsgarage.ui.StarshipsViewModel
 import com.example.starwarsgarage.ui.home.HomeScreen
 import com.example.starwarsgarage.ui.pdp.StarshipPdpScreen
@@ -36,6 +38,7 @@ class MainActivity : ComponentActivity() {
         setContent {
             StarWarsGarageTheme {
                 val navController = rememberNavController()
+                val favoritesViewModel: FavoritesViewModel = hiltViewModel()
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
                     NavHost(
                         navController = navController,
@@ -46,7 +49,11 @@ class MainActivity : ComponentActivity() {
                             HomeScreen(navController = navController)
                         }
                         composable(CATALOG_SCREEN_ROUTE) {
-                            StarshipsCatalogScreen(starshipsViewModel = viewModel, navController = navController)
+                            StarshipsCatalogScreen(
+                                starshipsViewModel = viewModel,
+                                navController = navController,
+                                favoritesViewModel = favoritesViewModel
+                            )
                         }
                         composable("${PDP_SCREEN_ROUTE}/{${STARSHIP_ID_KEY}}") { backStackEntry ->
                             val starshipId = backStackEntry.arguments?.getString(STARSHIP_ID_KEY)
@@ -59,7 +66,11 @@ class MainActivity : ComponentActivity() {
                             }
                         }
                         composable(FAVOURITES_SCREEN_ROUTE) {
-                            StarshipsFavouritesScreen(navController = navController)
+                            StarshipsFavouritesScreen(
+                                navController = navController,
+                                favouritesViewModel = favoritesViewModel,
+                                starshipsViewModel = viewModel
+                            )
                         }
                     }
                 }

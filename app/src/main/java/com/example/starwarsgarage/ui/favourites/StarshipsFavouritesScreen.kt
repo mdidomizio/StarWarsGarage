@@ -17,21 +17,15 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
-import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
-import androidx.paging.compose.collectAsLazyPagingItems
 import com.example.starwarsgarage.R
-import com.example.starwarsgarage.domain.model.Starship
 import com.example.starwarsgarage.navigation.AppDestinations
 import com.example.starwarsgarage.ui.FavoritesViewModel
 import com.example.starwarsgarage.ui.StarshipsViewModel
@@ -40,14 +34,14 @@ import com.example.starwarsgarage.ui.catalog.StarshipCard
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun StarshipsFavouritesScreen(
-    favouritesViewModel: FavoritesViewModel = hiltViewModel(),
-    starshipsViewModel: StarshipsViewModel = hiltViewModel(),
+    favouritesViewModel: FavoritesViewModel,
+    starshipsViewModel: StarshipsViewModel,
     navController: NavHostController,
     modifier: Modifier = Modifier
 ) {
     val favouriteIds by favouritesViewModel.favouriteStarships.collectAsState()
     val allStarships by starshipsViewModel.allStarships.collectAsState()
-    var favouriteStarships = remember(favouriteIds, allStarships) {
+    val favouriteStarships = remember(favouriteIds, allStarships) {
         allStarships.filter { starship -> favouriteIds.contains(starship.id) }
     }
 
@@ -86,6 +80,8 @@ fun StarshipsFavouritesScreen(
                 ) { starship ->
                     StarshipCard(
                         starship = starship,
+                        isFavourite = true,
+                        onToggleFavourite = { favouritesViewModel.toggleFavourite(starship.id) },
                         onClick = {
                             navController.navigate("${AppDestinations.PDP_SCREEN_ROUTE}/${starship.id}")
                         }

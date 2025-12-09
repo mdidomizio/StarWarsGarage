@@ -32,13 +32,11 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.key
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import androidx.paging.LoadState
 import androidx.paging.compose.collectAsLazyPagingItems
@@ -50,15 +48,19 @@ import com.example.starwarsgarage.ui.ErrorScreen
 import com.example.starwarsgarage.ui.FavoritesViewModel
 import com.example.starwarsgarage.ui.StarshipsViewModel
 import com.example.starwarsgarage.ui.theme.starJediFontFamily
+import timber.log.Timber
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterialApi::class)
 @Composable
 fun StarshipsCatalogScreen(
-    starshipsViewModel: StarshipsViewModel = hiltViewModel(),
+    starshipsViewModel: StarshipsViewModel,
+    favoritesViewModel: FavoritesViewModel,
     navController: NavHostController,
     modifier: Modifier = Modifier
 ) {
+    Timber.tag("miriam").d("StarshipsCatalogScreen recomposed")
     val lazyPagingItems = starshipsViewModel.starships.collectAsLazyPagingItems()
+    val favouriteIds by favoritesViewModel.favouriteStarships.collectAsState()
     val isRefreshing = lazyPagingItems.loadState.refresh is LoadState.Loading
     val pullRefreshState = rememberPullRefreshState(
         isRefreshing,
@@ -95,15 +97,18 @@ fun StarshipsCatalogScreen(
                     modifier = Modifier.fillMaxSize()
                 ) {
                     items(
-                        count =lazyPagingItems.itemCount,
+                        count = lazyPagingItems.itemCount,
                         key = lazyPagingItems.itemKey { it.id }
                     ) { index ->
                         val starship = lazyPagingItems[index]
                         if (starship != null) {
+                            val isFavourite = favouriteIds.contains(starship.id)
                             StarshipCard(
                                 starship = starship,
+                                isFavourite = isFavourite,
+                                onToggleFavourite = { favoritesViewModel.toggleFavourite(starship.id) },
                                 onClick = {
-                                navController.navigate("${PDP_SCREEN_ROUTE}/${starship.id}")
+                                    navController.navigate("${PDP_SCREEN_ROUTE}/${starship.id}")
                                 }
                             )
                         }
@@ -123,6 +128,7 @@ fun StarshipsCatalogScreen(
                                     }
                                 }
                             }
+
                             is LoadState.Error -> {
                                 item {
                                     ErrorScreen(
@@ -131,6 +137,7 @@ fun StarshipsCatalogScreen(
                                     )
                                 }
                             }
+
                             else -> {}
                         }
                     }
@@ -150,12 +157,11 @@ fun StarshipsCatalogScreen(
 @Composable
 fun StarshipCard(
     starship: Starship,
+    isFavourite: Boolean,
+    onToggleFavourite: () -> Unit,
     onClick: () -> Unit,
-    favoritesViewModel: FavoritesViewModel = hiltViewModel(),
     modifier: Modifier = Modifier
 ) {
-    val favouriteIds by favoritesViewModel.favouriteStarships.collectAsState()
-    val isFavourite = favouriteIds.contains(starship.id)
     Card(
         modifier = modifier
             .padding(8.dp)
@@ -164,7 +170,7 @@ fun StarshipCard(
     ) {
         Box(
             modifier = Modifier.fillMaxSize()
-        ){
+        ) {
             Row(modifier = Modifier.padding(16.dp), verticalAlignment = Alignment.CenterVertically) {
                 Icon(
                     imageVector = Icons.Default.Star,
@@ -173,19 +179,28 @@ fun StarshipCard(
                 )
                 Spacer(modifier = Modifier.width(16.dp))
                 Column {
-                    starship.name?.let { Text(text = it, style = MaterialTheme.typography.titleMedium, fontFamily = starJediFontFamily) }
+                    starship.name?.let {
+                        Text(
+                            text = it,
+                            style = MaterialTheme.typography.titleMedium,
+                            fontFamily = starJediFontFamily
+                        )
+                    }
                 }
             }
 
             IconButton(
-                onClick = { favoritesViewModel.toggleFavourite(starship.id) },
+                onClick = { 
+                    Timber.tag("miriam").d("Toggling favorite for starship id: ${starship.id}")
+                    onToggleFavourite() 
+                },
                 modifier = Modifier
                     .align(Alignment.TopEnd)
                     .padding(8.dp)
             ) {
                 Icon(
                     imageVector =
-                        if (isFavourite) Icons.Filled.Favorite else Icons.Filled.FavoriteBorder,
+                    if (isFavourite) Icons.Filled.Favorite else Icons.Filled.FavoriteBorder,
                     contentDescription = "Favourite",
                     tint = if (isFavourite) Color.Black else Color.Black
                 )
