@@ -2,32 +2,38 @@ package com.example.starwarsgarage.ui
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.paging.PagingData
+import androidx.paging.cachedIn
+import androidx.paging.map
+import com.example.starwarsgarage.data.local.FavoritesDataStore
+import com.example.starwarsgarage.domain.model.Starship
+import com.example.starwarsgarage.domain.repository.StarshipRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.launch
+import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
-class FavoritesViewModel @Inject constructor() : ViewModel() {
-    private val _favouriteStarships = MutableStateFlow<Set<String>>(emptySet())
-    val favouriteStarships: StateFlow<Set<String>> = _favouriteStarships
+class FavoritesViewModel @Inject constructor(
+    private val repository: StarshipRepository,
+    private val favoritesDataStore: FavoritesDataStore
+) : ViewModel() {
 
-    fun toggleFavourite(starshipId: String) {
-        viewModelScope.launch {
-            _favouriteStarships.update { currentFavourites ->
-                val newFavourites = currentFavourites.toMutableSet()
-                if (newFavourites.contains(starshipId)) {
-                    newFavourites.remove(starshipId)
-                } else {
-                    newFavourites.add(starshipId)
-                }
-                newFavourites
-            }
+    val favoriteStarships: Flow<PagingData<Starship>> = combine(
+        repository.getFavoriteStarshipsStream(favoritesDataStore.favoriteStarshipIds).cachedIn(viewModelScope),
+        favoritesDataStore.favoriteStarshipIds
+    ) { pagingData, favorites ->
+        pagingData.map { starship ->
+            starship.copy(isFavorite = favorites.contains(starship.id))
         }
     }
-    fun isFavourite(starshipId: String): Boolean {
-        return _favouriteStarships.value.contains(starshipId)
+
+    fun onToggleFavorite(starshipId: String) {
+        viewModelScope.launch {
+            Timber.tag("Miriam").d("Toggling favorite for starship ID from favorites view model: %s", starshipId)
+            favoritesDataStore.toggleFavorite(starshipId)
+        }
     }
 }

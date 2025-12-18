@@ -30,8 +30,6 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -58,7 +56,6 @@ fun StarshipsCatalogScreen(
     modifier: Modifier = Modifier
 ) {
     val lazyPagingItems = starshipsViewModel.starships.collectAsLazyPagingItems()
-    val favouriteIds by favoritesViewModel.favouriteStarships.collectAsState()
     val isRefreshing = lazyPagingItems.loadState.refresh is LoadState.Loading
     val pullRefreshState = rememberPullRefreshState(
         isRefreshing,
@@ -100,11 +97,10 @@ fun StarshipsCatalogScreen(
                     ) { index ->
                         val starship = lazyPagingItems[index]
                         if (starship != null) {
-                            val isFavourite = favouriteIds.contains(starship.id)
                             StarshipCard(
                                 starship = starship,
-                                isFavourite = isFavourite,
-                                onToggleFavourite = { favoritesViewModel.toggleFavourite(starship.id) },
+                                isFavourite = starship.isFavorite,
+                                onToggleFavourite = { favoritesViewModel.onToggleFavorite(starship.id) },
                                 onClick = {
                                     navController.navigate("${PDP_SCREEN_ROUTE}/${starship.id}")
                                 }

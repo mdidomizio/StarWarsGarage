@@ -4,6 +4,7 @@ import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import androidx.paging.map
+import com.example.starwarsgarage.data.local.FavoritesDataStore
 import com.example.starwarsgarage.data.remote.StarshipApi
 import com.example.starwarsgarage.data.remote.StarshipBasic
 import com.example.starwarsgarage.data.remote.StarshipDetails
@@ -12,7 +13,8 @@ import com.example.starwarsgarage.data.remote.StarshipVehicleDetailsApi
 import com.example.starwarsgarage.domain.model.Starship
 import com.example.starwarsgarage.domain.repository.StarshipRepository
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.flow
 import javax.inject.Inject
 
 // key = name from the basic API, value = ID from swapi.dev
@@ -43,16 +45,22 @@ private val STARSHIP_ID_MAP = hashMapOf(
 
 class StarshipRepositoryImpl @Inject constructor(
     private val starshipApi: StarshipApi,
-    private val starshipVehicleDetailsApi: StarshipVehicleDetailsApi
+    private val starshipVehicleDetailsApi: StarshipVehicleDetailsApi,
+    private val favoritesDataStore: FavoritesDataStore
 ) : StarshipRepository {
 
     override fun getStarshipsStream(): Flow<PagingData<Starship>> {
-        return Pager(
+        val pager = Pager(
             config = PagingConfig(pageSize = 10, enablePlaceholders = false),
             pagingSourceFactory = { StarshipPagingSource(starshipApi) }
-        ).flow.map { pagingData ->
+        ).flow
+        return combine(pager, favoritesDataStore.favoriteStarshipIds) {
+            pagingData, favoriteId ->
             pagingData.map { starshipBasic ->
-                starshipBasic.toStarship(null)
+                starshipBasic.toStarship(
+                    details = null,
+                    isFavorite = favoriteId.contains(starshipBasic.id)
+                )
             }
         }
     }
@@ -67,8 +75,8 @@ class StarshipRepositoryImpl @Inject constructor(
         baseStarship.toStarship(vehicleDetails)
     }
 
-    override suspend fun getAllStarships(): List<Starship> {
-        return try {
+    override fun getAllStarships(): Flow<List<Starship>> = flow {
+         try {
             val allStarships = mutableListOf<StarshipBasic>()
             var page = 1
             var hasMorePages = true
@@ -89,7 +97,10 @@ class StarshipRepositoryImpl @Inject constructor(
     }
 }
 
-private fun StarshipBasic.toStarship(details: StarshipDetails?) = Starship(
+private fun StarshipBasic.toStarship(
+    details: StarshipDetails?,
+    isFavorite: Boolean = false
+) = Starship(
     id = id,
     name = name,
     description = description,
@@ -109,5 +120,6 @@ private fun StarshipBasic.toStarship(details: StarshipDetails?) = Starship(
     pilots = details?.pilots,
     films = details?.films,
     url = details?.url,
-    isPdpLoaded = details != null
+    isPdpLoaded = details != null,
+    isFavorite = isFavorite
 )

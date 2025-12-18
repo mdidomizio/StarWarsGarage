@@ -68,8 +68,7 @@ class MainActivity : ComponentActivity() {
                         composable(FAVOURITES_SCREEN_ROUTE) {
                             StarshipsFavouritesScreen(
                                 navController = navController,
-                                favouritesViewModel = favoritesViewModel,
-                                starshipsViewModel = viewModel
+                                favouritesViewModel = favoritesViewModel
                             )
                         }
                     }

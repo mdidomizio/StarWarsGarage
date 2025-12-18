@@ -79,6 +79,11 @@ dependencies {
     // For Hilt and Compose Navigation integration
     implementation("androidx.hilt:hilt-navigation-compose:1.2.0")
 
+    // Data Store
+    implementation("androidx.datastore:datastore-preferences:1.1.1")
+    // Optional: for collecting Flow in lifecycle-aware manner
+    implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.6.1")
+
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
