@@ -34,7 +34,6 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
@@ -103,7 +102,7 @@ fun StarshipsCatalogScreen(
                             val isFavourite = favouriteIds.contains(starship.id)
                             StarshipCard(
                                 starship = starship,
-                                isFavourite = isFavourite,
+                                isFavorite = isFavourite,
                                 onToggleFavourite = { favoritesViewModel.toggleFavourite(starship.id) },
                                 onClick = {
                                     navController.navigate("${PDP_SCREEN_ROUTE}/${starship.id}")
@@ -155,7 +154,7 @@ fun StarshipsCatalogScreen(
 @Composable
 fun StarshipCard(
     starship: Starship,
-    isFavourite: Boolean,
+    isFavorite: Boolean,
     onToggleFavourite: () -> Unit,
     onClick: () -> Unit,
     modifier: Modifier = Modifier
@@ -195,9 +194,9 @@ fun StarshipCard(
             ) {
                 Icon(
                     imageVector =
-                    if (isFavourite) Icons.Filled.Favorite else Icons.Filled.FavoriteBorder,
+                    if (isFavorite) Icons.Filled.Favorite else Icons.Filled.FavoriteBorder,
                     contentDescription = "Favourite",
-                    tint = if (isFavourite) Color.Black else Color.Black
+                    tint = if (isFavorite) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurface
                 )
             }
         }

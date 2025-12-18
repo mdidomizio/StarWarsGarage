@@ -80,7 +80,7 @@ fun StarshipsFavouritesScreen(
                 ) { starship ->
                     StarshipCard(
                         starship = starship,
-                        isFavourite = true,
+                        isFavorite = true,
                         onToggleFavourite = { favouritesViewModel.toggleFavourite(starship.id) },
                         onClick = {
                             navController.navigate("${AppDestinations.PDP_SCREEN_ROUTE}/${starship.id}")
