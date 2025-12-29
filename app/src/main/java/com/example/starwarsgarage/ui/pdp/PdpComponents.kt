@@ -24,10 +24,12 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.layout.ModifierLocalBeyondBoundsLayout
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.LineHeightStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -38,6 +40,40 @@ import coil.request.ImageRequest
 import com.example.starwarsgarage.R
 import com.example.starwarsgarage.domain.model.Starship
 
+@Composable
+fun StarshipDescriptionBlock(
+    label: String,
+    value: String?,
+    modifier: Modifier = Modifier
+) {
+    Column(
+        modifier = modifier
+            .fillMaxWidth()
+            .padding(vertical = 8.dp)
+    ) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Text(
+                text = label,
+                fontSize = 16.sp
+            )
+        }
+        HorizontalDivider(modifier = Modifier.padding(top = 8.dp))
+        Text(
+            modifier = Modifier
+                .padding(top = 8.dp, bottom = 8.dp),
+            text = value ?: "N/A",
+            fontSize = 16.sp,
+            fontFamily = FontFamily.Default,
+            textAlign = TextAlign.Justify
+        )
+    }
+    HorizontalDivider()
+}
 @Composable
 fun StarshipImage(starship: Starship) {
     Box {

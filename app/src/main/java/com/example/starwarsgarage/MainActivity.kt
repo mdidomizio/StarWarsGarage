@@ -14,7 +14,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.starwarsgarage.navigation.AppDestinations.CATALOG_SCREEN_ROUTE
-import com.example.starwarsgarage.navigation.AppDestinations.FAVOURITES_SCREEN_ROUTE
+import com.example.starwarsgarage.navigation.AppDestinations.FAVORITES_SCREEN_ROUTE
 import com.example.starwarsgarage.navigation.AppDestinations.HOME_SCREEN_ROUTE
 import com.example.starwarsgarage.navigation.AppDestinations.PDP_SCREEN_ROUTE
 import com.example.starwarsgarage.navigation.AppDestinations.STARSHIP_ID_KEY
@@ -65,7 +65,7 @@ class MainActivity : ComponentActivity() {
                                 )
                             }
                         }
-                        composable(FAVOURITES_SCREEN_ROUTE) {
+                        composable(FAVORITES_SCREEN_ROUTE) {
                             StarshipsFavouritesScreen(
                                 navController = navController,
                                 favouritesViewModel = favoritesViewModel,

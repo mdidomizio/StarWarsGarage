@@ -13,7 +13,7 @@ data class StarshipBasic(
 )
 
 
-// BASE_URL_STARSHIP_VEHICLE_DETAILS = https://swapi.dev/api/
+// BASE_URL_STARSHIP_VEHICLE_DETAILS = https://swapi.info/api/
 data class StarshipDetails(
     val name: String?,
     val model: String?,

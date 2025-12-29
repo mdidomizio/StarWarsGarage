@@ -90,10 +90,17 @@ fun StarshipPdpScreen(
                     item { Spacer(modifier = Modifier.height(16.dp)) }
 
                     item {
-                        StarshipExpandableDescriptionBlock(
-                            label = stringResource(id = R.string.descriprion_label),
-                            value = starship.description
-                        )
+                        if (starship.isPdpLoaded) {
+                            StarshipExpandableDescriptionBlock(
+                                label = stringResource(id = R.string.descriprion_label),
+                                value = starship.description
+                            )
+                        } else {
+                            StarshipDescriptionBlock(
+                                label = stringResource(id = R.string.descriprion_label),
+                                value = starship.description
+                            )
+                        }
                     }
 
                     if (starship.isPdpLoaded) {
