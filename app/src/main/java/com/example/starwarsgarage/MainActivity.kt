@@ -4,7 +4,6 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.activity.viewModels
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
@@ -30,15 +29,12 @@ import dagger.hilt.android.AndroidEntryPoint
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
 
-    private val viewModel: StarshipsViewModel by viewModels()
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
             StarWarsGarageTheme {
                 val navController = rememberNavController()
-                val favoritesViewModel: FavoritesViewModel = hiltViewModel()
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
                     NavHost(
                         navController = navController,
@@ -49,6 +45,8 @@ class MainActivity : ComponentActivity() {
                             HomeScreen(navController = navController)
                         }
                         composable(CATALOG_SCREEN_ROUTE) {
+                            val viewModel: StarshipsViewModel = hiltViewModel()
+                            val favoritesViewModel: FavoritesViewModel = hiltViewModel()
                             StarshipsCatalogScreen(
                                 starshipsViewModel = viewModel,
                                 navController = navController,
@@ -56,6 +54,7 @@ class MainActivity : ComponentActivity() {
                             )
                         }
                         composable("${PDP_SCREEN_ROUTE}/{${STARSHIP_ID_KEY}}") { backStackEntry ->
+                            val viewModel: StarshipsViewModel = hiltViewModel()
                             val starshipId = backStackEntry.arguments?.getString(STARSHIP_ID_KEY)
                             if (starshipId != null) {
                                 StarshipPdpScreen(
@@ -66,6 +65,7 @@ class MainActivity : ComponentActivity() {
                             }
                         }
                         composable(FAVOURITES_SCREEN_ROUTE) {
+                            val favoritesViewModel: FavoritesViewModel = hiltViewModel()
                             StarshipsFavouritesScreen(
                                 navController = navController,
                                 favouritesViewModel = favoritesViewModel

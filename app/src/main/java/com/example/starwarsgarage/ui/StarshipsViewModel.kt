@@ -32,7 +32,8 @@ class StarshipsViewModel @Inject constructor(
     private val favoritesDataStore: FavoritesDataStore
 ) : ViewModel() {
 
-    private val favoriteStarshipIds: StateFlow<Set<String>> = favoritesDataStore.favoriteStarshipIds
+    private val favoriteStarshipIds: StateFlow<Set<String>> =
+        favoritesDataStore.favoriteStarshipIds
         .onEach { ids -> Timber.tag("Miriam").d("Favorite IDs updated: $ids") }
         .stateIn(
             scope = viewModelScope,
@@ -40,11 +41,9 @@ class StarshipsViewModel @Inject constructor(
             initialValue = emptySet()
         )
 
-    private val starshipsPagingData = repository.getStarshipsStream().cachedIn(viewModelScope)
-
     val starships: Flow<PagingData<Starship>> =
         combine(
-            starshipsPagingData,
+            repository.getStarshipsStream(),
             favoriteStarshipIds
         ) { pagingData, favorites ->
             pagingData.map { starship ->

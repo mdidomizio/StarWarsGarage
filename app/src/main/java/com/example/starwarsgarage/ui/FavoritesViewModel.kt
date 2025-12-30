@@ -21,14 +21,15 @@ class FavoritesViewModel @Inject constructor(
     private val favoritesDataStore: FavoritesDataStore
 ) : ViewModel() {
 
-    val favoriteStarships: Flow<PagingData<Starship>> = combine(
-        repository.getFavoriteStarshipsStream(favoritesDataStore.favoriteStarshipIds).cachedIn(viewModelScope),
-        favoritesDataStore.favoriteStarshipIds
-    ) { pagingData, favorites ->
-        pagingData.map { starship ->
-            starship.copy(isFavorite = favorites.contains(starship.id))
-        }
-    }
+    val favoriteStarships: Flow<PagingData<Starship>> =
+        combine(
+            repository.getFavoriteStarshipsStream(favoritesDataStore.favoriteStarshipIds),
+            favoritesDataStore.favoriteStarshipIds
+        ) { pagingData, favorites ->
+            pagingData.map { starship ->
+                starship.copy(isFavorite = favorites.contains(starship.id))
+            }
+        }.cachedIn(viewModelScope)
 
     fun onToggleFavorite(starshipId: String) {
         viewModelScope.launch {
