@@ -13,10 +13,10 @@ import com.example.starwarsgarage.domain.model.Starship
 import com.example.starwarsgarage.domain.repository.StarshipRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
-import okio.IOException
+import timber.log.Timber
 import javax.inject.Inject
 
-// key = name from the basic API, value = ID from swapi.dev
+// key = name from the basic API, value = ID from swapi.info
 private val STARSHIP_ID_MAP = hashMapOf(
     "Imperial Star Destroyer" to 3,
     "Millennium Falcon" to 10,
@@ -39,7 +39,8 @@ private val STARSHIP_ID_MAP = hashMapOf(
     "Darth Vader's TIE Fighter" to 13,
     "TIE Fighter" to 13,
     "TIE Interceptor" to 13,
-    "Trade Federation Battleship" to 32
+    "Trade Federation Battleship" to 32,
+    "AAT Battle Tank" to 4
 )
 
 class StarshipRepositoryImpl @Inject constructor(
@@ -58,45 +59,28 @@ class StarshipRepositoryImpl @Inject constructor(
         }
     }
 
-    /*override suspend fun getStarshipDetailsById(id: String): Starship? {
-        return try {
-            val starshipDto = starshipApi.getStarshipById(id)
-            starshipDto.toDomainModel()
-        } catch (e: Exception){
-            null
-        }
-    }*/
+    override suspend fun getStarshipDetailsById(id: String): Result<Starship> {
+        try {
+            val baseStarship = starshipApi.getStarshipById(id)
 
-    override suspend fun getStarshipDetailsById(id: String): Result<Starship> = runCatching {
-        val baseStarship = starshipApi.getStarshipById(id)
-        val vehicleDetailsId = STARSHIP_ID_MAP[baseStarship.name]
-            ?: throw IOException("Starship '${baseStarship.name}' not found in local ID map")
-        val vehicleDetails: StarshipDetails? =
-            starshipVehicleDetailsApi.getStarshipVehicleDetailsById(vehicleDetailsId.toString())
-
-        baseStarship.toStarship(vehicleDetails)
-    }
-
-    /*override suspend fun getAllStarships(): List<Starship> {
-        return try {
-            val allStarships = mutableListOf<StarshipBasic>()
-            var page = 1
-            var hasMorePages = true
-
-            while (hasMorePages) {
-                val response = starshipApi.getStarships(page = page)
-                val fetchedItems = response.data
-
-                allStarships.addAll(fetchedItems)
-                if (response.info.next != null) page++ else hasMorePages = false
+            val vehicleDetailsId = STARSHIP_ID_MAP[baseStarship.name]
+            if (vehicleDetailsId == null) {
+                return Result.success(baseStarship.toStarship(null))
             }
-            allStarships.map { starshipBasic ->
-                starshipBasic.toStarship(null)
+
+            // Now, try to get the details, but if it fails, return success with basic info
+            return try {
+                val vehicleDetails = starshipVehicleDetailsApi.getStarshipVehicleDetailsById(vehicleDetailsId.toString())
+                Result.success(baseStarship.toStarship(vehicleDetails))
+            } catch (e: Exception) {
+                Result.success(baseStarship.toStarship(null))
             }
+
         } catch (e: Exception) {
-            emptyList()
+            // This will catch failures from the first API call (getStarshipById)
+            return Result.failure(e)
         }
-    }*/
+    }
 }
 
 private fun StarshipBasic.toStarship(details: StarshipDetails?) = Starship(

@@ -19,7 +19,6 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -29,12 +28,11 @@ import androidx.navigation.NavHostController
 import com.example.starwarsgarage.R
 import com.example.starwarsgarage.navigation.AppDestinations
 import com.example.starwarsgarage.ui.FavoritesViewModel
-import com.example.starwarsgarage.ui.StarshipsViewModel
 import com.example.starwarsgarage.ui.catalog.StarshipCard
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun StarshipsFavouritesScreen(
+fun StarshipsFavoritesScreen(
     navController: NavHostController,
     modifier: Modifier = Modifier,
     favouritesViewModel: FavoritesViewModel = hiltViewModel(),

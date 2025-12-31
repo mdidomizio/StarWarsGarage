@@ -1,10 +1,8 @@
 package com.example.starwarsgarage.ui
 
-import android.os.Message
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.starwarsgarage.domain.model.Starship
 import com.example.starwarsgarage.domain.repository.StarshipRepository
 import com.example.starwarsgarage.navigation.AppDestinations.STARSHIP_ID_KEY
@@ -16,7 +14,7 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 sealed interface StarshipPdpUiState {
-    data object Loading: StarshipPdpUiState
+    data object Loading : StarshipPdpUiState
     data class Success(val starship: Starship) : StarshipPdpUiState
     data class Error(val message: String) : StarshipPdpUiState
 }
@@ -32,7 +30,7 @@ class StarshipPdpViewModel @Inject constructor(
 
     init {
         fetchStarshipDetails()
-        }
+    }
 
     fun fetchStarshipDetails() {
         viewModelScope.launch {
@@ -42,7 +40,7 @@ class StarshipPdpViewModel @Inject constructor(
                 .onSuccess { starship ->
                     _uiState.value = StarshipPdpUiState.Success(starship)
                 }
-                .onFailure { error->
+                .onFailure { error ->
                     val errorMessage = error.message ?: "An unknown error occurred"
                     _uiState.value = StarshipPdpUiState.Error(errorMessage)
                 }

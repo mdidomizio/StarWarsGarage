@@ -36,6 +36,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import androidx.paging.LoadState
 import androidx.paging.compose.collectAsLazyPagingItems
@@ -51,13 +52,13 @@ import com.example.starwarsgarage.ui.theme.starJediFontFamily
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterialApi::class)
 @Composable
 fun StarshipsCatalogScreen(
-    starshipsViewModel: StarshipsViewModel,
-    favoritesViewModel: FavoritesViewModel,
     navController: NavHostController,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    starshipsViewModel: StarshipsViewModel = hiltViewModel(),
+    favoritesViewModel: FavoritesViewModel = hiltViewModel(),
 ) {
     val lazyPagingItems = starshipsViewModel.starships.collectAsLazyPagingItems()
-    val favouriteIds by favoritesViewModel.favoriteStarships.collectAsState()
+    val favouriteStarships by favoritesViewModel.favoriteStarships.collectAsState()
     val isRefreshing = lazyPagingItems.loadState.refresh is LoadState.Loading
     val pullRefreshState = rememberPullRefreshState(
         isRefreshing,
@@ -99,7 +100,7 @@ fun StarshipsCatalogScreen(
                     ) { index ->
                         val starship = lazyPagingItems[index]
                         if (starship != null) {
-                            val isFavourite = favouriteIds.contains(starship.id)
+                            val isFavourite = favouriteStarships.any{ it.id == starship.id }
                             StarshipCard(
                                 starship = starship,
                                 isFavorite = isFavourite,
