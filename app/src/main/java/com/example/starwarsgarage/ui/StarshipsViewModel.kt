@@ -1,6 +1,5 @@
 package com.example.starwarsgarage.ui
 
-import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
@@ -49,7 +48,7 @@ class StarshipsViewModel @Inject constructor(
     fun getStarship(id: String) {
         viewModelScope.launch {
             _starshipUiState.value = UiState.Loading
-            repository.getStarshipProduct(id)
+            repository.getStarshipDetailsById(id)
                 .onSuccess { product ->
                     _starshipUiState.value = UiState.Success(product)
                 }

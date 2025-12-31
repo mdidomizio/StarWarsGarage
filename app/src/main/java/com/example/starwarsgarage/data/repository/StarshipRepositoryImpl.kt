@@ -13,6 +13,7 @@ import com.example.starwarsgarage.domain.model.Starship
 import com.example.starwarsgarage.domain.repository.StarshipRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
+import okio.IOException
 import javax.inject.Inject
 
 // key = name from the basic API, value = ID from swapi.dev
@@ -57,17 +58,26 @@ class StarshipRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun getStarshipProduct(id: String): Result<Starship> = runCatching {
-        val baseStarship = starshipApi.getStarshipById(id)
-        val vehicleDetails = baseStarship.name?.let { STARSHIP_ID_MAP[it] }?.let {
-            runCatching {
-                starshipVehicleDetailsApi.getStarshipVehicleDetailsById(it.toString())
-            }.getOrNull()
+    /*override suspend fun getStarshipDetailsById(id: String): Starship? {
+        return try {
+            val starshipDto = starshipApi.getStarshipById(id)
+            starshipDto.toDomainModel()
+        } catch (e: Exception){
+            null
         }
+    }*/
+
+    override suspend fun getStarshipDetailsById(id: String): Result<Starship> = runCatching {
+        val baseStarship = starshipApi.getStarshipById(id)
+        val vehicleDetailsId = STARSHIP_ID_MAP[baseStarship.name]
+            ?: throw IOException("Starship '${baseStarship.name}' not found in local ID map")
+        val vehicleDetails: StarshipDetails? =
+            starshipVehicleDetailsApi.getStarshipVehicleDetailsById(vehicleDetailsId.toString())
+
         baseStarship.toStarship(vehicleDetails)
     }
 
-    override suspend fun getAllStarships(): List<Starship> {
+    /*override suspend fun getAllStarships(): List<Starship> {
         return try {
             val allStarships = mutableListOf<StarshipBasic>()
             var page = 1
@@ -86,7 +96,7 @@ class StarshipRepositoryImpl @Inject constructor(
         } catch (e: Exception) {
             emptyList()
         }
-    }
+    }*/
 }
 
 private fun StarshipBasic.toStarship(details: StarshipDetails?) = Starship(

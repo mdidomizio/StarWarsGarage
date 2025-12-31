@@ -17,37 +17,35 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.example.starwarsgarage.R
 import com.example.starwarsgarage.domain.model.Starship
 import com.example.starwarsgarage.ui.ErrorScreen
-import com.example.starwarsgarage.ui.StarshipsViewModel
-import com.example.starwarsgarage.ui.UiState
+import com.example.starwarsgarage.ui.StarshipPdpUiState
+import com.example.starwarsgarage.ui.StarshipPdpViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun StarshipPdpScreen(
-    viewModel: StarshipsViewModel,
-    starshipId: String,
+    viewModel: StarshipPdpViewModel = hiltViewModel(),
     navController: NavHostController,
     modifier: Modifier = Modifier
 ) {
-    LaunchedEffect(starshipId) {
-        viewModel.getStarship(starshipId)
-    }
-    val uiState by viewModel.starshipUiState.collectAsState()
+    val uiState by viewModel.uiState.collectAsState()
 
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text(text = (uiState as? UiState.Success)?.starshipProduct?.name ?: "") },
+                title = { Text(
+                    text = (uiState as? StarshipPdpUiState.Success)?.starship?.name ?: ""
+                ) },
                 navigationIcon = {
                     IconButton(onClick = { navController.popBackStack() }) {
                         Icon(
@@ -61,7 +59,7 @@ fun StarshipPdpScreen(
         modifier = modifier
     ) { innerPadding ->
         when (val state = uiState) {
-            is UiState.Loading -> {
+            is StarshipPdpUiState.Loading -> {
                 Box(
                     modifier = Modifier
                         .fillMaxSize()
@@ -71,13 +69,13 @@ fun StarshipPdpScreen(
                 }
             }
 
-            is UiState.Error -> ErrorScreen(
-                message = stringResource(id = R.string.error_fetching_starship_details),
-                onRetry = { viewModel.retry(starshipId) }
+            is StarshipPdpUiState.Error -> ErrorScreen(
+                message = state.message,
+                onRetry = { viewModel.fetchStarshipDetails() }
             )
 
-            is UiState.Success -> {
-                val starship: Starship = state.starshipProduct
+            is StarshipPdpUiState.Success -> {
+                val starship: Starship = state.starship
                 LazyColumn(
                     modifier = Modifier
                         .padding(innerPadding)

@@ -59,8 +59,6 @@ class MainActivity : ComponentActivity() {
                             val starshipId = backStackEntry.arguments?.getString(STARSHIP_ID_KEY)
                             if (starshipId != null) {
                                 StarshipPdpScreen(
-                                    viewModel = viewModel,
-                                    starshipId = starshipId,
                                     navController = navController
                                 )
                             }
