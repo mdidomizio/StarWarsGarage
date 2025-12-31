@@ -24,6 +24,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.example.starwarsgarage.R
 import com.example.starwarsgarage.navigation.AppDestinations
@@ -34,16 +35,11 @@ import com.example.starwarsgarage.ui.catalog.StarshipCard
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun StarshipsFavouritesScreen(
-    favouritesViewModel: FavoritesViewModel,
-    starshipsViewModel: StarshipsViewModel,
     navController: NavHostController,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    favouritesViewModel: FavoritesViewModel = hiltViewModel(),
 ) {
-    val favouriteIds by favouritesViewModel.favouriteStarships.collectAsState()
-    val allStarships by starshipsViewModel.allStarships.collectAsState()
-    val favouriteStarships = remember(favouriteIds, allStarships) {
-        allStarships.filter { starship -> favouriteIds.contains(starship.id) }
-    }
+    val favouriteStarships by favouritesViewModel.favoriteStarships.collectAsState()
 
     Scaffold(
         topBar = {
@@ -81,7 +77,7 @@ fun StarshipsFavouritesScreen(
                     StarshipCard(
                         starship = starship,
                         isFavorite = true,
-                        onToggleFavourite = { favouritesViewModel.toggleFavourite(starship.id) },
+                        onToggleFavourite = { favouritesViewModel.toggleFavorite(starship.id) },
                         onClick = {
                             navController.navigate("${AppDestinations.PDP_SCREEN_ROUTE}/${starship.id}")
                         }

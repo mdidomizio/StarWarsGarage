@@ -57,7 +57,7 @@ fun StarshipsCatalogScreen(
     modifier: Modifier = Modifier
 ) {
     val lazyPagingItems = starshipsViewModel.starships.collectAsLazyPagingItems()
-    val favouriteIds by favoritesViewModel.favouriteStarships.collectAsState()
+    val favouriteIds by favoritesViewModel.favoriteStarships.collectAsState()
     val isRefreshing = lazyPagingItems.loadState.refresh is LoadState.Loading
     val pullRefreshState = rememberPullRefreshState(
         isRefreshing,
@@ -103,7 +103,7 @@ fun StarshipsCatalogScreen(
                             StarshipCard(
                                 starship = starship,
                                 isFavorite = isFavourite,
-                                onToggleFavourite = { favoritesViewModel.toggleFavourite(starship.id) },
+                                onToggleFavourite = { favoritesViewModel.toggleFavorite(starship.id) },
                                 onClick = {
                                     navController.navigate("${PDP_SCREEN_ROUTE}/${starship.id}")
                                 }
