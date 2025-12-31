@@ -23,7 +23,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
-import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.example.starwarsgarage.R
 import com.example.starwarsgarage.navigation.AppDestinations
@@ -35,9 +34,9 @@ import com.example.starwarsgarage.ui.catalog.StarshipCard
 fun StarshipsFavoritesScreen(
     navController: NavHostController,
     modifier: Modifier = Modifier,
-    favouritesViewModel: FavoritesViewModel = hiltViewModel(),
+    favoritesViewModel: FavoritesViewModel,
 ) {
-    val favouriteStarships by favouritesViewModel.favoriteStarships.collectAsState()
+    val favoriteStarships by favoritesViewModel.favoriteStarships.collectAsState()
 
     Scaffold(
         topBar = {
@@ -60,7 +59,7 @@ fun StarshipsFavoritesScreen(
         },
         modifier = modifier
     ) { innerPadding ->
-        if (favouriteStarships.isEmpty()) {
+        if (favoriteStarships.isEmpty()) {
             EmptyFavouritesMessage(innerPadding)
         } else {
             LazyColumn(
@@ -69,13 +68,13 @@ fun StarshipsFavoritesScreen(
                     .padding(innerPadding)
             ) {
                 items(
-                    items = favouriteStarships,
+                    items = favoriteStarships,
                     key = { starship -> starship.id }
                 ) { starship ->
                     StarshipCard(
                         starship = starship,
                         isFavorite = true,
-                        onToggleFavourite = { favouritesViewModel.toggleFavorite(starship.id) },
+                        onToggleFavourite = { favoritesViewModel.toggleFavorite(starship.id) },
                         onClick = {
                             navController.navigate("${AppDestinations.PDP_SCREEN_ROUTE}/${starship.id}")
                         }

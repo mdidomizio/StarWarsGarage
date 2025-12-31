@@ -5,9 +5,8 @@ import androidx.lifecycle.viewModelScope
 import com.example.starwarsgarage.domain.model.Starship
 import com.example.starwarsgarage.domain.repository.StarshipRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import javax.inject.Inject
@@ -16,32 +15,31 @@ import javax.inject.Inject
 class FavoritesViewModel @Inject constructor(
     private val repository: StarshipRepository
 ) : ViewModel() {
-    private val _favoriteStarships = MutableStateFlow<List<Starship>>(emptyList())
-    val favoriteStarships = _favoriteStarships.asStateFlow()
+
+    val favoriteStarships = repository.getFavoriteStarships()
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
 
     fun toggleFavorite(starshipId: String) {
+        Timber.tag("miriam").d("toggleFavorite called for $starshipId")
         viewModelScope.launch {
-            val currentFavorites = _favoriteStarships.value
-            val isCurrentlyFavorite = currentFavorites.any { it.id == starshipId }
+            val isCurrentlyFavorite = favoriteStarships.value.any { it.id == starshipId }
 
             if (isCurrentlyFavorite) {
-                _favoriteStarships.value = currentFavorites.filterNot { it.id == starshipId }
+                repository.removeFavoriteStarship(starshipId)
+                Timber.tag("miriam").d("$starshipId removed from favorites")
             } else {
                 repository.getStarshipDetailsById(starshipId)
                     .onSuccess { newFavoriteStarship ->
-                        _favoriteStarships.value = currentFavorites + newFavoriteStarship
+                        repository.addFavoriteStarship(newFavoriteStarship)
+                        Timber.tag("miriam").d("${newFavoriteStarship.name} added to favorites")
                     }
-                    .onFailure {
-                        Timber.e(
-                            it,
+                    .onFailure { error ->
+                        Timber.tag("miriam").e(
+                            error,
                             "Failed to add favorite: Could not fetch details for $starshipId"
                         )
                     }
             }
         }
-    }
-
-    fun isFavourite(starshipId: String): Boolean {
-        return _favoriteStarships.value.any { it.id == starshipId }
     }
 }

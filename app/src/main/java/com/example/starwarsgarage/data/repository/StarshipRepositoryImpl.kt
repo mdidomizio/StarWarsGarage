@@ -1,5 +1,7 @@
 package com.example.starwarsgarage.data.repository
 
+import android.content.Context
+import androidx.core.content.edit
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
@@ -11,10 +13,15 @@ import com.example.starwarsgarage.data.remote.StarshipPagingSource
 import com.example.starwarsgarage.data.remote.StarshipVehicleDetailsApi
 import com.example.starwarsgarage.domain.model.Starship
 import com.example.starwarsgarage.domain.repository.StarshipRepository
+import com.squareup.moshi.Moshi
+import com.squareup.moshi.Types
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.map
-import timber.log.Timber
+import kotlinx.coroutines.flow.update
 import javax.inject.Inject
+import javax.inject.Singleton
 
 // key = name from the basic API, value = ID from swapi.info
 private val STARSHIP_ID_MAP = hashMapOf(
@@ -43,10 +50,61 @@ private val STARSHIP_ID_MAP = hashMapOf(
     "AAT Battle Tank" to 4
 )
 
+@Singleton
 class StarshipRepositoryImpl @Inject constructor(
     private val starshipApi: StarshipApi,
-    private val starshipVehicleDetailsApi: StarshipVehicleDetailsApi
+    private val starshipVehicleDetailsApi: StarshipVehicleDetailsApi,
+    @ApplicationContext private val context: Context,
+    private val moshi: Moshi
 ) : StarshipRepository {
+
+    private val sharedPreferences = context.getSharedPreferences("favorites", Context.MODE_PRIVATE)
+    private val favoriteStarships = MutableStateFlow<List<Starship>>(emptyList())
+    private val starshipListAdapter by lazy {
+        val listType = Types.newParameterizedType(List::class.java, Starship::class.java)
+        moshi.adapter<List<Starship>>(listType)
+    }
+
+    init {
+        loadFavorites()
+    }
+
+    private fun loadFavorites() {
+        val favoritesJson = sharedPreferences.getString("favorite_starships", null)
+        if (favoritesJson != null) {
+            val favorites = starshipListAdapter.fromJson(favoritesJson)
+            if (favorites != null) {
+                favoriteStarships.value = favorites
+            }
+        }
+    }
+
+    override fun getFavoriteStarships(): Flow<List<Starship>> {
+        return favoriteStarships
+    }
+
+    override suspend fun addFavoriteStarship(starship: Starship) {
+        favoriteStarships.update { currentFavorites ->
+            val updatedFavorites = currentFavorites + starship
+            saveFavorites(updatedFavorites)
+            updatedFavorites
+        }
+    }
+
+    override suspend fun removeFavoriteStarship(starshipId: String) {
+        favoriteStarships.update { currentFavorites ->
+            val updatedFavorites = currentFavorites.filterNot { it.id == starshipId }
+            saveFavorites(updatedFavorites)
+            updatedFavorites
+        }
+    }
+
+    private fun saveFavorites(favorites: List<Starship>) {
+        val favoritesJson = starshipListAdapter.toJson(favorites)
+        sharedPreferences.edit {
+            putString("favorite_starships", favoritesJson)
+        }
+    }
 
     override fun getStarshipsStream(): Flow<PagingData<Starship>> {
         return Pager(

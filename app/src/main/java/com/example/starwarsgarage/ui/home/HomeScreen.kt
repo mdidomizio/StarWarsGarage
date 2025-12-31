@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowForward
 import androidx.compose.material3.Button
@@ -23,6 +24,7 @@ import androidx.navigation.NavHostController
 import com.example.starwarsgarage.R
 import com.example.starwarsgarage.navigation.AppDestinations.CATALOG_SCREEN_ROUTE
 import com.example.starwarsgarage.navigation.AppDestinations.FAVORITES_SCREEN_ROUTE
+import com.example.starwarsgarage.navigation.AppDestinations.GARAGE_GRAPH_ROUTE
 
 @Composable
 fun HomeScreen(navController: NavHostController, modifier: Modifier = Modifier) {
@@ -43,22 +45,24 @@ fun HomeScreen(navController: NavHostController, modifier: Modifier = Modifier) 
                 textAlign = TextAlign.Center
             )
             Spacer(modifier = Modifier.height(16.dp))
-            Button(onClick = { navController.navigate(CATALOG_SCREEN_ROUTE) }) {
+
+            Button(onClick = { navController.navigate(GARAGE_GRAPH_ROUTE) }) {
                 Text(text = stringResource(id = R.string.go_to_catalog_button))
+                Spacer(modifier = Modifier.width(8.dp))
                 Icon(
                     Icons.AutoMirrored.Filled.ArrowForward,
                     contentDescription = stringResource(id = R.string.go_to_catalog_button),
-                    modifier = Modifier.padding(start = 8.dp),
                 )
             }
             Spacer(modifier = Modifier.height(8.dp))
+
             Button(onClick = { navController.navigate(FAVORITES_SCREEN_ROUTE) }) {
                 Text(text = stringResource(id = R.string.go_to_favourites_button),
                     modifier = Modifier.padding(start = 8.dp))
+                Spacer(modifier = Modifier.width(8.dp))
                 Icon(
                     Icons.AutoMirrored.Filled.ArrowForward,
                     contentDescription = stringResource(id = R.string.go_to_favourites_button),
-                    modifier = Modifier.padding(start = 8.dp),
                 )
             }
         }

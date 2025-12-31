@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
@@ -32,6 +33,7 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -39,6 +41,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import androidx.paging.LoadState
+import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.itemKey
 import com.example.starwarsgarage.R
@@ -48,18 +51,23 @@ import com.example.starwarsgarage.ui.ErrorScreen
 import com.example.starwarsgarage.ui.FavoritesViewModel
 import com.example.starwarsgarage.ui.StarshipsViewModel
 import com.example.starwarsgarage.ui.theme.starJediFontFamily
+import kotlin.text.append
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterialApi::class)
 @Composable
 fun StarshipsCatalogScreen(
     navController: NavHostController,
     modifier: Modifier = Modifier,
-    starshipsViewModel: StarshipsViewModel = hiltViewModel(),
-    favoritesViewModel: FavoritesViewModel = hiltViewModel(),
+    starshipsViewModel: StarshipsViewModel,
+    favoritesViewModel: FavoritesViewModel,
 ) {
     val lazyPagingItems = starshipsViewModel.starships.collectAsLazyPagingItems()
     val favouriteStarships by favoritesViewModel.favoriteStarships.collectAsState()
     val isRefreshing = lazyPagingItems.loadState.refresh is LoadState.Loading
+
+    val favoriteIds = remember(favouriteStarships) {
+        favouriteStarships.map { it.id }.toSet()
+    }
     val pullRefreshState = rememberPullRefreshState(
         isRefreshing,
         onRefresh = { lazyPagingItems.refresh() }
@@ -100,10 +108,9 @@ fun StarshipsCatalogScreen(
                     ) { index ->
                         val starship = lazyPagingItems[index]
                         if (starship != null) {
-                            val isFavourite = favouriteStarships.any{ it.id == starship.id }
                             StarshipCard(
                                 starship = starship,
-                                isFavorite = isFavourite,
+                                isFavorite = starship.id in favoriteIds,
                                 onToggleFavourite = { favoritesViewModel.toggleFavorite(starship.id) },
                                 onClick = {
                                     navController.navigate("${PDP_SCREEN_ROUTE}/${starship.id}")
@@ -112,33 +119,7 @@ fun StarshipsCatalogScreen(
                         }
                     }
 
-                    lazyPagingItems.loadState.append.let {
-                        when (it) {
-                            is LoadState.Loading -> {
-                                item {
-                                    Box(
-                                        modifier = Modifier
-                                            .fillMaxWidth()
-                                            .padding(16.dp),
-                                        contentAlignment = Alignment.Center
-                                    ) {
-                                        CircularProgressIndicator()
-                                    }
-                                }
-                            }
-
-                            is LoadState.Error -> {
-                                item {
-                                    ErrorScreen(
-                                        message = stringResource(id = R.string.error_fetching_starships),
-                                        onRetry = { lazyPagingItems.retry() }
-                                    )
-                                }
-                            }
-
-                            else -> {}
-                        }
-                    }
+                    handleLoadStates(lazyPagingItems)
                 }
             }
 
@@ -147,6 +128,34 @@ fun StarshipsCatalogScreen(
                 state = pullRefreshState,
                 modifier = Modifier.align(Alignment.TopCenter)
             )
+        }
+    }
+}
+
+private fun LazyListScope.handleLoadStates(lazyPagingItems: LazyPagingItems<Starship>) {
+    lazyPagingItems.loadState.append.let {
+        when (it) {
+            is LoadState.Loading -> {
+                item {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(16.dp),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        CircularProgressIndicator()
+                    }
+                }
+            }
+            is LoadState.Error -> {
+                item {
+                    ErrorScreen(
+                        message = stringResource(id = R.string.error_fetching_starships),
+                        onRetry = { lazyPagingItems.retry() }
+                    )
+                }
+            }
+            else -> {}
         }
     }
 }
@@ -169,7 +178,10 @@ fun StarshipCard(
         Box(
             modifier = Modifier.fillMaxSize()
         ) {
-            Row(modifier = Modifier.padding(16.dp), verticalAlignment = Alignment.CenterVertically) {
+            Row(
+                modifier = Modifier.padding(16.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
                 Icon(
                     imageVector = Icons.Default.Star,
                     contentDescription = null,
