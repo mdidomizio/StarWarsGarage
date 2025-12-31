@@ -14,12 +14,6 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-sealed interface UiState {
-    data class Success(val starshipProduct: Starship) : UiState
-    data class Error(val message: String? = null) : UiState
-    object Loading : UiState
-}
-
 @HiltViewModel
 class StarshipsViewModel @Inject constructor(
     private val repository: StarshipRepository,
@@ -27,37 +21,4 @@ class StarshipsViewModel @Inject constructor(
 
     val starships: Flow<PagingData<Starship>> = repository.getStarshipsStream()
         .cachedIn(viewModelScope)
-    private val _allStarships = MutableStateFlow<List<Starship>>(emptyList())
-    val allStarships: StateFlow<List<Starship>> = _allStarships.asStateFlow()
-
-    private val _starshipUiState =
-        MutableStateFlow<UiState>(UiState.Loading)
-    val starshipUiState: StateFlow<UiState> = _starshipUiState
-
-    init {
-        fetchAllStarships()
-    }
-
-    private fun fetchAllStarships() {
-        viewModelScope.launch {
-            val allItems = repository.getAllStarships()
-            _allStarships.value = allItems
-        }
-    }
-
-    fun getStarship(id: String) {
-        viewModelScope.launch {
-            _starshipUiState.value = UiState.Loading
-            repository.getStarshipDetailsById(id)
-                .onSuccess { product ->
-                    _starshipUiState.value = UiState.Success(product)
-                }
-                .onFailure {
-                    _starshipUiState.value = UiState.Error(it.message)
-                }
-        }
-    }
-    fun retry(id: String) {
-        getStarship(id)
-    }
 }
