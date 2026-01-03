@@ -46,7 +46,7 @@ fun HomeScreen(navController: NavHostController, modifier: Modifier = Modifier) 
             )
             Spacer(modifier = Modifier.height(16.dp))
 
-            Button(onClick = { navController.navigate(GARAGE_GRAPH_ROUTE) }) {
+            Button(onClick = { navController.navigate(CATALOG_SCREEN_ROUTE) }) {
                 Text(text = stringResource(id = R.string.go_to_catalog_button))
                 Spacer(modifier = Modifier.width(8.dp))
                 Icon(

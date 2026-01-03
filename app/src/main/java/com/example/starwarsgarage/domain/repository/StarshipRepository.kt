@@ -7,7 +7,4 @@ import kotlinx.coroutines.flow.Flow
 interface StarshipRepository {
     fun getStarshipsStream(): Flow<PagingData<Starship>>
     suspend fun getStarshipDetailsById(id: String): Result<Starship>
-    fun getFavoriteStarships(): Flow<List<Starship>>
-    suspend fun addFavoriteStarship(starship: Starship)
-    suspend fun removeFavoriteStarship(starshipId: String)
 }

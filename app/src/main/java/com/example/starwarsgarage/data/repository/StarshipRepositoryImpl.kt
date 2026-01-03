@@ -53,58 +53,8 @@ private val STARSHIP_ID_MAP = hashMapOf(
 @Singleton
 class StarshipRepositoryImpl @Inject constructor(
     private val starshipApi: StarshipApi,
-    private val starshipVehicleDetailsApi: StarshipVehicleDetailsApi,
-    @ApplicationContext private val context: Context,
-    private val moshi: Moshi
+    private val starshipVehicleDetailsApi: StarshipVehicleDetailsApi
 ) : StarshipRepository {
-
-    private val sharedPreferences = context.getSharedPreferences("favorites", Context.MODE_PRIVATE)
-    private val favoriteStarships = MutableStateFlow<List<Starship>>(emptyList())
-    private val starshipListAdapter by lazy {
-        val listType = Types.newParameterizedType(List::class.java, Starship::class.java)
-        moshi.adapter<List<Starship>>(listType)
-    }
-
-    init {
-        loadFavorites()
-    }
-
-    private fun loadFavorites() {
-        val favoritesJson = sharedPreferences.getString("favorite_starships", null)
-        if (favoritesJson != null) {
-            val favorites = starshipListAdapter.fromJson(favoritesJson)
-            if (favorites != null) {
-                favoriteStarships.value = favorites
-            }
-        }
-    }
-
-    override fun getFavoriteStarships(): Flow<List<Starship>> {
-        return favoriteStarships
-    }
-
-    override suspend fun addFavoriteStarship(starship: Starship) {
-        favoriteStarships.update { currentFavorites ->
-            val updatedFavorites = currentFavorites + starship
-            saveFavorites(updatedFavorites)
-            updatedFavorites
-        }
-    }
-
-    override suspend fun removeFavoriteStarship(starshipId: String) {
-        favoriteStarships.update { currentFavorites ->
-            val updatedFavorites = currentFavorites.filterNot { it.id == starshipId }
-            saveFavorites(updatedFavorites)
-            updatedFavorites
-        }
-    }
-
-    private fun saveFavorites(favorites: List<Starship>) {
-        val favoritesJson = starshipListAdapter.toJson(favorites)
-        sharedPreferences.edit {
-            putString("favorite_starships", favoritesJson)
-        }
-    }
 
     override fun getStarshipsStream(): Flow<PagingData<Starship>> {
         return Pager(
@@ -125,8 +75,6 @@ class StarshipRepositoryImpl @Inject constructor(
             if (vehicleDetailsId == null) {
                 return Result.success(baseStarship.toStarship(null))
             }
-
-            // Now, try to get the details, but if it fails, return success with basic info
             return try {
                 val vehicleDetails = starshipVehicleDetailsApi.getStarshipVehicleDetailsById(vehicleDetailsId.toString())
                 Result.success(baseStarship.toStarship(vehicleDetails))
@@ -135,7 +83,6 @@ class StarshipRepositoryImpl @Inject constructor(
             }
 
         } catch (e: Exception) {
-            // This will catch failures from the first API call (getStarshipById)
             return Result.failure(e)
         }
     }

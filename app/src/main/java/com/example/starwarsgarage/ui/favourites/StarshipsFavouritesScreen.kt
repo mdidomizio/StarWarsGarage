@@ -23,6 +23,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.example.starwarsgarage.R
 import com.example.starwarsgarage.navigation.AppDestinations
@@ -34,9 +36,10 @@ import com.example.starwarsgarage.ui.catalog.StarshipCard
 fun StarshipsFavoritesScreen(
     navController: NavHostController,
     modifier: Modifier = Modifier,
-    favoritesViewModel: FavoritesViewModel,
+    viewModel: FavoritesViewModel = hiltViewModel(),
 ) {
-    val favoriteStarships by favoritesViewModel.favoriteStarships.collectAsState()
+    val uiState by viewModel.uiState.collectAsState()
+    val favoriteStarships = uiState.favoriteStarships
 
     Scaffold(
         topBar = {
@@ -74,7 +77,7 @@ fun StarshipsFavoritesScreen(
                     StarshipCard(
                         starship = starship,
                         isFavorite = true,
-                        onToggleFavourite = { favoritesViewModel.toggleFavorite(starship.id) },
+                        onToggleFavourite = { viewModel.toggleFavorite(starship) },
                         onClick = {
                             navController.navigate("${AppDestinations.PDP_SCREEN_ROUTE}/${starship.id}")
                         }

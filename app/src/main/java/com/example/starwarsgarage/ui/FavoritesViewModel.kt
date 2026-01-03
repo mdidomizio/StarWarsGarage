@@ -3,9 +3,12 @@ package com.example.starwarsgarage.ui
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.starwarsgarage.domain.model.Starship
+import com.example.starwarsgarage.domain.repository.FavoritesRepository
 import com.example.starwarsgarage.domain.repository.StarshipRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import timber.log.Timber
@@ -13,33 +16,24 @@ import javax.inject.Inject
 
 @HiltViewModel
 class FavoritesViewModel @Inject constructor(
-    private val repository: StarshipRepository
+    private val repository: FavoritesRepository
 ) : ViewModel() {
 
-    val favoriteStarships = repository.getFavoriteStarships()
-        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
+    data class FavoritesUiState(
+        val favoriteStarships: List<Starship> = emptyList()
+    )
 
-    fun toggleFavorite(starshipId: String) {
-        Timber.tag("miriam").d("toggleFavorite called for $starshipId")
-        viewModelScope.launch {
-            val isCurrentlyFavorite = favoriteStarships.value.any { it.id == starshipId }
-
-            if (isCurrentlyFavorite) {
-                repository.removeFavoriteStarship(starshipId)
-                Timber.tag("miriam").d("$starshipId removed from favorites")
-            } else {
-                repository.getStarshipDetailsById(starshipId)
-                    .onSuccess { newFavoriteStarship ->
-                        repository.addFavoriteStarship(newFavoriteStarship)
-                        Timber.tag("miriam").d("${newFavoriteStarship.name} added to favorites")
-                    }
-                    .onFailure { error ->
-                        Timber.tag("miriam").e(
-                            error,
-                            "Failed to add favorite: Could not fetch details for $starshipId"
-                        )
-                    }
-            }
+    val uiState: StateFlow<FavoritesUiState> = repository.favoriteStarships
+        .map { favoriteSet ->
+            FavoritesUiState(favoriteStarships = favoriteSet.toList())
         }
+        .stateIn(
+            scope =  viewModelScope,
+            started = SharingStarted.WhileSubscribed(5000L),
+            initialValue = FavoritesUiState(repository.favoriteStarships.value.toList())
+        )
+
+    fun toggleFavorite(starship: Starship) {
+        repository.toggleFavorite(starship)
     }
 }

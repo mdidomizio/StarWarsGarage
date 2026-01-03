@@ -33,7 +33,7 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.produceState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -48,26 +48,20 @@ import com.example.starwarsgarage.R
 import com.example.starwarsgarage.domain.model.Starship
 import com.example.starwarsgarage.navigation.AppDestinations.PDP_SCREEN_ROUTE
 import com.example.starwarsgarage.ui.ErrorScreen
-import com.example.starwarsgarage.ui.FavoritesViewModel
-import com.example.starwarsgarage.ui.StarshipsViewModel
+import com.example.starwarsgarage.ui.StarshipsCatalogViewModel
 import com.example.starwarsgarage.ui.theme.starJediFontFamily
-import kotlin.text.append
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterialApi::class)
 @Composable
 fun StarshipsCatalogScreen(
     navController: NavHostController,
     modifier: Modifier = Modifier,
-    starshipsViewModel: StarshipsViewModel,
-    favoritesViewModel: FavoritesViewModel,
+    viewModel: StarshipsCatalogViewModel = hiltViewModel(),
 ) {
-    val lazyPagingItems = starshipsViewModel.starships.collectAsLazyPagingItems()
-    val favouriteStarships by favoritesViewModel.favoriteStarships.collectAsState()
-    val isRefreshing = lazyPagingItems.loadState.refresh is LoadState.Loading
+    val uiState by viewModel.uiState.collectAsState()
+    val lazyPagingItems: LazyPagingItems<Starship> = viewModel.starships.collectAsLazyPagingItems()
 
-    val favoriteIds = remember(favouriteStarships) {
-        favouriteStarships.map { it.id }.toSet()
-    }
+    val isRefreshing = lazyPagingItems.loadState.refresh is LoadState.Loading
     val pullRefreshState = rememberPullRefreshState(
         isRefreshing,
         onRefresh = { lazyPagingItems.refresh() }
@@ -108,10 +102,13 @@ fun StarshipsCatalogScreen(
                     ) { index ->
                         val starship = lazyPagingItems[index]
                         if (starship != null) {
+                            //stale data from Starship Object (starship.isFavorite)-> bad
+                            // latest set of favorite ids (uiState.isFavorite) -> good for recomposition
+                            val isFavorite = uiState.favoriteIds.contains(starship.id)
                             StarshipCard(
                                 starship = starship,
-                                isFavorite = starship.id in favoriteIds,
-                                onToggleFavourite = { favoritesViewModel.toggleFavorite(starship.id) },
+                                isFavorite = isFavorite,
+                                onToggleFavourite = { viewModel.onFavoriteToggled(starship) },
                                 onClick = {
                                     navController.navigate("${PDP_SCREEN_ROUTE}/${starship.id}")
                                 }
