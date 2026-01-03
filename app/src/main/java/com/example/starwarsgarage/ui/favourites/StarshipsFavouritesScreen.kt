@@ -8,6 +8,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -24,10 +25,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.example.starwarsgarage.R
+import com.example.starwarsgarage.domain.model.Starship
 import com.example.starwarsgarage.navigation.AppDestinations
+import com.example.starwarsgarage.ui.ErrorScreen
+import com.example.starwarsgarage.ui.FavoritesUiState
 import com.example.starwarsgarage.ui.FavoritesViewModel
 import com.example.starwarsgarage.ui.catalog.StarshipCard
 
@@ -39,7 +42,6 @@ fun StarshipsFavoritesScreen(
     viewModel: FavoritesViewModel = hiltViewModel(),
 ) {
     val uiState by viewModel.uiState.collectAsState()
-    val favoriteStarships = uiState.favoriteStarships
 
     Scaffold(
         topBar = {
@@ -62,28 +64,65 @@ fun StarshipsFavoritesScreen(
         },
         modifier = modifier
     ) { innerPadding ->
-        if (favoriteStarships.isEmpty()) {
-            EmptyFavouritesMessage(innerPadding)
-        } else {
-            LazyColumn(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(innerPadding)
-            ) {
-                items(
-                    items = favoriteStarships,
-                    key = { starship -> starship.id }
-                ) { starship ->
-                    StarshipCard(
-                        starship = starship,
-                        isFavorite = true,
-                        onToggleFavourite = { viewModel.toggleFavorite(starship) },
-                        onClick = {
-                            navController.navigate("${AppDestinations.PDP_SCREEN_ROUTE}/${starship.id}")
+        when (val state = uiState) {
+            is FavoritesUiState.Loading -> {
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(innerPadding),
+                    contentAlignment = Alignment.Center
+                ) {
+                    CircularProgressIndicator()
+                }
+            }
+            is FavoritesUiState.Success -> {
+                if (state.favoriteStarship.isEmpty()) {
+                    EmptyFavouritesMessage(innerPadding)
+                } else {
+                    FavoritesList(
+                        starships = state.favoriteStarship,
+                        innerPadding = innerPadding,
+                        onToggleFavorite = { starship -> viewModel.toggleFavorite(starship) },
+                        onStarshipClick = { starshipId ->
+                            navController.navigate("${AppDestinations.PDP_SCREEN_ROUTE}/$starshipId")
                         }
                     )
                 }
             }
+            is FavoritesUiState.Error -> {
+                ErrorScreen(
+                    message = state.message ?: stringResource(id = R.string.error_fetching_starships),
+                    // In this context, retry might just re-subscribe, so a refresh isn't straightforward.
+                    // For a favorites screen, simply displaying the error is often enough.
+                    onRetry = { /* Optionally implement a retry mechanism */ }
+                )
+            }
+        }
+    }
+}
+
+@Composable
+fun FavoritesList(
+    starships: List<Starship>,
+    innerPadding: PaddingValues,
+    onToggleFavorite: (Starship) -> Unit,
+    onStarshipClick: (String) -> Unit
+) {
+    LazyColumn(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(innerPadding)
+    ) {
+        items(
+            items = starships,
+            key = { starship -> starship.id }
+        ) { starship ->
+            StarshipCard(
+                starship = starship,
+                isFavorite = true,
+                onToggleFavourite = { onToggleFavorite(starship) },
+                onClick = { onStarshipClick(starship.id) }
+            )
         }
     }
 }

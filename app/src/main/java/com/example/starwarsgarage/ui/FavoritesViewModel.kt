@@ -1,5 +1,6 @@
 package com.example.starwarsgarage.ui
 
+import android.os.Message
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.starwarsgarage.domain.model.Starship
@@ -9,10 +10,18 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import javax.inject.Inject
+
+sealed interface FavoritesUiState {
+    data object Loading : FavoritesUiState
+    data class Success(val favoriteStarship: List<Starship>) : FavoritesUiState
+    data class Error(val message: String?) : FavoritesUiState
+}
 
 @HiltViewModel
 class FavoritesViewModel @Inject constructor(
@@ -20,23 +29,26 @@ class FavoritesViewModel @Inject constructor(
     private val starshipRepository: StarshipRepository
 ) : ViewModel() {
 
-    data class FavoritesUiState(
-        val favoriteStarships: List<Starship> = emptyList(),
-        val isLoading: Boolean = true
-    )
-
     @OptIn(ExperimentalCoroutinesApi::class)
     val uiState: StateFlow<FavoritesUiState> = favoritesRepository.favoritesStarshipIds
         .flatMapLatest { favoriteIds ->
-            starshipRepository.getStarshipsByIds(favoriteIds)
-        }
-        .map { starships ->
-            FavoritesUiState(favoriteStarships = starships, isLoading = false)
+            if (favoriteIds.isEmpty()) {
+                flowOf(FavoritesUiState.Success(emptyList<Starship>()))
+            } else {
+                starshipRepository.getStarshipsByIds(favoriteIds)
+                    .map<List<Starship>, FavoritesUiState> { starships ->
+                        FavoritesUiState.Success(starships.sortedBy { it.name })
+                    }
+                    .catch { throwable ->
+                        emit(FavoritesUiState.Error(throwable.message))
+
+                    }
+            }
         }
         .stateIn(
-            scope =  viewModelScope,
+            scope = viewModelScope,
             started = SharingStarted.WhileSubscribed(5000L),
-            initialValue = FavoritesUiState(isLoading = true)
+            initialValue = FavoritesUiState.Loading
         )
 
     fun toggleFavorite(starship: Starship) {
