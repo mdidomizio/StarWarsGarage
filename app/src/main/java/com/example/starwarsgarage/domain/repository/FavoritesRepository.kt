@@ -1,16 +1,13 @@
 package com.example.starwarsgarage.domain.repository
 
-import android.content.SharedPreferences
-import com.example.starwarsgarage.domain.model.Starship
-import com.example.starwarsgarage.ui.catalog.StarshipCard
-import com.squareup.moshi.Moshi
-import com.squareup.moshi.Types
-import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.update
-import javax.inject.Inject
-import javax.inject.Singleton
 
+interface FavoritesRepository {
+    val favoritesStarshipIds: StateFlow<Set<String>>
+    fun toggleFavorite(starshipId: String)
+}
+
+/*
 @Singleton
 class FavoritesRepository @Inject constructor(
     private val prefs: SharedPreferences,
@@ -62,6 +59,7 @@ class FavoritesRepository @Inject constructor(
         }
     }
 }
+*/
 
 
 

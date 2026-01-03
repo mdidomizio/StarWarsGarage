@@ -16,8 +16,11 @@ import com.example.starwarsgarage.domain.repository.StarshipRepository
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.Types
 import dagger.hilt.android.qualifiers.ApplicationContext
+import kotlinx.coroutines.async
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.update
 import javax.inject.Inject
@@ -76,7 +79,8 @@ class StarshipRepositoryImpl @Inject constructor(
                 return Result.success(baseStarship.toStarship(null))
             }
             return try {
-                val vehicleDetails = starshipVehicleDetailsApi.getStarshipVehicleDetailsById(vehicleDetailsId.toString())
+                val vehicleDetails =
+                    starshipVehicleDetailsApi.getStarshipVehicleDetailsById(vehicleDetailsId.toString())
                 Result.success(baseStarship.toStarship(vehicleDetails))
             } catch (e: Exception) {
                 Result.success(baseStarship.toStarship(null))
@@ -86,6 +90,22 @@ class StarshipRepositoryImpl @Inject constructor(
             return Result.failure(e)
         }
     }
+
+    override fun getStarshipsByIds(ids: Set<String>): Flow<List<Starship>> =
+        flow {
+            if (ids.isEmpty()) {
+                emit(emptyList())
+                return@flow
+            }
+            val starship = coroutineScope {
+                ids.map { id ->
+                    async { getStarshipDetailsById(id) }
+                }.mapNotNull { deferredResult ->
+                    deferredResult.await().getOrNull()
+                }
+            }
+            emit(starship)
+        }
 }
 
 private fun StarshipBasic.toStarship(details: StarshipDetails?) = Starship(

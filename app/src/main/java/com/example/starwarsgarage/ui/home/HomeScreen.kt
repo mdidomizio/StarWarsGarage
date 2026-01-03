@@ -24,7 +24,6 @@ import androidx.navigation.NavHostController
 import com.example.starwarsgarage.R
 import com.example.starwarsgarage.navigation.AppDestinations.CATALOG_SCREEN_ROUTE
 import com.example.starwarsgarage.navigation.AppDestinations.FAVORITES_SCREEN_ROUTE
-import com.example.starwarsgarage.navigation.AppDestinations.GARAGE_GRAPH_ROUTE
 
 @Composable
 fun HomeScreen(navController: NavHostController, modifier: Modifier = Modifier) {

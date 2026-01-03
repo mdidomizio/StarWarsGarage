@@ -4,7 +4,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
-import androidx.paging.map
 import com.example.starwarsgarage.domain.model.Starship
 import com.example.starwarsgarage.domain.repository.FavoritesRepository
 import com.example.starwarsgarage.domain.repository.StarshipRepository
@@ -12,7 +11,6 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import javax.inject.Inject
@@ -29,7 +27,7 @@ class StarshipsCatalogViewModel @Inject constructor(
     val starships: Flow<PagingData<Starship>> = starshipRepository.getStarshipsStream()
         .cachedIn(viewModelScope)
     val uiState: StateFlow<CatalogUiState> =
-        favoritesRepository.favoriteStarshipIds
+        favoritesRepository.favoritesStarshipIds
             .map { ids -> CatalogUiState(favoriteIds = ids) }
             .stateIn(
                 scope = viewModelScope,
@@ -38,6 +36,6 @@ class StarshipsCatalogViewModel @Inject constructor(
             )
 
     fun onFavoriteToggled(starship: Starship) {
-        favoritesRepository.toggleFavorite(starship)
+        favoritesRepository.toggleFavorite(starship.id)
     }
 }

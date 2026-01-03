@@ -15,7 +15,6 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.starwarsgarage.navigation.AppDestinations.CATALOG_SCREEN_ROUTE
 import com.example.starwarsgarage.navigation.AppDestinations.FAVORITES_SCREEN_ROUTE
-import com.example.starwarsgarage.navigation.AppDestinations.GARAGE_GRAPH_ROUTE
 import com.example.starwarsgarage.navigation.AppDestinations.HOME_SCREEN_ROUTE
 import com.example.starwarsgarage.navigation.AppDestinations.PDP_SCREEN_ROUTE
 import com.example.starwarsgarage.navigation.AppDestinations.STARSHIP_ID_KEY
