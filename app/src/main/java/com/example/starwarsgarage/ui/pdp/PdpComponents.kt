@@ -24,12 +24,10 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.layout.ModifierLocalBeyondBoundsLayout
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.LineHeightStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -75,12 +73,18 @@ fun StarshipDescriptionBlock(
     HorizontalDivider()
 }
 @Composable
-fun StarshipImage(starship: Starship) {
-    Box {
+fun StarshipImage(
+    starship: Starship,
+    modifier: Modifier
+) {
+    Box (
+        modifier = modifier,
+        contentAlignment = Alignment.Center
+    ) {
         Box(
             modifier = Modifier
                 .fillMaxWidth()
-                .height(250.dp)
+                .matchParentSize()
                 .zIndex(1f),
             contentAlignment = Alignment.Center
         ) {
@@ -99,8 +103,7 @@ fun StarshipImage(starship: Starship) {
                 starship.name ?: ""
             ),
             modifier = Modifier
-                .fillMaxWidth()
-                .height(250.dp)
+                .matchParentSize()
                 .zIndex(2f),
             contentScale = ContentScale.Crop
         )

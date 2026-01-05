@@ -3,6 +3,7 @@ package com.example.starwarsgarage.ui.pdp
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
@@ -82,7 +83,12 @@ fun StarshipPdpScreen(
                         .padding(16.dp)
                 ) {
                     item {
-                        StarshipImage(starship)
+                        StarshipImage(
+                            starship,
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .height(250.dp)
+                        )
                     }
 
                     item { Spacer(modifier = Modifier.height(16.dp)) }

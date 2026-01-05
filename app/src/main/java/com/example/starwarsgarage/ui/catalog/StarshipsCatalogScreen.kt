@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -33,7 +34,6 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.produceState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -45,10 +45,12 @@ import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.itemKey
 import com.example.starwarsgarage.R
+import com.example.starwarsgarage.domain.model.STARSHIP_ID_MAP
 import com.example.starwarsgarage.domain.model.Starship
 import com.example.starwarsgarage.navigation.AppDestinations.PDP_SCREEN_ROUTE
 import com.example.starwarsgarage.ui.ErrorScreen
 import com.example.starwarsgarage.ui.StarshipsCatalogViewModel
+import com.example.starwarsgarage.ui.pdp.StarshipImage
 import com.example.starwarsgarage.ui.theme.starJediFontFamily
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterialApi::class)
@@ -105,14 +107,28 @@ fun StarshipsCatalogScreen(
                             //stale data from Starship Object (starship.isFavorite)-> bad
                             // latest set of favorite ids (uiState.isFavorite) -> good for recomposition
                             val isFavorite = uiState.favoriteIds.contains(starship.id)
-                            StarshipCard(
-                                starship = starship,
-                                isFavorite = isFavorite,
-                                onToggleFavourite = { viewModel.onFavoriteToggled(starship) },
-                                onClick = {
-                                    navController.navigate("${PDP_SCREEN_ROUTE}/${starship.id}")
-                                }
-                            )
+                            val hasExtendedDetails =
+                                starship.name != null && STARSHIP_ID_MAP.contains(starship.name)
+
+                            if (hasExtendedDetails) {
+                                StarshipExtendedCard(
+                                    starship = starship,
+                                    isFavorite = isFavorite,
+                                    onToggleFavourite = { viewModel.onFavoriteToggled(starship) },
+                                    onClick = {
+                                        navController.navigate("${PDP_SCREEN_ROUTE}/${starship.id}")
+                                    }
+                                )
+                            } else {
+                                StarshipBasicCard(
+                                    starship = starship,
+                                    isFavorite = isFavorite,
+                                    onToggleFavourite = { viewModel.onFavoriteToggled(starship) },
+                                    onClick = {
+                                        navController.navigate("${PDP_SCREEN_ROUTE}/${starship.id}")
+                                    }
+                                )
+                            }
                         }
                     }
 
@@ -144,6 +160,7 @@ private fun LazyListScope.handleLoadStates(lazyPagingItems: LazyPagingItems<Star
                     }
                 }
             }
+
             is LoadState.Error -> {
                 item {
                     ErrorScreen(
@@ -152,14 +169,61 @@ private fun LazyListScope.handleLoadStates(lazyPagingItems: LazyPagingItems<Star
                     )
                 }
             }
+
             else -> {}
         }
     }
 }
 
+@Composable
+fun StarshipExtendedCard(
+    starship: Starship,
+    isFavorite: Boolean,
+    onToggleFavourite: () -> Unit,
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    Card(
+        modifier = modifier
+            .padding(8.dp)
+            .fillMaxWidth()
+            .clickable(onClick = onClick)
+    ) {
+        Column(
+            modifier = Modifier.padding(16.dp)
+        ) {
+            StarshipImage(
+                starship,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(100.dp)
+            )
+            Spacer(modifier = Modifier.height(16.dp))
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                starship.name?.let {
+                    Text(
+                        text = it,
+                        style = MaterialTheme.typography.titleMedium,
+                        fontFamily = starJediFontFamily
+                    )
+                }
+                Spacer(Modifier.weight(1f))
+                FavoriteIconButton(
+                    isFavorite = isFavorite,
+                    onToggleFavourite = onToggleFavourite,
+                )
+            }
+        }
+
+    }
+}
+
 
 @Composable
-fun StarshipCard(
+fun StarshipBasicCard(
     starship: Starship,
     isFavorite: Boolean,
     onToggleFavourite: () -> Unit,
@@ -195,8 +259,15 @@ fun StarshipCard(
                     }
                 }
             }
+            FavoriteIconButton(
+                isFavorite = isFavorite,
+                onToggleFavourite = onToggleFavourite,
+                modifier = Modifier
+                    .align(Alignment.TopEnd)
+                    .padding(8.dp)
+            )
 
-            IconButton(
+            /*IconButton(
                 onClick = onToggleFavourite,
                 modifier = Modifier
                     .align(Alignment.TopEnd)
@@ -208,7 +279,25 @@ fun StarshipCard(
                     contentDescription = "Favourite",
                     tint = if (isFavorite) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurface
                 )
-            }
+            }*/
         }
+    }
+}
+
+@Composable
+fun FavoriteIconButton(
+    isFavorite: Boolean,
+    onToggleFavourite: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    IconButton(
+        onClick = onToggleFavourite,
+        modifier = modifier
+    ) {
+        Icon(
+            imageVector = if (isFavorite) Icons.Filled.Favorite else Icons.Filled.FavoriteBorder,
+            contentDescription = "Favourite",
+            tint = if (isFavorite) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurface
+        )
     }
 }

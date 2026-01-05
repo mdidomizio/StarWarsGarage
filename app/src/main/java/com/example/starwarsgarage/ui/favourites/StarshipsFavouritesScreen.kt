@@ -32,7 +32,7 @@ import com.example.starwarsgarage.navigation.AppDestinations
 import com.example.starwarsgarage.ui.ErrorScreen
 import com.example.starwarsgarage.ui.FavoritesUiState
 import com.example.starwarsgarage.ui.FavoritesViewModel
-import com.example.starwarsgarage.ui.catalog.StarshipCard
+import com.example.starwarsgarage.ui.catalog.StarshipBasicCard
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -117,7 +117,7 @@ fun FavoritesList(
             items = starships,
             key = { starship -> starship.id }
         ) { starship ->
-            StarshipCard(
+            StarshipBasicCard(
                 starship = starship,
                 isFavorite = true,
                 onToggleFavourite = { onToggleFavorite(starship) },
