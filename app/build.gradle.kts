@@ -41,7 +41,7 @@ android {
         compose = true
     }
 }
-
+val roomVersion = "2.6.1"
 dependencies {
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
@@ -78,6 +78,12 @@ dependencies {
     ksp("com.google.dagger:hilt-compiler:2.51")
     // For Hilt and Compose Navigation integration
     implementation("androidx.hilt:hilt-navigation-compose:1.2.0")
+
+    // room
+    implementation("androidx.room:room-runtime:$roomVersion")
+    ksp("androidx.room:room-compiler:$roomVersion") // Use ksp instead of kapt for Kotlin
+    implementation("androidx.room:room-ktx:$roomVersion") // Kotlin Extensions and Coroutines support
+    implementation("androidx.room:room-paging:$roomVersion") // Room Paging 3 integration
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
