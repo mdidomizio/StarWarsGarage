@@ -15,6 +15,7 @@ import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 sealed interface FavoritesUiState {
@@ -30,7 +31,7 @@ class FavoritesViewModel @Inject constructor(
 ) : ViewModel() {
 
     @OptIn(ExperimentalCoroutinesApi::class)
-    val uiState: StateFlow<FavoritesUiState> = favoritesRepository.favoritesStarshipIds
+    val uiState: StateFlow<FavoritesUiState> = favoritesRepository.getFavoritesStarshipIds()
         .flatMapLatest { favoriteIds ->
             if (favoriteIds.isEmpty()) {
                 flowOf(FavoritesUiState.Success(emptyList<Starship>()))
@@ -52,6 +53,8 @@ class FavoritesViewModel @Inject constructor(
         )
 
     fun toggleFavorite(starship: Starship) {
-        favoritesRepository.toggleFavorite(starship.id)
+        viewModelScope.launch {
+            favoritesRepository.toggleFavorite(starship.id)
+        }
     }
 }

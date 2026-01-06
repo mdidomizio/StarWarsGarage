@@ -1,40 +1,27 @@
 package com.example.starwarsgarage.data.repository
 
-import android.content.SharedPreferences
 import com.example.starwarsgarage.domain.repository.FavoritesRepository
-import androidx.core.content.edit
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.update
+import com.example.starwarsgarage.data.local.FavoriteStarship
+import com.example.starwarsgarage.data.local.FavoriteStarshipDao
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
 class FavoritesRepositoryImpl @Inject constructor(
-    private val prefs: SharedPreferences
+    private val favoriteStarshipDao: FavoriteStarshipDao
 ): FavoritesRepository {
-    private val favoritesKey = "favorite_starship_ids"
-    private val _favoriteStarshipIds = MutableStateFlow<Set<String>>(loadFavoriteIds())
-    override val favoritesStarshipIds: StateFlow<Set<String>> = _favoriteStarshipIds.asStateFlow()
+    override fun getFavoritesStarshipIds(): Flow<Set<String>> {
+        return favoriteStarshipDao.getFavoriteIds().map { it.toSet() }
+    }
 
-    override fun toggleFavorite(starshipId: String) {
-        _favoriteStarshipIds.update { currentIds ->
-            val newIds = if (currentIds.contains(starshipId)) {
-                currentIds - starshipId
-            } else {
-                currentIds + starshipId
-            }
-            saveFavoriteIds(newIds)
-            newIds
+    override suspend fun toggleFavorite(starshipId: String) {
+        val favorite = favoriteStarshipDao.getFavoriteById(starshipId)
+        if (favorite != null) {
+            favoriteStarshipDao.delete(favorite)
+        } else {
+            favoriteStarshipDao.insert(FavoriteStarship(id = starshipId))
         }
-    }
-    private fun saveFavoriteIds(ids: Set<String>) {
-        prefs.edit {
-            putStringSet(favoritesKey, ids)
-        }
-    }
-    private fun loadFavoriteIds(): Set<String> {
-        return prefs.getStringSet(favoritesKey, emptySet()) ?: emptySet()
     }
 }

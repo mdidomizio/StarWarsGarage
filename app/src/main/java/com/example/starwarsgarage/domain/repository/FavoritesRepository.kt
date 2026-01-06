@@ -1,8 +1,8 @@
 package com.example.starwarsgarage.domain.repository
 
-import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.Flow
 
 interface FavoritesRepository {
-    val favoritesStarshipIds: StateFlow<Set<String>>
-    fun toggleFavorite(starshipId: String)
+    fun getFavoritesStarshipIds(): Flow<Set<String>>
+    suspend fun toggleFavorite(starshipId: String)
 }

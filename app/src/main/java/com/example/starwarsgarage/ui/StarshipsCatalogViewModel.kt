@@ -13,6 +13,7 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
@@ -27,7 +28,7 @@ class StarshipsCatalogViewModel @Inject constructor(
     val starships: Flow<PagingData<Starship>> = starshipRepository.getStarshipsStream()
         .cachedIn(viewModelScope)
     val uiState: StateFlow<CatalogUiState> =
-        favoritesRepository.favoritesStarshipIds
+        favoritesRepository.getFavoritesStarshipIds()
             .map { ids -> CatalogUiState(favoriteIds = ids) }
             .stateIn(
                 scope = viewModelScope,
@@ -36,6 +37,8 @@ class StarshipsCatalogViewModel @Inject constructor(
             )
 
     fun onFavoriteToggled(starship: Starship) {
-        favoritesRepository.toggleFavorite(starship.id)
+        viewModelScope.launch {
+            favoritesRepository.toggleFavorite(starship.id)
+        }
     }
 }
