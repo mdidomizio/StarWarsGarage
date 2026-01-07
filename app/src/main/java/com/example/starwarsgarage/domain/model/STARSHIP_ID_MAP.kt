@@ -23,6 +23,5 @@ val STARSHIP_ID_MAP = hashMapOf(
     "Darth Vader's TIE Fighter" to 13,
     "TIE Fighter" to 13,
     "TIE Interceptor" to 13,
-    "Trade Federation Battleship" to 32,
-    //"AAT Battle Tank" to 4
+    "Trade Federation Battleship" to 32
 )
