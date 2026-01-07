@@ -1,5 +1,7 @@
 package com.example.starwarsgarage.ui.catalog
 
+import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -13,6 +15,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListScope
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
@@ -23,6 +26,7 @@ import androidx.compose.material.pullrefresh.PullRefreshIndicator
 import androidx.compose.material.pullrefresh.pullRefresh
 import androidx.compose.material.pullrefresh.rememberPullRefreshState
 import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -36,6 +40,8 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -183,39 +189,54 @@ fun StarshipExtendedCard(
     onClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
+    val cardShape = MaterialTheme.shapes.medium
+    val cardColors = CardDefaults.cardColors()
+    val cardBackgroundColor = cardColors.containerColor
+    val cornerSize = 12.dp //default corner size for MaterialTheme.shapes.medium
+
     Card(
         modifier = modifier
             .padding(8.dp)
             .fillMaxWidth()
-            .clickable(onClick = onClick)
+            .clickable(onClick = onClick),
+        shape = cardShape,
+        border = BorderStroke(1.dp, cardBackgroundColor)
     ) {
-        Column(
-            modifier = Modifier.padding(16.dp)
-        ) {
+        Column {
             StarshipImage(
                 starship,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(100.dp)
+                    .height(150.dp)
+                    .clip(
+                        RoundedCornerShape(
+                            topEnd = cornerSize,
+                            topStart = cornerSize,
+                            bottomEnd = 0.dp,
+                            bottomStart = 0.dp,
+                        )
+                    )
             )
-            Spacer(modifier = Modifier.height(16.dp))
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                starship.name?.let {
-                    Text(
-                        text = it,
-                        style = MaterialTheme.typography.titleMedium,
-                        fontFamily = starJediFontFamily
+            Column(modifier = Modifier.padding(16.dp)) {
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    starship.name?.let {
+                        Text(
+                            text = it,
+                            style = MaterialTheme.typography.titleMedium,
+                            fontFamily = starJediFontFamily
+                        )
+                    }
+                    Spacer(Modifier.weight(1f))
+                    FavoriteIconButton(
+                        isFavorite = isFavorite,
+                        onToggleFavourite = onToggleFavourite,
                     )
                 }
-                Spacer(Modifier.weight(1f))
-                FavoriteIconButton(
-                    isFavorite = isFavorite,
-                    onToggleFavourite = onToggleFavourite,
-                )
             }
+
         }
 
     }

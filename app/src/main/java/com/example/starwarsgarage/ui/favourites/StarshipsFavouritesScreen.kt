@@ -27,12 +27,14 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.example.starwarsgarage.R
+import com.example.starwarsgarage.domain.model.STARSHIP_ID_MAP
 import com.example.starwarsgarage.domain.model.Starship
 import com.example.starwarsgarage.navigation.AppDestinations
 import com.example.starwarsgarage.ui.ErrorScreen
 import com.example.starwarsgarage.ui.FavoritesUiState
 import com.example.starwarsgarage.ui.FavoritesViewModel
 import com.example.starwarsgarage.ui.catalog.StarshipBasicCard
+import com.example.starwarsgarage.ui.catalog.StarshipExtendedCard
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -48,7 +50,7 @@ fun StarshipsFavoritesScreen(
             TopAppBar(
                 title = { Text(text = stringResource(id = R.string.favorites_title)) },
                 navigationIcon = {
-                    IconButton (onClick = { navController.popBackStack() }) {
+                    IconButton(onClick = { navController.popBackStack() }) {
                         Icon(
                             Icons.AutoMirrored.Filled.ArrowBack,
                             contentDescription = stringResource(id = R.string.back_button_content_description)
@@ -75,6 +77,7 @@ fun StarshipsFavoritesScreen(
                     CircularProgressIndicator()
                 }
             }
+
             is FavoritesUiState.Success -> {
                 if (state.favoriteStarship.isEmpty()) {
                     EmptyFavouritesMessage(innerPadding)
@@ -89,11 +92,11 @@ fun StarshipsFavoritesScreen(
                     )
                 }
             }
+
             is FavoritesUiState.Error -> {
                 ErrorScreen(
-                    message = state.message ?: stringResource(id = R.string.error_fetching_starships),
-                    // In this context, retry might just re-subscribe, so a refresh isn't straightforward.
-                    // For a favorites screen, simply displaying the error is often enough.
+                    message = state.message
+                        ?: stringResource(id = R.string.error_fetching_starships),
                     onRetry = { viewModel.onRetry() }
                 )
             }
@@ -117,24 +120,35 @@ fun FavoritesList(
             items = starships,
             key = { starship -> starship.id }
         ) { starship ->
-            StarshipBasicCard(
-                starship = starship,
-                isFavorite = true,
-                onToggleFavourite = { onToggleFavorite(starship) },
-                onClick = { onStarshipClick(starship.id) }
-            )
+            val hasExtendedDetails =
+                starship.name != null && STARSHIP_ID_MAP.contains(starship.name)
+            if (hasExtendedDetails) {
+                StarshipExtendedCard(
+                    starship = starship,
+                    isFavorite = true,
+                    onToggleFavourite = { onToggleFavorite(starship) },
+                    onClick = { onStarshipClick(starship.id) }
+                )
+            } else {
+                StarshipBasicCard(
+                    starship = starship,
+                    isFavorite = true,
+                    onToggleFavourite = { onToggleFavorite(starship) },
+                    onClick = { onStarshipClick(starship.id) }
+                )
+            }
         }
     }
 }
 
 @Composable
-fun EmptyFavouritesMessage( innerPadding: PaddingValues) {
+fun EmptyFavouritesMessage(innerPadding: PaddingValues) {
     Box(
         modifier = Modifier
             .fillMaxSize()
             .padding(innerPadding),
         contentAlignment = Alignment.Center
-    ){
+    ) {
         Text(
             text = stringResource(id = R.string.no_favorites_yet),
             textAlign = TextAlign.Center
