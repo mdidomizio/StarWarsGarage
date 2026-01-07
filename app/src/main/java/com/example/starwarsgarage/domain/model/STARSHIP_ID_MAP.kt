@@ -24,5 +24,5 @@ val STARSHIP_ID_MAP = hashMapOf(
     "TIE Fighter" to 13,
     "TIE Interceptor" to 13,
     "Trade Federation Battleship" to 32,
-    "AAT Battle Tank" to 4
+    //"AAT Battle Tank" to 4
 )

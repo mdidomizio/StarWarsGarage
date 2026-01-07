@@ -266,20 +266,6 @@ fun StarshipBasicCard(
                     .align(Alignment.TopEnd)
                     .padding(8.dp)
             )
-
-            /*IconButton(
-                onClick = onToggleFavourite,
-                modifier = Modifier
-                    .align(Alignment.TopEnd)
-                    .padding(8.dp)
-            ) {
-                Icon(
-                    imageVector =
-                    if (isFavorite) Icons.Filled.Favorite else Icons.Filled.FavoriteBorder,
-                    contentDescription = "Favourite",
-                    tint = if (isFavorite) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurface
-                )
-            }*/
         }
     }
 }

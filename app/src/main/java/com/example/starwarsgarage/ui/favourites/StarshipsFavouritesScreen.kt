@@ -94,7 +94,7 @@ fun StarshipsFavoritesScreen(
                     message = state.message ?: stringResource(id = R.string.error_fetching_starships),
                     // In this context, retry might just re-subscribe, so a refresh isn't straightforward.
                     // For a favorites screen, simply displaying the error is often enough.
-                    onRetry = { /* Optionally implement a retry mechanism */ }
+                    onRetry = { viewModel.onRetry() }
                 )
             }
         }
