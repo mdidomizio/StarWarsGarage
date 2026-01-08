@@ -37,11 +37,13 @@ class MainActivity : ComponentActivity() {
                 Scaffold(
                     modifier = Modifier.fillMaxSize(),
                     topBar = {
-                        TopAppBar(
-                            title = { Text(topAppBarState.title) },
-                            navigationIcon = { topAppBarState.navigationIcon?.invoke() },
-                            actions = { topAppBarState.actions?.invoke(this) }
-                        )
+                        if (topAppBarState.isVisible) {
+                            TopAppBar(
+                                title = { Text(topAppBarState.title) },
+                                navigationIcon = { topAppBarState.navigationIcon?.invoke() },
+                                actions = { topAppBarState.actions?.invoke(this) }
+                            )
+                        }
                     },
                     bottomBar = { AppBottomNavigation(navController = navController) }
                 ) { innerPadding ->

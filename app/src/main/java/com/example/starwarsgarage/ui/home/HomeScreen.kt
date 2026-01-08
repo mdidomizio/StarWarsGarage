@@ -1,5 +1,6 @@
 package com.example.starwarsgarage.ui.home
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -17,6 +18,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -36,11 +39,17 @@ fun HomeScreen(
 ) {
     LaunchedEffect(Unit) {
         sharedViewModel.updateTopAppBar(
-            TopAppBarState(title = "")
+            TopAppBarState(title = "", isVisible = false)
         )
     }
 
     Box(modifier = modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+        Image(
+            painter = painterResource(id = R.drawable.hyperspace_warp_blue),
+            contentDescription = "",
+            modifier = Modifier.fillMaxSize(),
+            contentScale = ContentScale.Crop
+        )
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
@@ -58,7 +67,7 @@ fun HomeScreen(
             )
             Spacer(modifier = Modifier.height(16.dp))
 
-            /*Button(onClick = { navController.navigate(CATALOG_SCREEN_ROUTE) }) {
+            Button(onClick = { navController.navigate(CATALOG_SCREEN_ROUTE) }) {
                 Text(text = stringResource(id = R.string.go_to_catalog_button))
                 Spacer(modifier = Modifier.width(8.dp))
                 Icon(
@@ -78,7 +87,7 @@ fun HomeScreen(
                     Icons.AutoMirrored.Filled.ArrowForward,
                     contentDescription = stringResource(id = R.string.go_to_favourites_button),
                 )
-            }*/
+            }
         }
     }
 }

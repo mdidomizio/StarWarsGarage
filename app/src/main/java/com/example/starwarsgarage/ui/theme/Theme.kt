@@ -7,7 +7,7 @@ import androidx.compose.runtime.Composable
 import com.example.starwarsgarage.R
 
 private val DarkColorScheme = darkColorScheme(
-    primary = NeonBlue,
+    primary = NeonBlue, // primary = NeonLilla,
     secondary = NeonRed,
     background = Black,
     surface = Black,
@@ -18,7 +18,7 @@ private val DarkColorScheme = darkColorScheme(
 )
 
 private val LightColorScheme = lightColorScheme(
-    primary = NeonBlue,
+    primary = NeonBlue, // primary = NeonLilla,
     secondary = NeonRed,
     background = Black,
     surface = Black,
