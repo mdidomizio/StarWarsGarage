@@ -14,10 +14,8 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -29,8 +27,10 @@ import androidx.navigation.NavHostController
 import com.example.starwarsgarage.R
 import com.example.starwarsgarage.domain.model.Starship
 import com.example.starwarsgarage.ui.ErrorScreen
+import com.example.starwarsgarage.ui.SharedViewModel
 import com.example.starwarsgarage.ui.StarshipPdpUiState
 import com.example.starwarsgarage.ui.StarshipPdpViewModel
+import com.example.starwarsgarage.ui.TopAppBarState
 import com.example.starwarsgarage.ui.catalog.FavoriteIconButton
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -38,18 +38,15 @@ import com.example.starwarsgarage.ui.catalog.FavoriteIconButton
 fun StarshipPdpScreen(
     viewModel: StarshipPdpViewModel = hiltViewModel(),
     navController: NavHostController,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    sharedViewModel: SharedViewModel
 ) {
     val uiState by viewModel.uiState.collectAsState()
 
-    Scaffold(
-        topBar = {
-            TopAppBar(
-                title = {
-                    Text(
-                        text = (uiState as? StarshipPdpUiState.Success)?.starship?.name ?: ""
-                    )
-                },
+    LaunchedEffect(uiState) {
+        (uiState as? StarshipPdpUiState.Success)?.let {
+            sharedViewModel.updateTopAppBar(TopAppBarState(
+                title = it.starship.name ?: "",
                 navigationIcon = {
                     IconButton(onClick = { navController.popBackStack() }) {
                         Icon(
@@ -59,92 +56,88 @@ fun StarshipPdpScreen(
                     }
                 },
                 actions = {
-                    if (uiState is StarshipPdpUiState.Success) {
-                        FavoriteIconButton(
-                            isFavorite = (uiState as StarshipPdpUiState.Success).isFavorite,
-                            onToggleFavourite = { viewModel.onFavoriteToggled() }
-                        )
-                    }
+                    FavoriteIconButton(
+                        isFavorite = it.isFavorite,
+                        onToggleFavourite = { viewModel.onFavoriteToggled() }
+                    )
                 }
-            )
-        },
-        modifier = modifier
-    ) { innerPadding ->
-        when (val state = uiState) {
-            is StarshipPdpUiState.Loading -> {
-                Box(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .padding(innerPadding), contentAlignment = Alignment.Center
-                ) {
-                    CircularProgressIndicator()
-                }
+            ))
+        }
+    }
+
+    when (val state = uiState) {
+        is StarshipPdpUiState.Loading -> {
+            Box(
+                modifier = modifier
+                    .fillMaxSize(),
+                contentAlignment = Alignment.Center
+            ) {
+                CircularProgressIndicator()
             }
+        }
 
-            is StarshipPdpUiState.Error -> ErrorScreen(
-                message = state.message,
-                onRetry = { viewModel.fetchStarshipDetails() }
-            )
+        is StarshipPdpUiState.Error -> ErrorScreen(
+            message = state.message,
+            onRetry = { viewModel.fetchStarshipDetails() }
+        )
 
-            is StarshipPdpUiState.Success -> {
-                val starship: Starship = state.starship
-                LazyColumn(
-                    modifier = Modifier
-                        .padding(innerPadding)
-                        .padding(16.dp)
-                ) {
-                    item {
-                        StarshipImage(
-                            starship,
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .height(250.dp)
-                        )
-                    }
+        is StarshipPdpUiState.Success -> {
+            val starship: Starship = state.starship
+            LazyColumn(
+                modifier = modifier
+                    .padding(16.dp)
+            ) {
+                item {
+                    StarshipImage(
+                        starship,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(250.dp)
+                    )
+                }
 
-                    item { Spacer(modifier = Modifier.height(16.dp)) }
+                item { Spacer(modifier = Modifier.height(16.dp)) }
 
-                    item {
-                        if (starship.isPdpLoaded) {
-                            StarshipExpandableDescriptionBlock(
-                                label = stringResource(id = R.string.descriprion_label),
-                                value = starship.description
-                            )
-                        } else {
-                            StarshipDescriptionBlock(
-                                label = stringResource(id = R.string.descriprion_label),
-                                value = starship.description
-                            )
-                        }
-                    }
-
+                item {
                     if (starship.isPdpLoaded) {
-                        val properties = listOf(
-                            R.string.model_label to starship.model,
-                            R.string.manufacturer_label to starship.manufacturer,
-                            R.string.cost_label to starship.costInCredits,
-                            R.string.length_label to starship.length,
-                            R.string.max_atmosphering_speed_label to starship.maxAtmospheringSpeed,
-                            R.string.cargo_capacity_label to starship.cargoCapacity,
-                            R.string.consumables_label to starship.consumables,
-                            R.string.hyperdrive_rating_label to starship.hyperdriveRating,
-                            R.string.mglt_label to starship.mglt,
-                            R.string.starship_class_label to starship.starshipClass,
+                        StarshipExpandableDescriptionBlock(
+                            label = stringResource(id = R.string.descriprion_label),
+                            value = starship.description
                         )
+                    } else {
+                        StarshipDescriptionBlock(
+                            label = stringResource(id = R.string.descriprion_label),
+                            value = starship.description
+                        )
+                    }
+                }
 
-                        item {
-                            CrewAndPassengersInfo(
-                                crew = starship.crew,
-                                passengers = starship.passengers,
-                            )
-                        }
+                if (starship.isPdpLoaded) {
+                    val properties = listOf(
+                        R.string.model_label to starship.model,
+                        R.string.manufacturer_label to starship.manufacturer,
+                        R.string.cost_label to starship.costInCredits,
+                        R.string.length_label to starship.length,
+                        R.string.max_atmosphering_speed_label to starship.maxAtmospheringSpeed,
+                        R.string.cargo_capacity_label to starship.cargoCapacity,
+                        R.string.consumables_label to starship.consumables,
+                        R.string.hyperdrive_rating_label to starship.hyperdriveRating,
+                        R.string.mglt_label to starship.mglt,
+                        R.string.starship_class_label to starship.starshipClass,
+                    )
 
-                        items(properties) { (labelRes, value) ->
-                            StarshipProperty(
-                                label = stringResource(id = labelRes),
-                                value = value
-                            )
-                        }
+                    item {
+                        CrewAndPassengersInfo(
+                            crew = starship.crew,
+                            passengers = starship.passengers,
+                        )
+                    }
+
+                    items(properties) { (labelRes, value) ->
+                        StarshipProperty(
+                            label = stringResource(id = labelRes),
+                            value = value
+                        )
                     }
                 }
             }

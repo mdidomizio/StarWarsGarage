@@ -12,12 +12,9 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -33,6 +30,8 @@ import com.example.starwarsgarage.navigation.AppDestinations
 import com.example.starwarsgarage.ui.ErrorScreen
 import com.example.starwarsgarage.ui.FavoritesUiState
 import com.example.starwarsgarage.ui.FavoritesViewModel
+import com.example.starwarsgarage.ui.SharedViewModel
+import com.example.starwarsgarage.ui.TopAppBarState
 import com.example.starwarsgarage.ui.catalog.StarshipBasicCard
 import com.example.starwarsgarage.ui.catalog.StarshipExtendedCard
 
@@ -42,13 +41,14 @@ fun StarshipsFavoritesScreen(
     navController: NavHostController,
     modifier: Modifier = Modifier,
     viewModel: FavoritesViewModel = hiltViewModel(),
+    sharedViewModel: SharedViewModel
 ) {
     val uiState by viewModel.uiState.collectAsState()
 
-    Scaffold(
-        topBar = {
-            TopAppBar(
-                title = { Text(text = stringResource(id = R.string.favorites_title)) },
+    LaunchedEffect(Unit) {
+        sharedViewModel.updateTopAppBar(
+            TopAppBarState(
+                title = "Favorites",
                 navigationIcon = {
                     IconButton(onClick = { navController.popBackStack() }) {
                         Icon(
@@ -56,50 +56,43 @@ fun StarshipsFavoritesScreen(
                             contentDescription = stringResource(id = R.string.back_button_content_description)
                         )
                     }
-                },
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.surface,
-                    titleContentColor = MaterialTheme.colorScheme.onSurface,
-                    navigationIconContentColor = MaterialTheme.colorScheme.onSurface
-                )
+                }
             )
-        },
-        modifier = modifier
-    ) { innerPadding ->
-        when (val state = uiState) {
-            is FavoritesUiState.Loading -> {
-                Box(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .padding(innerPadding),
-                    contentAlignment = Alignment.Center
-                ) {
-                    CircularProgressIndicator()
-                }
-            }
+        )
+    }
 
-            is FavoritesUiState.Success -> {
-                if (state.favoriteStarship.isEmpty()) {
-                    EmptyFavouritesMessage(innerPadding)
-                } else {
-                    FavoritesList(
-                        starships = state.favoriteStarship,
-                        innerPadding = innerPadding,
-                        onToggleFavorite = { starship -> viewModel.toggleFavorite(starship) },
-                        onStarshipClick = { starshipId ->
-                            navController.navigate("${AppDestinations.PDP_SCREEN_ROUTE}/$starshipId")
-                        }
-                    )
-                }
+    when (val state = uiState) {
+        is FavoritesUiState.Loading -> {
+            Box(
+                modifier = modifier
+                    .fillMaxSize(),
+                contentAlignment = Alignment.Center
+            ) {
+                CircularProgressIndicator()
             }
+        }
 
-            is FavoritesUiState.Error -> {
-                ErrorScreen(
-                    message = state.message
-                        ?: stringResource(id = R.string.error_fetching_starships),
-                    onRetry = { viewModel.onRetry() }
+        is FavoritesUiState.Success -> {
+            if (state.favoriteStarship.isEmpty()) {
+                EmptyFavouritesMessage(PaddingValues())
+            } else {
+                FavoritesList(
+                    starships = state.favoriteStarship,
+                    innerPadding = PaddingValues(),
+                    onToggleFavorite = { starship -> viewModel.toggleFavorite(starship) },
+                    onStarshipClick = { starshipId ->
+                        navController.navigate("${AppDestinations.PDP_SCREEN_ROUTE}/$starshipId")
+                    }
                 )
             }
+        }
+
+        is FavoritesUiState.Error -> {
+            ErrorScreen(
+                message = state.message
+                    ?: stringResource(id = R.string.error_fetching_starships),
+                onRetry = { viewModel.onRetry() }
+            )
         }
     }
 }
