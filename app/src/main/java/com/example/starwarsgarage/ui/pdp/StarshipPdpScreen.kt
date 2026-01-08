@@ -31,6 +31,7 @@ import com.example.starwarsgarage.domain.model.Starship
 import com.example.starwarsgarage.ui.ErrorScreen
 import com.example.starwarsgarage.ui.StarshipPdpUiState
 import com.example.starwarsgarage.ui.StarshipPdpViewModel
+import com.example.starwarsgarage.ui.catalog.FavoriteIconButton
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -44,14 +45,24 @@ fun StarshipPdpScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text(
-                    text = (uiState as? StarshipPdpUiState.Success)?.starship?.name ?: ""
-                ) },
+                title = {
+                    Text(
+                        text = (uiState as? StarshipPdpUiState.Success)?.starship?.name ?: ""
+                    )
+                },
                 navigationIcon = {
                     IconButton(onClick = { navController.popBackStack() }) {
                         Icon(
                             Icons.AutoMirrored.Filled.ArrowBack,
                             contentDescription = stringResource(id = R.string.back_button_content_description)
+                        )
+                    }
+                },
+                actions = {
+                    if (uiState is StarshipPdpUiState.Success) {
+                        FavoriteIconButton(
+                            isFavorite = (uiState as StarshipPdpUiState.Success).isFavorite,
+                            onToggleFavourite = { viewModel.onFavoriteToggled() }
                         )
                     }
                 }
