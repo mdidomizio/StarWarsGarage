@@ -1,27 +1,19 @@
 package com.example.starwarsgarage.ui
 
-import android.R
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.WindowInsets
-import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.List
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.Home
-import androidx.compose.material3.Card
 import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.compose.currentBackStackEntryAsState
 import com.example.starwarsgarage.navigation.AppDestinations.CATALOG_SCREEN_ROUTE
@@ -29,7 +21,6 @@ import com.example.starwarsgarage.navigation.AppDestinations.FAVORITES_SCREEN_RO
 import com.example.starwarsgarage.navigation.AppDestinations.HOME_SCREEN_ROUTE
 import com.example.starwarsgarage.navigation.Screen
 import com.example.starwarsgarage.ui.theme.starJediFontFamily
-import timber.log.Timber
 
 data class BottomNavItem(
     val label: String,
@@ -65,45 +56,23 @@ fun AppBottomNavigation(
 
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentDestination = navBackStackEntry?.destination
-    Timber.tag("miriam").d("Current destination: ${currentDestination?.route}")
 
-    Box(
-        modifier = Modifier
-            .padding(
-                bottom = 24.dp
-            )
+    NavigationBar(
+       // windowInsets = WindowInsets(0.dp)
     ) {
-        NavigationBar(
-            windowInsets = WindowInsets(0.dp)
-        ) {
-            items.forEach { item ->
-                val isSelected = currentDestination?.hierarchy?.any { it.route == item.baseRoute } == true
-                Timber.tag("miriam").d("Item: ${item.label}, route: ${item.route}, isSelected: $isSelected")
-                NavigationBarItem(
-                    icon = { Icon(
-                        imageVector = item.icon,
-                        contentDescription = item.label,
-                        tint = MaterialTheme.colorScheme.primary
-                    )
-                    },
-                    label = { Text(
-                        text = item.label,
-                        fontFamily = starJediFontFamily
-                        )
-                            },
-                    selected = isSelected,
-                    onClick = {
-                        Timber.tag("miriam").d("Clicked on: ${item.label}, currentDestination: ${currentDestination?.route}, item.baseRoute: ${item.baseRoute}")
-                        navController.navigate(item.baseRoute) {
-                            popUpTo(navController.graph.findStartDestination().id) {
-                                saveState = true
-                            }
-                            launchSingleTop = true
-                            restoreState = true
-                        }
+        items.forEach { item ->
+            val isSelected = currentDestination?.route == item.route
+            NavigationBarItem(
+                icon = { Icon(imageVector = item.icon, contentDescription = item.label) },
+                label = { Text(text = item.label, fontFamily = starJediFontFamily) },
+                selected = isSelected,
+                onClick = {
+                    navController.navigate(item.baseRoute) {
+                        popUpTo(navController.graph.findStartDestination().id)
+                        launchSingleTop = true
                     }
-                )
-            }
+                }
+            )
         }
     }
 }
