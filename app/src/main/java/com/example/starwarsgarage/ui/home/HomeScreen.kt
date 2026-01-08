@@ -36,7 +36,7 @@ fun HomeScreen(
 ) {
     LaunchedEffect(Unit) {
         sharedViewModel.updateTopAppBar(
-            TopAppBarState(title = "Home")
+            TopAppBarState(title = "")
         )
     }
 
