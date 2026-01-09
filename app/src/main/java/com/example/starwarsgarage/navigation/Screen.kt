@@ -10,4 +10,5 @@ sealed class Screen ( val route: String) {
     object Pdp: Screen("$PDP_SCREEN_ROUTE/{$STARSHIP_ID_KEY}") {
         fun createRoute(starshipId: String) = "$PDP_SCREEN_ROUTE/$starshipId"
     }
+    object About: Screen("about_screen")
 }

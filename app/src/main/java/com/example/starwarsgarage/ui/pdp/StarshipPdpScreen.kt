@@ -101,12 +101,12 @@ fun StarshipPdpScreen(
                 item {
                     if (starship.isPdpLoaded) {
                         StarshipExpandableDescriptionBlock(
-                            label = stringResource(id = R.string.descriprion_label),
+                            label = stringResource(id = R.string.description_label),
                             value = starship.description
                         )
                     } else {
                         StarshipDescriptionBlock(
-                            label = stringResource(id = R.string.descriprion_label),
+                            label = stringResource(id = R.string.description_label),
                             value = starship.description
                         )
                     }

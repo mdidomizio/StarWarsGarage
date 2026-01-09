@@ -5,6 +5,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.List
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.Home
+import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
@@ -16,6 +17,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.compose.currentBackStackEntryAsState
+import com.example.starwarsgarage.navigation.AppDestinations.ABOUT_SCREEN_ROUTE
 import com.example.starwarsgarage.navigation.AppDestinations.CATALOG_SCREEN_ROUTE
 import com.example.starwarsgarage.navigation.AppDestinations.FAVORITES_SCREEN_ROUTE
 import com.example.starwarsgarage.navigation.AppDestinations.HOME_SCREEN_ROUTE
@@ -51,6 +53,12 @@ fun AppBottomNavigation(
             icon = Icons.Default.Favorite,
             route = Screen.Favorites.route,
             baseRoute = FAVORITES_SCREEN_ROUTE
+        ),
+        BottomNavItem(
+            label = "About",
+            icon = Icons.Default.Settings,
+            route = Screen.About.route,
+            baseRoute = ABOUT_SCREEN_ROUTE
         )
     )
 

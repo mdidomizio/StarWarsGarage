@@ -44,11 +44,12 @@ fun StarshipsFavoritesScreen(
     sharedViewModel: SharedViewModel
 ) {
     val uiState by viewModel.uiState.collectAsState()
+    val screenTitle = stringResource(id = R.string.favorites_title)
 
     LaunchedEffect(Unit) {
         sharedViewModel.updateTopAppBar(
             TopAppBarState(
-                title = "Favorites",
+                title = screenTitle,
                 navigationIcon = {
                     IconButton(onClick = { navController.popBackStack() }) {
                         Icon(

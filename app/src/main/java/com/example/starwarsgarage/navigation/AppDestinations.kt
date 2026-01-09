@@ -6,4 +6,5 @@ object AppDestinations {
     const val PDP_SCREEN_ROUTE = "pdp"
     const val FAVORITES_SCREEN_ROUTE = "favorites"
     const val STARSHIP_ID_KEY = "starshipId"
+    const val ABOUT_SCREEN_ROUTE = "about"
 }

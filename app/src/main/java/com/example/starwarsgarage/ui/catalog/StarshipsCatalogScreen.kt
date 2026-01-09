@@ -68,11 +68,12 @@ fun StarshipsCatalogScreen(
 ) {
     val uiState by viewModel.uiState.collectAsState()
     val lazyPagingItems: LazyPagingItems<Starship> = viewModel.starships.collectAsLazyPagingItems()
+    val screenTitle = stringResource(id = R.string.starship_catalog_title)
 
     LaunchedEffect(Unit) {
         sharedViewModel.updateTopAppBar(
             TopAppBarState(
-                title = "Catalog",
+                title = screenTitle,
                 navigationIcon = {
                     IconButton(onClick = { navController.popBackStack() }) {
                         Icon(

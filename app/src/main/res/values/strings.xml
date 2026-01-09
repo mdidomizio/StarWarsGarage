@@ -20,11 +20,12 @@
     <string name="go_to_catalog_button">Go to Catalog</string>
     <string name="go_to_favourites_button">Go to Favourites</string>
     <string name="home_screen_title">Star Wars Garage</string>
+    <string name="about_screen_title">About</string>
     <string name="home_screen_subtitle">The best place to find your next starship</string>
     <string name="retry_button_text">Retry</string>
     <string name="starship_image_description">Image of %1$s</string>
     <string name="no_description_available">No description available</string>
-    <string name="descriprion_label">Description</string>
+    <string name="description_label">Description</string>
     <string name="favorites_title">My Favorites</string>
     <string name="no_favorites_yet">You haven\'t added any favorites yet.\nTap the heart icon on a starship to add it here.</string>
 </resources>
