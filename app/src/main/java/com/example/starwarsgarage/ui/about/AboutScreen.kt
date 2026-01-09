@@ -35,15 +35,7 @@ fun AboutScreen(
     LaunchedEffect(Unit) {
         sharedViewModel.updateTopAppBar(
             TopAppBarState(
-                title = screenTitle,
-                navigationIcon = {
-                    IconButton(onClick = { navController.popBackStack() }) {
-                        Icon(
-                            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                            contentDescription = stringResource(id = R.string.back_button_content_description)
-                        )
-                    }
-                }
+                title = screenTitle
             )
         )
     }
@@ -120,3 +112,4 @@ fun AboutScreen(
         }
     }
 }
+
