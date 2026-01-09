@@ -16,7 +16,9 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.example.starwarsgarage.R
 import com.example.starwarsgarage.ui.SharedViewModel
@@ -46,33 +48,75 @@ fun AboutScreen(
         )
     }
 
-    Box(
-        modifier = modifier.fillMaxSize(),
-        contentAlignment = Alignment.Center
-    ) {
+    Box(modifier = modifier.fillMaxSize()) {
         Column(
             modifier = Modifier
                 .padding(16.dp)
         ) {
             Text(
-                text = "this is the about screen"
+                text = "About"
+            )
+            Text(
+                text = "Share",
+                fontSize = 16.sp,
+                fontFamily = FontFamily.Default
+            )
+            Text(
+                text = "More Apps",
+                fontSize = 16.sp,
+                fontFamily = FontFamily.Default
             )
 
-            Spacer(modifier = Modifier.height(8.dp))
+            Spacer(modifier = Modifier.height(16.dp))
             Text(
-                text = "this is the about screen"
+                text = "Follow us"
             )
-            Spacer(modifier = Modifier.height(8.dp))
             Text(
-                text = "this is the about screen"
+                text = "Github",
+                fontSize = 16.sp,
+                fontFamily = FontFamily.Default
+            )
+            Text(
+                text = "LinkedIn",
+                fontSize = 16.sp,
+                fontFamily = FontFamily.Default
+            )
+            Text(
+                text = "X - Former Twitter",
+                fontSize = 16.sp,
+                fontFamily = FontFamily.Default
             )
             Spacer(modifier = Modifier.height(16.dp))
             Text(
-                text = "this is the about screen"
+                text = "Developed by"
+            )
+            Text(
+                text = "Miriam Di Domizio",
+                fontSize = 16.sp,
+                fontFamily = FontFamily.Default
+            )
+            Spacer(modifier = Modifier.height(16.dp))
+            Text(
+                text = "Based on"
+            )
+            Text(
+                text = "Api 1 - https://starwars-databank.vercel.app/",
+                fontSize = 16.sp,
+                fontFamily = FontFamily.Default
+            )
+            Text(
+                text = "Api 2 - https://swapi.info/",
+                fontSize = 16.sp,
+                fontFamily = FontFamily.Default
+            )
+            Spacer(modifier = Modifier.height(64.dp))
+
+            Text(
+                text = "Star Wars Garage - Version 1.0",
+                fontSize = 16.sp,
+                fontFamily = FontFamily.Default
             )
             Spacer(modifier = Modifier.height(16.dp))
         }
     }
-
-
 }
