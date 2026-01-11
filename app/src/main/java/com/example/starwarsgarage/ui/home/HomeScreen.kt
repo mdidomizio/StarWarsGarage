@@ -25,6 +25,8 @@ import androidx.compose.ui.graphics.Shadow
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -54,14 +56,12 @@ fun HomeScreen(
     Box(modifier = modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
         Image(
             painter = painterResource(id = R.drawable.hyperspace_warp_blue),
-            contentDescription = "",
-            modifier = Modifier.fillMaxSize(),
+            contentDescription = null,
+            modifier = Modifier
+                .fillMaxSize()
+                .semantics{ contentDescription = "Decorative"},
             contentScale = ContentScale.Crop
         )
-        Surface(
-            modifier = Modifier.fillMaxSize(),
-            color = Color.Black.copy(alpha = 0.6f)
-        ) { }
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
@@ -69,13 +69,31 @@ fun HomeScreen(
             Text(
                 text = stringResource(id = R.string.home_screen_title),
                 fontSize = 32.sp,
-                textAlign = TextAlign.Center
+                textAlign = TextAlign.Center,
+                fontFamily = starJediFontFamily,
+                style = TextStyle(
+                    shadow = Shadow(
+                        color = Color.Black.copy(alpha = 1f),
+                        offset = Offset(9f, 9f),
+                        blurRadius = 1f
+                    )
+                ),
+                color = Color.White
             )
             Spacer(modifier = Modifier.height(8.dp))
             Text(
                 text = stringResource(id = R.string.home_screen_subtitle),
                 fontSize = 16.sp,
-                textAlign = TextAlign.Center
+                textAlign = TextAlign.Center,
+                fontFamily = starJediFontFamily,
+                style = TextStyle(
+                    shadow = Shadow(
+                        color = Color.Black.copy(alpha = 1f),
+                        offset = Offset(9f, 9f),
+                        blurRadius = 1f
+                    )
+                ),
+                color = Color.White
             )
         }
     }

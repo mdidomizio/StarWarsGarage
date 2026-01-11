@@ -21,7 +21,9 @@ object DatabaseModule {
             appContext,
             StarWarsDatabase::class.java,
             "starwars_database"
-        ).build()
+        )
+            .fallbackToDestructiveMigration()
+            .build()
     }
 
     @Provides

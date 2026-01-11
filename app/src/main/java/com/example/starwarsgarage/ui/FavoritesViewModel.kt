@@ -1,6 +1,5 @@
 package com.example.starwarsgarage.ui
 
-import android.os.Message
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.starwarsgarage.domain.model.Starship
@@ -40,14 +39,14 @@ class FavoritesViewModel @Inject constructor(
             favoritesRepository.getFavoritesStarshipIds()
                 .flatMapLatest { favoriteIds ->
                     if (favoriteIds.isEmpty()) {
-                        flowOf(FavoritesUiState.Success(emptyList<Starship>()))
+                        flowOf(FavoritesUiState.Success(emptyList()))
                     } else {
                         starshipRepository.getStarshipsByIds(favoriteIds)
                             .map<List<Starship>, FavoritesUiState> { starships ->
                                 FavoritesUiState.Success(starships.sortedBy { it.name })
                             }
                             .catch { throwable ->
-                                emit(FavoritesUiState.Error(throwable.message))
+                                emit(FavoritesUiState.Error(throwable.message ?: "Unknown Message"))
                             }
                     }
                 }

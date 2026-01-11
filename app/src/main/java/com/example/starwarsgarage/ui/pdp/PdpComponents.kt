@@ -18,6 +18,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -90,11 +91,13 @@ fun StarshipImage(
             CircularProgressIndicator()
         }
         val context = LocalContext.current
-        val imageRequest = ImageRequest.Builder(context)
-            .data(starship.image)
-            .size (500, 500)
-            .crossfade(enable = true)
-            .build()
+        val imageRequest = remember(starship.image) {
+            ImageRequest.Builder(context)
+                .data(starship.image)
+                .size (500, 500)
+                .crossfade(enable = true)
+                .build()
+        }
 
         AsyncImage(
             model = imageRequest,

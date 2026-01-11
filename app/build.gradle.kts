@@ -39,6 +39,7 @@ android {
     }
     buildFeatures {
         compose = true
+        buildConfig = true
     }
 }
 val roomVersion = "2.6.1"
@@ -59,6 +60,9 @@ dependencies {
 
     // Moshi
     implementation("com.squareup.moshi:moshi-kotlin:1.13.0")
+
+    // OkHttp Logging Interceptor
+    implementation("com.squareup.okhttp3:logging-interceptor:4.12.0")
 
     // coil
     implementation("io.coil-kt:coil-compose:2.5.0")

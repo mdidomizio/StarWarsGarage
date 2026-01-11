@@ -3,13 +3,15 @@ package com.example.starwarsgarage.di
 import com.example.starwarsgarage.data.remote.StarshipApi
 import com.example.starwarsgarage.data.remote.StarshipVehicleDetailsApi
 import com.squareup.moshi.Moshi
-import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
+import okhttp3.OkHttpClient
+import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
+import java.util.concurrent.TimeUnit
 import javax.inject.Qualifier
 import javax.inject.Singleton
 
@@ -30,10 +32,24 @@ object NetworkModule {
 
     @Provides
     @Singleton
+    fun provideOkHttpClient(): OkHttpClient {
+        return OkHttpClient.Builder()
+            .addInterceptor(HttpLoggingInterceptor().apply {
+                level = HttpLoggingInterceptor.Level.BODY
+            })
+            .connectTimeout(10, TimeUnit.SECONDS)
+            .readTimeout(10, TimeUnit.SECONDS)
+            .writeTimeout(10, TimeUnit.SECONDS)
+            .build()
+    }
+
+    @Provides
+    @Singleton
     @StarshipRetrofit
-    fun provideStarshipRetrofit(moshi: Moshi) : Retrofit{
+    fun provideStarshipRetrofit(okHttpClient: OkHttpClient, moshi: Moshi) : Retrofit{
         return Retrofit.Builder()
             .baseUrl(BASE_URL_STARSHIP)
+            .client(okHttpClient)
             .addConverterFactory(MoshiConverterFactory.create(moshi))
             .build()
     }
@@ -46,9 +62,10 @@ object NetworkModule {
     @Provides
     @Singleton
     @StarshipVehicleDetailsRetrofit
-    fun provideStarshipVehicleDetailsRetrofit(moshi: Moshi) : Retrofit {
+    fun provideStarshipVehicleDetailsRetrofit(moshi: Moshi, okHttpClient: OkHttpClient) : Retrofit {
         return Retrofit.Builder()
             .baseUrl(BASE_URL_STARSHIP_VEHICLE_DETAILS)
+            .client(okHttpClient)
             .addConverterFactory(MoshiConverterFactory.create(moshi))
             .build()
     }
