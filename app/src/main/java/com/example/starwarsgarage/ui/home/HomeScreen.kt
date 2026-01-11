@@ -29,6 +29,8 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
+import androidx.navigation.NavHost
 import androidx.navigation.NavHostController
 import com.example.starwarsgarage.R
 import com.example.starwarsgarage.navigation.AppDestinations.CATALOG_SCREEN_ROUTE
@@ -39,9 +41,9 @@ import com.example.starwarsgarage.ui.theme.starJediFontFamily
 
 @Composable
 fun HomeScreen(
-    navController: NavHostController,
     modifier: Modifier = Modifier,
-    sharedViewModel: SharedViewModel
+    sharedViewModel: SharedViewModel,
+    navController: NavController
 ) {
     LaunchedEffect(Unit) {
         sharedViewModel.updateTopAppBar(
@@ -58,7 +60,7 @@ fun HomeScreen(
         )
         Surface(
             modifier = Modifier.fillMaxSize(),
-            color = Color.Black.copy(alpha = 0.75f)
+            color = Color.Black.copy(alpha = 0.6f)
         ) { }
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
@@ -75,29 +77,6 @@ fun HomeScreen(
                 fontSize = 16.sp,
                 textAlign = TextAlign.Center
             )
-            Spacer(modifier = Modifier.height(16.dp))
-
-            Button(onClick = { navController.navigate(CATALOG_SCREEN_ROUTE) }) {
-                Text(text = stringResource(id = R.string.go_to_catalog_button))
-                Spacer(modifier = Modifier.width(8.dp))
-                Icon(
-                    Icons.AutoMirrored.Filled.ArrowForward,
-                    contentDescription = stringResource(id = R.string.go_to_catalog_button),
-                )
-            }
-            Spacer(modifier = Modifier.height(8.dp))
-
-            Button(onClick = { navController.navigate(FAVORITES_SCREEN_ROUTE) }) {
-                Text(
-                    text = stringResource(id = R.string.go_to_favourites_button),
-                    modifier = Modifier.padding(start = 8.dp)
-                )
-                Spacer(modifier = Modifier.width(8.dp))
-                Icon(
-                    Icons.AutoMirrored.Filled.ArrowForward,
-                    contentDescription = stringResource(id = R.string.go_to_favourites_button),
-                )
-            }
         }
     }
 }

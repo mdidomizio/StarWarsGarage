@@ -30,14 +30,6 @@ object NetworkModule {
 
     @Provides
     @Singleton
-    fun provideMoshi() : Moshi {
-        return Moshi.Builder()
-            .add(KotlinJsonAdapterFactory())
-            .build()
-    }
-
-    @Provides
-    @Singleton
     @StarshipRetrofit
     fun provideStarshipRetrofit(moshi: Moshi) : Retrofit{
         return Retrofit.Builder()

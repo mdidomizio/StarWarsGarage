@@ -46,10 +46,10 @@ fun AboutScreen(
                 .padding(16.dp)
         ) {
             Text(
-                text = "About"
+                text =  stringResource(id = R.string.about_screen_title)
             )
             Text(
-                text = "Share",
+                text = stringResource(id = R.string.about_share_field),
                 fontSize = 16.sp,
                 fontFamily = FontFamily.Default
             )
@@ -61,51 +61,51 @@ fun AboutScreen(
 
             Spacer(modifier = Modifier.height(16.dp))
             Text(
-                text = "Follow us"
+                text = stringResource(id = R.string.about_follow_us_label)
             )
             Text(
-                text = "Github",
+                text = stringResource(id = R.string.about_github_field),
                 fontSize = 16.sp,
                 fontFamily = FontFamily.Default
             )
             Text(
-                text = "LinkedIn",
+                text = stringResource(id = R.string.about_linkedin_field),
                 fontSize = 16.sp,
                 fontFamily = FontFamily.Default
             )
             Text(
-                text = "X - Former Twitter",
-                fontSize = 16.sp,
-                fontFamily = FontFamily.Default
-            )
-            Spacer(modifier = Modifier.height(16.dp))
-            Text(
-                text = "Developed by"
-            )
-            Text(
-                text = "Miriam Di Domizio",
+                text = stringResource(id = R.string.about_x_field),
                 fontSize = 16.sp,
                 fontFamily = FontFamily.Default
             )
             Spacer(modifier = Modifier.height(16.dp))
             Text(
-                text = "Based on"
+                text = stringResource(id = R.string.about_developed_by_label)
             )
             Text(
-                text = "Api 1 - https://starwars-databank.vercel.app/",
+                text = stringResource(id = R.string.about_developer_name_field),
+                fontSize = 16.sp,
+                fontFamily = FontFamily.Default
+            )
+            Spacer(modifier = Modifier.height(16.dp))
+            Text(
+                text = stringResource(id = R.string.about_api_label)
+            )
+            Text(
+                text = stringResource(id = R.string.about_api_one_field),
                 fontSize = 16.sp,
                 fontFamily = FontFamily.Default
             )
             Text(
-                text = "Api 2 - https://swapi.info/",
+                text = stringResource(id = R.string.about_api_two_field),
                 fontSize = 16.sp,
                 fontFamily = FontFamily.Default
             )
             Spacer(modifier = Modifier.height(64.dp))
 
             Text(
-                text = "Star Wars Garage - Version 1.0",
-                fontSize = 16.sp,
+                text = stringResource(id = R.string.about_version_field),
+                fontSize = 12.sp,
                 fontFamily = FontFamily.Default
             )
             Spacer(modifier = Modifier.height(16.dp))
