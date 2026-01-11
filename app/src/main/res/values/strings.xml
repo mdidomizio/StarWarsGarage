@@ -37,6 +37,7 @@
     <string name="about_api_two_field">Api 2: Swapi</string>
     <string name="about_api_two_url">https://swapi.info/</string>
     <string name="about_version_field">Star Wars Garage - Version 1.0</string>
+    <string name="about_share_chooser_title">Share link to Github Repository</string>
 
     <string name="home_screen_subtitle">The best place to find your next starship</string>
     <string name="retry_button_text">Retry</string>

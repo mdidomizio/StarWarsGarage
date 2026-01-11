@@ -1,5 +1,6 @@
 package com.example.starwarsgarage.ui.about
 
+import android.R.attr.type
 import android.content.ClipData
 import android.content.Intent
 import android.net.Uri
@@ -58,7 +59,8 @@ fun AboutScreen(
                 AboutSection(
                     title = stringResource(id = R.string.about_screen_title),
                 ) {
-                    val githubRepositoryUrl = stringResource(id = R.string.about_github_repository_url)
+                    val githubRepositoryUrl =
+                        stringResource(id = R.string.about_github_repository_url)
                     Text(
                         text = stringResource(id = R.string.about_share_field),
                         fontSize = 16.sp,
@@ -68,10 +70,20 @@ fun AboutScreen(
                         modifier = modifier
                             .padding(16.dp)
                             .clickable {
-                                val intent = Intent(Intent.ACTION_VIEW,
-                                    Uri.parse(githubRepositoryUrl)
+                                val shareIntent = Intent(Intent.ACTION_SEND).apply {
+                                    type = "text/plain"
+                                    putExtra(
+                                        Intent.EXTRA_TEXT,
+                                        githubRepositoryUrl
+                                    )
+                                }
+                                context.startActivity(
+                                    Intent.createChooser(
+                                        shareIntent,
+                                        context.getString(R.string.about_share_chooser_title)
+                                    )
                                 )
-                                context.startActivity(intent)
+
                             }
                     )
                 }
@@ -161,7 +173,7 @@ fun AboutScreen(
                         color = MaterialTheme.colorScheme.primary,
                         textDecoration = TextDecoration.Underline,
                         modifier = modifier
-                            .padding( 16.dp)
+                            .padding(16.dp)
                             .clickable {
                                 val intent = Intent(
                                     Intent.ACTION_VIEW,
@@ -213,7 +225,7 @@ fun AboutSection(
     Column(
         modifier = modifier.padding(bottom = 32.dp)
     ) {
-        Card (
+        Card(
             modifier = Modifier.padding(horizontal = 16.dp),
             border = BorderStroke(2.dp, MaterialTheme.colorScheme.primaryContainer)
         ) {
