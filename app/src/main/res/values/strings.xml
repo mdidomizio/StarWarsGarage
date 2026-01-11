@@ -18,18 +18,26 @@
     <string name="mglt_label">MGLT</string>
     <string name="starship_class_label">Starship Class</string>
     <string name="home_screen_title">Star Wars Garage</string>
+    // about screen
     <string name="about_screen_title">About</string>
     <string name="about_follow_us_label">Follow us</string>
     <string name="about_developed_by_label">Developed by</string>
     <string name="about_api_label">Based on</string>
     <string name="about_share_field">Share</string>
+    <string name="about_github_repository_url">https://github.com/mdidomizio/StarWarsGarage</string>
     <string name="about_github_field">Github</string>
+    <string name="about_github_profile_url">https://github.com/mdidomizio</string>
     <string name="about_linkedin_field">LinkedIn</string>
+    <string name="about_linkedin_url">https://www.linkedin.com/in/miriam-di-domizio-25b8ab12b</string>
     <string name="about_x_field">X - ex Twitter</string>
+    <string name="about_x_url">https://x.com/MiriamDiDomizio</string>
     <string name="about_developer_name_field">Miriam Di Domizio</string>
-    <string name="about_api_one_field">Api 1 - https://starwars-databank.vercel.app/</string>
-    <string name="about_api_two_field">Api 2 - https://swapi.info/</string>
+    <string name="about_api_one_field">Api 1: Star Wars - Databank</string>
+    <string name="about_api_one_url">https://starwars-databank.vercel.app/</string>
+    <string name="about_api_two_field">Api 2: Swapi</string>
+    <string name="about_api_two_url">https://swapi.info/</string>
     <string name="about_version_field">Star Wars Garage - Version 1.0</string>
+
     <string name="home_screen_subtitle">The best place to find your next starship</string>
     <string name="retry_button_text">Retry</string>
     <string name="starship_image_description">Image of %1$s</string>
@@ -37,4 +45,6 @@
     <string name="description_label">Description</string>
     <string name="favorites_title">My Favorites</string>
     <string name="no_favorites_yet">You haven\'t added any favorites yet.\nTap the heart icon on a starship to add it here.</string>
+
+
 </resources>
