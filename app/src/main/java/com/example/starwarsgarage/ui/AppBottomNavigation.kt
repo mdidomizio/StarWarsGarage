@@ -6,6 +6,7 @@ import androidx.compose.material.icons.automirrored.filled.List
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Settings
+import androidx.compose.material.icons.filled.Star
 import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
@@ -50,7 +51,7 @@ fun AppBottomNavigation(
         ),
         BottomNavItem(
             label = "Favorites",
-            icon = Icons.Default.Favorite,
+            icon = Icons.Default.Star,
             route = Screen.Favorites.route,
             baseRoute = FAVORITES_SCREEN_ROUTE
         ),
@@ -65,9 +66,7 @@ fun AppBottomNavigation(
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentDestination = navBackStackEntry?.destination
 
-    NavigationBar(
-       // windowInsets = WindowInsets(0.dp)
-    ) {
+    NavigationBar {
         items.forEach { item ->
             val isSelected = currentDestination?.route == item.route
             NavigationBarItem(
