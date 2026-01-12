@@ -70,7 +70,6 @@ fun AppNavigation(
         ) {
             composable(Screen.About.route) { backStackEntry ->
                 AboutScreen(
-                    navController = navController,
                     sharedViewModel = sharedViewModel
                 )
             }
