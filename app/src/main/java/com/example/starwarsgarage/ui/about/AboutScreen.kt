@@ -126,12 +126,28 @@ fun AboutScreen(
 
             item {
                 AboutSection(title = stringResource(id = R.string.about_developed_by_label)) {
-                    Text(
-                        text = stringResource(id = R.string.about_developer_name_field),
-                        fontSize = 16.sp,
-                        fontFamily = FontFamily.Default,
-                        modifier = modifier.padding(16.dp)
-                    )
+                    Row(
+                        modifier = Modifier
+                            /*.fillMaxWidth()
+                            .height(40.dp)*/
+                            .padding(16.dp),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Icon(
+                            painter = painterResource(id = R.drawable.signature_64dp),
+                            contentDescription = null,
+                            modifier = Modifier.size(20.dp),
+                            tint = Color.White
+                        )
+                        Spacer(modifier = Modifier.width(8.dp))
+
+                        Text(
+                            text = stringResource(id = R.string.about_developer_name_field),
+                            fontSize = 16.sp,
+                            fontFamily = FontFamily.Default,
+                            modifier = modifier.padding(horizontal = 16.dp)
+                        )
+                    }
                 }
             }
 
@@ -150,7 +166,7 @@ fun AboutScreen(
                         text = stringResource(id = R.string.about_version_field),
                         fontSize = 12.sp,
                         fontFamily = FontFamily.Default,
-                        modifier = modifier.padding(8.dp)
+                        modifier = modifier.padding(horizontal = 16.dp, vertical = 4.dp)
                     )
                 }
             }
@@ -248,7 +264,7 @@ fun ClickableLink(
             textDecoration = TextDecoration.Underline,
             modifier = modifier
                 .fillMaxWidth()
-                .padding(horizontal = 16.dp, vertical = 8.dp)
+                .padding(horizontal = 16.dp)
                 .clickable { onUrlClick(url) }
         )
     }
