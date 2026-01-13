@@ -82,6 +82,8 @@ fun HomeScreen(
                 ),
                 color = Color.White
             )
+            Spacer(modifier = Modifier.height(32.dp))
+            StarshipShowstopper()
         }
     }
 }
