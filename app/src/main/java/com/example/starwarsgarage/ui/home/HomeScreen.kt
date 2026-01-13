@@ -7,13 +7,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowForward
-import androidx.compose.material3.Button
-import androidx.compose.material3.Icon
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -31,12 +24,7 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.navigation.NavController
-import androidx.navigation.NavHost
-import androidx.navigation.NavHostController
 import com.example.starwarsgarage.R
-import com.example.starwarsgarage.navigation.AppDestinations.CATALOG_SCREEN_ROUTE
-import com.example.starwarsgarage.navigation.AppDestinations.FAVORITES_SCREEN_ROUTE
 import com.example.starwarsgarage.ui.SharedViewModel
 import com.example.starwarsgarage.ui.TopAppBarState
 import com.example.starwarsgarage.ui.theme.starJediFontFamily
@@ -44,8 +32,7 @@ import com.example.starwarsgarage.ui.theme.starJediFontFamily
 @Composable
 fun HomeScreen(
     modifier: Modifier = Modifier,
-    sharedViewModel: SharedViewModel,
-    navController: NavController
+    sharedViewModel: SharedViewModel
 ) {
     LaunchedEffect(Unit) {
         sharedViewModel.updateTopAppBar(

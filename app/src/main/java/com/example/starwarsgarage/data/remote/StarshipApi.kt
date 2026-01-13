@@ -1,6 +1,5 @@
 package com.example.starwarsgarage.data.remote
 
-import androidx.compose.foundation.text.input.TextFieldLineLimits
 import retrofit2.http.GET
 import retrofit2.http.Path
 import retrofit2.http.Query

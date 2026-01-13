@@ -72,6 +72,7 @@ fun StarshipDescriptionBlock(
     }
     HorizontalDivider()
 }
+
 @Composable
 fun StarshipImage(
     starship: Starship,

@@ -128,8 +128,6 @@ fun AboutScreen(
                 AboutSection(title = stringResource(id = R.string.about_developed_by_label)) {
                     Row(
                         modifier = Modifier
-                            /*.fillMaxWidth()
-                            .height(40.dp)*/
                             .padding(16.dp),
                         verticalAlignment = Alignment.CenterVertically
                     ) {

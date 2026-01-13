@@ -1,6 +1,5 @@
 package com.example.starwarsgarage.navigation
 
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
@@ -31,7 +30,6 @@ fun AppNavigation(
         ) {
             composable(Screen.Home.route) {
                 HomeScreen(
-                    navController = navController,
                     sharedViewModel = sharedViewModel
                 )
             }
@@ -40,7 +38,7 @@ fun AppNavigation(
             startDestination = Screen.Catalog.route,
             route = AppDestinations.CATALOG_SCREEN_ROUTE
         ) {
-            composable(Screen.Catalog.route) { backStackEntry ->
+            composable(Screen.Catalog.route) {
                 StarshipsCatalogScreen(
                     sharedViewModel = sharedViewModel,
                     navController = navController
@@ -57,7 +55,7 @@ fun AppNavigation(
             startDestination = Screen.Favorites.route,
             route = AppDestinations.FAVORITES_SCREEN_ROUTE
         ) {
-            composable(Screen.Favorites.route) { backStackEntry ->
+            composable(Screen.Favorites.route) {
                 StarshipsFavoritesScreen(
                     navController = navController,
                     sharedViewModel = sharedViewModel
@@ -68,7 +66,7 @@ fun AppNavigation(
             startDestination = Screen.About.route,
             route = AppDestinations.ABOUT_SCREEN_ROUTE
         ) {
-            composable(Screen.About.route) { backStackEntry ->
+            composable(Screen.About.route) {
                 AboutScreen(
                     sharedViewModel = sharedViewModel
                 )
