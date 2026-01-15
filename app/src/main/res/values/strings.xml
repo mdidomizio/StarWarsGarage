@@ -44,8 +44,9 @@
     <string name="starship_image_description">Image of %1$s</string>
     <string name="no_description_available">No description available</string>
     <string name="description_label">Description</string>
-    <string name="favorites_title">My Favorites</string>
-    <string name="no_favorites_yet">You haven\'t added any favorites yet.\nTap the heart icon on a starship to add it here.</string>
+    <string name="favorites_title">My Garage</string>
+    <string name="no_favorites_yet">Your garage is empty now.\nTap the rocket icon on a starship to add it to your garage.</string>
+    <string name="favorite_icon_content_description">Favourite</string>
 
 
 </resources>

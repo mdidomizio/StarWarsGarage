@@ -11,10 +11,13 @@ import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.painterResource
 import androidx.navigation.NavController
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.compose.currentBackStackEntryAsState
+import com.example.starwarsgarage.R
 import com.example.starwarsgarage.navigation.AppDestinations.ABOUT_SCREEN_ROUTE
 import com.example.starwarsgarage.navigation.AppDestinations.CATALOG_SCREEN_ROUTE
 import com.example.starwarsgarage.navigation.AppDestinations.FAVORITES_SCREEN_ROUTE
@@ -24,7 +27,7 @@ import com.example.starwarsgarage.ui.theme.starJediFontFamily
 
 data class BottomNavItem(
     val label: String,
-    val icon: ImageVector,
+    val icon: Any,
     val route: String,
     val baseRoute: String
 )
@@ -47,8 +50,8 @@ fun AppBottomNavigation(
             baseRoute = CATALOG_SCREEN_ROUTE
         ),
         BottomNavItem(
-            label = "Favorites",
-            icon = Icons.Default.Star,
+            label = "My Garage",
+            icon = painterResource(R.drawable.rocket_launch_64dp),
             route = Screen.Favorites.route,
             baseRoute = FAVORITES_SCREEN_ROUTE
         ),
@@ -67,7 +70,12 @@ fun AppBottomNavigation(
         items.forEach { item ->
             val isSelected = currentDestination?.route == item.route
             NavigationBarItem(
-                icon = { Icon(imageVector = item.icon, contentDescription = item.label) },
+                icon = {
+                    when (val icon = item.icon) {
+                        is ImageVector -> Icon(imageVector = icon, contentDescription = item.label)
+                        is Painter -> Icon(painter = icon, contentDescription = item.label)
+                    }
+                },
                 label = { Text(text = item.label, fontFamily = starJediFontFamily) },
                 selected = isSelected,
                 onClick = {

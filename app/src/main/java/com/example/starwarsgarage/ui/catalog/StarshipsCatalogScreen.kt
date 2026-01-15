@@ -180,8 +180,6 @@ fun StarshipExtendedCard(
     modifier: Modifier = Modifier
 ) {
     val cardShape = MaterialTheme.shapes.medium
-    val cardColors = CardDefaults.cardColors()
-    val cardBackgroundColor = cardColors.containerColor
     val cornerSize = 12.dp //default corner size for MaterialTheme.shapes.medium
 
     Card(
@@ -190,7 +188,7 @@ fun StarshipExtendedCard(
             .fillMaxWidth()
             .clickable(onClick = onClick),
         shape = cardShape,
-        border = BorderStroke(1.dp, cardBackgroundColor)
+        border = BorderStroke(1.dp, MaterialTheme.colorScheme.primaryContainer)
     ) {
         Column {
             StarshipImage(
@@ -244,22 +242,32 @@ fun StarshipBasicCard(
         modifier = modifier
             .padding(8.dp)
             .fillMaxWidth()
-            .clickable(onClick = onClick)
+            .clickable(onClick = onClick),
+        border = BorderStroke(1.dp, MaterialTheme.colorScheme.primaryContainer)
     ) {
         Box(
             modifier = Modifier.fillMaxSize()
         ) {
             Row(
-                modifier = Modifier.padding(16.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Icon(
-                    painter = painterResource(id = R.drawable.rocket_launch_64dp),
-                    contentDescription = null,
-                    modifier = Modifier.size(64.dp)
+                StarshipImage(
+                    starship = starship,
+                    modifier = Modifier
+                        .size(100.dp)
+                        .clip(
+                            RoundedCornerShape(
+                                topEnd = 0.dp,
+                                topStart = 12.dp,
+                                bottomEnd = 0.dp,
+                                bottomStart = 12.dp
+                            )
+                        )
                 )
                 Spacer(modifier = Modifier.width(16.dp))
-                Column {
+                Column (
+                    modifier = Modifier.padding(16.dp)
+                ){
                     starship.name?.let {
                         Text(
                             text = it,
@@ -291,8 +299,8 @@ fun FavoriteIconButton(
         modifier = modifier
     ) {
         Icon(
-            imageVector = if (isFavorite) Icons.Filled.Star else Icons.Filled.Star,
-            contentDescription = "Favourite",
+            painter = painterResource(id = R.drawable.rocket_launch_64dp),
+            contentDescription =stringResource(id = R.string.favorite_icon_content_description),
             tint = if (isFavorite) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurface
         )
     }
