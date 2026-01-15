@@ -10,6 +10,8 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
@@ -24,7 +26,9 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.starwarsgarage.R
+import com.example.starwarsgarage.ui.HomeViewModel
 import com.example.starwarsgarage.ui.SharedViewModel
 import com.example.starwarsgarage.ui.TopAppBarState
 import com.example.starwarsgarage.ui.theme.starJediFontFamily
@@ -32,15 +36,22 @@ import com.example.starwarsgarage.ui.theme.starJediFontFamily
 @Composable
 fun HomeScreen(
     modifier: Modifier = Modifier,
-    sharedViewModel: SharedViewModel
+    sharedViewModel: SharedViewModel,
+    homeViewModel: HomeViewModel = hiltViewModel()
 ) {
+    val starship by homeViewModel.starshipOfTheDay.collectAsState()
+
     LaunchedEffect(Unit) {
         sharedViewModel.updateTopAppBar(
             TopAppBarState(title = "", isVisible = false)
         )
+        homeViewModel.fetchStarshipOfTheDay()
     }
 
-    Box(modifier = modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+    Box(
+        modifier = modifier.fillMaxSize(),
+        contentAlignment = Alignment.Center
+    ) {
         Image(
             painter = painterResource(id = R.drawable.hyperspace_warp_blue),
             contentDescription = null,
@@ -83,7 +94,11 @@ fun HomeScreen(
                 color = Color.White
             )
             Spacer(modifier = Modifier.height(32.dp))
-            StarshipShowstopper()
+            starship?.let{ starshipData ->
+                StarshipShowstopper(
+                    starship = starshipData
+                )
+            }
         }
     }
 }

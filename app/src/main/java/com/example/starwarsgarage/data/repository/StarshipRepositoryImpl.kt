@@ -23,8 +23,9 @@ import com.example.starwarsgarage.domain.model.STARSHIP_ID_MAP
 @Singleton
 class StarshipRepositoryImpl @Inject constructor(
     private val starshipApi: StarshipApi,
-    private val starshipVehicleDetailsApi: StarshipVehicleDetailsApi
+    private val starshipVehicleDetailsApi: StarshipVehicleDetailsApi,
 ) : StarshipRepository {
+    private var allStarshipsCache: List<Starship> = emptyList()
 
     override fun getStarshipsStream(): Flow<PagingData<Starship>> {
         return Pager(
@@ -72,6 +73,31 @@ class StarshipRepositoryImpl @Inject constructor(
             }
             emit(starship)
         }
+
+    override suspend fun getRandomStarship(): Result<Starship?> {
+        return try {
+            if (allStarshipsCache.isEmpty()) {
+                val fetchedStarships = mutableListOf<StarshipBasic>()
+                var currentPage = 1
+                var hasNextPage = true
+
+                while (hasNextPage) {
+                    val response = starshipApi.getStarships(page = currentPage)
+                    fetchedStarships.addAll(response.data)
+
+                    hasNextPage = response.info.next != null
+                    if (hasNextPage) currentPage++
+                }
+                allStarshipsCache = fetchedStarships.map {
+                    it.toStarship(null)
+                }
+            }
+            Result.success(allStarshipsCache.randomOrNull())
+        } catch (e: Exception) {
+            e.printStackTrace()
+            Result.failure(e)
+        }
+    }
 }
 
 private fun StarshipBasic.toStarship(details: StarshipDetails?) = Starship(
