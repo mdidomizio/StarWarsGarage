@@ -1,31 +1,17 @@
 package com.example.starwarsgarage.ui.home
 
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import coil.compose.AsyncImage
 import com.example.starwarsgarage.R
 import com.example.starwarsgarage.domain.model.Starship
 import com.example.starwarsgarage.ui.pdp.StarshipImage
@@ -36,53 +22,30 @@ fun StarshipShowstopper(
     starship: Starship,
     modifier: Modifier = Modifier
 ) {
-    Card(
-        modifier = modifier
-            .fillMaxWidth()
-        ,
-        shape = RoundedCornerShape(12.dp),
-        elevation = CardDefaults.cardElevation(defaultElevation = 8.dp),
-        colors = CardDefaults.cardColors(containerColor =
-            MaterialTheme.colorScheme.surface)
-    ) {
-        Row(
-            verticalAlignment = Alignment.CenterVertically
-        ) {
+    BaseShowstopper (
+        modifier = modifier,
+        title = stringResource(id = R.string.showstopper_starship_title),
+        imageContent = {
             StarshipImage(
                 starship = starship,
                 modifier = Modifier
                     .size(150.dp)
-                    .clip(RoundedCornerShape(0.dp))
             )
-
-            Column(
-                modifier = Modifier.padding(start = 16.dp)
-            ) {
+        },
+       textContent = {
+            starship.name?.let {
                 Text(
-                    text = "Starship of the Day:",
+                    text = it,
+                    fontSize = 20.sp,
                     fontFamily = starJediFontFamily,
-                    style = MaterialTheme.typography.labelMedium,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    modifier = Modifier.padding(
+                    textAlign = TextAlign.Center,
+                    color = MaterialTheme.colorScheme.onSurface,
+                    /*modifier = Modifier.padding(
                         horizontal = 16.dp,
                         vertical = 8.dp
-                    )
+                    )*/
                 )
-                Spacer(modifier = Modifier.height(4.dp))
-                starship.name?.let {
-                    Text(
-                        text = it,
-                        fontSize = 20.sp,
-                        fontFamily = starJediFontFamily,
-                        textAlign = TextAlign.Center,
-                        color = MaterialTheme.colorScheme.onSurface,
-                        modifier = Modifier.padding(
-                            horizontal = 16.dp,
-                            vertical = 8.dp
-                        )
-                    )
-                }
             }
         }
-    }
+    )
 }

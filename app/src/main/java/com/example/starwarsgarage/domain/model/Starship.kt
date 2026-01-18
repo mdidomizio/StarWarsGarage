@@ -4,10 +4,10 @@ import com.squareup.moshi.Json
 
 data class Starship(
     @property:Json(name = "_id") val id: String,
-    val name: String?,
+    override val name: String?,
     val model: String?,
     val description: String? = null,
-    val image: String? = null,
+    override val image: String? = null,
     val manufacturer: String?,
     @property:Json(name = "cost_in_credits") val costInCredits: String?,
     val length: String?,
@@ -24,4 +24,4 @@ data class Starship(
     val url: String?,
     val isPdpLoaded: Boolean = false,
     val isFavourite: Boolean = false
-)
+) : GarageItem

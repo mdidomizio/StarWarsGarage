@@ -99,6 +99,8 @@ fun HomeScreen(
                     starship = starshipData
                 )
             }
+            Spacer(modifier = Modifier.height(32.dp))
+            DriverShowstopper(modifier = modifier)
         }
     }
 }
