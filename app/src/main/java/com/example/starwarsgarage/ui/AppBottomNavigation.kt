@@ -4,7 +4,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.List
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Settings
-import androidx.compose.material.icons.filled.Star
 import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
@@ -18,18 +17,13 @@ import androidx.navigation.NavController
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.compose.currentBackStackEntryAsState
 import com.example.starwarsgarage.R
-import com.example.starwarsgarage.navigation.AppDestinations.ABOUT_SCREEN_ROUTE
-import com.example.starwarsgarage.navigation.AppDestinations.CATALOG_SCREEN_ROUTE
-import com.example.starwarsgarage.navigation.AppDestinations.FAVORITES_SCREEN_ROUTE
-import com.example.starwarsgarage.navigation.AppDestinations.HOME_SCREEN_ROUTE
 import com.example.starwarsgarage.navigation.Screen
 import com.example.starwarsgarage.ui.theme.starJediFontFamily
 
 data class BottomNavItem(
     val label: String,
     val icon: Any,
-    val route: String,
-    val baseRoute: String
+    val route: String
 )
 
 @Composable
@@ -40,26 +34,22 @@ fun AppBottomNavigation(
         BottomNavItem(
             label = "Home",
             icon = Icons.Default.Home,
-            route = Screen.Home.route,
-            baseRoute = HOME_SCREEN_ROUTE
+            route = Screen.Home.route
         ),
         BottomNavItem(
             label = "Catalog",
             icon = Icons.AutoMirrored.Filled.List,
-            route = Screen.Catalog.route,
-            baseRoute = CATALOG_SCREEN_ROUTE
+            route = Screen.Catalog.route
         ),
         BottomNavItem(
             label = "My Garage",
             icon = painterResource(R.drawable.rocket_launch_64dp),
-            route = Screen.Favorites.route,
-            baseRoute = FAVORITES_SCREEN_ROUTE
+            route = Screen.Favorites.route
         ),
         BottomNavItem(
             label = "About",
             icon = Icons.Default.Settings,
-            route = Screen.About.route,
-            baseRoute = ABOUT_SCREEN_ROUTE
+            route = Screen.About.route
         )
     )
 
@@ -79,7 +69,7 @@ fun AppBottomNavigation(
                 label = { Text(text = item.label, fontFamily = starJediFontFamily) },
                 selected = isSelected,
                 onClick = {
-                    navController.navigate(item.baseRoute) {
+                    navController.navigate(item.route) {
                         popUpTo(navController.graph.findStartDestination().id)
                         launchSingleTop = true
                     }

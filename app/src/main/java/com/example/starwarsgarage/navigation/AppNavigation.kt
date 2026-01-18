@@ -3,9 +3,10 @@ package com.example.starwarsgarage.navigation
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import androidx.navigation.navigation
+import androidx.navigation.navArgument
 import com.example.starwarsgarage.ui.SharedViewModel
 import com.example.starwarsgarage.ui.about.AboutScreen
 import com.example.starwarsgarage.ui.catalog.StarshipsCatalogScreen
@@ -21,56 +22,40 @@ fun AppNavigation(
 ) {
     NavHost(
         navController = navController,
-        startDestination = AppDestinations.HOME_SCREEN_ROUTE,
+        startDestination = Screen.Home.route,
         modifier = modifier
     ) {
-        navigation(
-            startDestination = Screen.Home.route,
-            route = AppDestinations.HOME_SCREEN_ROUTE
-        ) {
-            composable(Screen.Home.route) {
-                HomeScreen(
-                    sharedViewModel = sharedViewModel
-                )
-            }
+        composable(Screen.Home.route) {
+            HomeScreen(
+                sharedViewModel = sharedViewModel,
+                navController = navController
+            )
         }
-        navigation(
-            startDestination = Screen.Catalog.route,
-            route = AppDestinations.CATALOG_SCREEN_ROUTE
-        ) {
-            composable(Screen.Catalog.route) {
-                StarshipsCatalogScreen(
-                    sharedViewModel = sharedViewModel,
-                    navController = navController
-                )
-            }
-            composable(Screen.Pdp.route) {
-                StarshipPdpScreen(
-                    navController = navController,
-                    sharedViewModel = sharedViewModel
-                )
-            }
+        composable(Screen.Catalog.route) {
+            StarshipsCatalogScreen(
+                sharedViewModel = sharedViewModel,
+                navController = navController
+            )
         }
-        navigation(
-            startDestination = Screen.Favorites.route,
-            route = AppDestinations.FAVORITES_SCREEN_ROUTE
+        composable(
+            route = Screen.Pdp.route,
+            arguments = listOf(navArgument("starshipId") { type = NavType.StringType })
         ) {
-            composable(Screen.Favorites.route) {
-                StarshipsFavoritesScreen(
-                    navController = navController,
-                    sharedViewModel = sharedViewModel
-                )
-            }
+            StarshipPdpScreen(
+                navController = navController,
+                sharedViewModel = sharedViewModel
+            )
         }
-        navigation(
-            startDestination = Screen.About.route,
-            route = AppDestinations.ABOUT_SCREEN_ROUTE
-        ) {
-            composable(Screen.About.route) {
-                AboutScreen(
-                    sharedViewModel = sharedViewModel
-                )
-            }
+        composable(Screen.Favorites.route) {
+            StarshipsFavoritesScreen(
+                navController = navController,
+                sharedViewModel = sharedViewModel
+            )
+        }
+        composable(Screen.About.route) {
+            AboutScreen(
+                sharedViewModel = sharedViewModel
+            )
         }
     }
 }

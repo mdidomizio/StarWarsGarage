@@ -27,14 +27,19 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavController
+import androidx.navigation.NavHostController
 import com.example.starwarsgarage.R
+import com.example.starwarsgarage.navigation.Screen
 import com.example.starwarsgarage.ui.HomeViewModel
 import com.example.starwarsgarage.ui.SharedViewModel
 import com.example.starwarsgarage.ui.TopAppBarState
 import com.example.starwarsgarage.ui.theme.starJediFontFamily
+import timber.log.Timber
 
 @Composable
 fun HomeScreen(
+    navController: NavHostController,
     modifier: Modifier = Modifier,
     sharedViewModel: SharedViewModel,
     homeViewModel: HomeViewModel = hiltViewModel()
@@ -96,11 +101,18 @@ fun HomeScreen(
             Spacer(modifier = Modifier.height(32.dp))
             starship?.let{ starshipData ->
                 StarshipShowstopper(
-                    starship = starshipData
+                    starship = starshipData,
+                    onClick = {
+                        Timber.tag("miriam").d("Navigating to PDP with starship: ${starshipData.id}")
+                        navController.navigate(Screen.Pdp.createRoute(starshipData.id))
+                    }
                 )
             }
             Spacer(modifier = Modifier.height(32.dp))
-            DriverShowstopper(modifier = modifier)
+            DriverShowstopper(
+                onClick = {},
+                modifier = modifier
+            )
         }
     }
 }

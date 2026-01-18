@@ -70,7 +70,8 @@ fun StarshipsFavoritesScreen(
                     innerPadding = PaddingValues(),
                     onToggleFavorite = { starship -> viewModel.toggleFavorite(starship) },
                     onStarshipClick = { starshipId ->
-                        navController.navigate("${AppDestinations.PDP_SCREEN_ROUTE}/$starshipId")
+                        navController
+                            .navigate("${AppDestinations.PDP_SCREEN_ROUTE}/$starshipId")
                     }
                 )
             }

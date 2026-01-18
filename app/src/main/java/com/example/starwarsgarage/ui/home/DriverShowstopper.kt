@@ -26,6 +26,7 @@ import com.example.starwarsgarage.ui.theme.starJediFontFamily
 @Composable
 fun DriverShowstopper(
     // driver: Driver,
+    onClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     BaseShowstopper(
@@ -51,7 +52,8 @@ fun DriverShowstopper(
                     vertical = 8.dp
                 )
             )
-        }
+        },
+        onClick = onClick
     )
 }
 
