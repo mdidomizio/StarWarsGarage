@@ -27,7 +27,6 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import com.example.starwarsgarage.R
 import com.example.starwarsgarage.navigation.Screen
@@ -50,7 +49,7 @@ fun HomeScreen(
         sharedViewModel.updateTopAppBar(
             TopAppBarState(title = "", isVisible = false)
         )
-        homeViewModel.fetchStarshipOfTheDay()
+        homeViewModel.loadStarshipOfTheDay()
     }
 
     Box(

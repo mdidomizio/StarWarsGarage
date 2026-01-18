@@ -54,6 +54,8 @@ dependencies {
     implementation(libs.androidx.compose.material3)
     implementation("androidx.compose.material:material:1.6.7")
 
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3")
+
     // Retrofit
     implementation("com.squareup.retrofit2:retrofit:2.9.0")
     implementation("com.squareup.retrofit2:converter-moshi:2.9.0")
@@ -82,6 +84,10 @@ dependencies {
     ksp("com.google.dagger:hilt-compiler:2.51")
     // For Hilt and Compose Navigation integration
     implementation("androidx.hilt:hilt-navigation-compose:1.2.0")
+
+    // data store
+    implementation("androidx.datastore:datastore-preferences:1.0.0")
+    implementation("androidx.datastore:datastore-core:1.0.0")
 
     // room
     implementation("androidx.room:room-runtime:$roomVersion")
