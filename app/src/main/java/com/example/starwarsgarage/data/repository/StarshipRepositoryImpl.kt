@@ -25,7 +25,6 @@ class StarshipRepositoryImpl @Inject constructor(
     private val starshipApi: StarshipApi,
     private val starshipVehicleDetailsApi: StarshipVehicleDetailsApi,
 ) : StarshipRepository {
-    private var allStarshipsCache: List<Starship> = emptyList()
 
     override fun getStarshipsStream(): Flow<PagingData<Starship>> {
         return Pager(
@@ -75,7 +74,6 @@ class StarshipRepositoryImpl @Inject constructor(
         }
 
     override suspend fun getRandomStarship(): Result<Starship?> {
-        // TODO try to do just one call with the limit of 1 (each pagewill contain just one item) - instead of going page by page (27 calls!)
         return try {
             val randomPage = (1..267).random()
             val response =  starshipApi.getStarships(page = randomPage, limit = 1)

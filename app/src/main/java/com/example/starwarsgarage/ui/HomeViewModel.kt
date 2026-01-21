@@ -12,13 +12,19 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
+data class ShowstopperState<T>(
+    val item: T? = null,
+    val isLoading: Boolean = false,
+    val errorMessage: String? = null
+)
+
 @HiltViewModel
 class HomeViewModel @Inject constructor(
     private val starshipRepository: StarshipRepository,
     private val showstopperManager: ShowstopperDataStoreManager
 ) : ViewModel() {
-    private val _starshipOfTheDay = MutableStateFlow<Starship?>(null)
-    val starshipOfTheDay: StateFlow<Starship?> = _starshipOfTheDay
+    private val _starshipState = MutableStateFlow(ShowstopperState<Starship>())
+    val starshipState: StateFlow<ShowstopperState<Starship>> = _starshipState
 
     init {
         loadStarshipOfTheDay()
@@ -26,11 +32,13 @@ class HomeViewModel @Inject constructor(
 
     fun loadStarshipOfTheDay() {
         viewModelScope.launch {
+            _starshipState.value = _starshipState.value.copy(isLoading = true, errorMessage = null)
             if (showstopperManager.isNewStarshipNeeded()) {
                 fetchAndSaveNewStarship()
             } else {
                 loadSavedStarship()
             }
+            _starshipState.value = _starshipState.value.copy(isLoading = false)
         }
     }
 
@@ -40,17 +48,25 @@ class HomeViewModel @Inject constructor(
 
             result.onSuccess { starship ->
                 if (starship != null) {
-                    showstopperManager.saveDailyStarship(
-                        starship.id,
-                        System.currentTimeMillis()
+                    showstopperManager.saveDailyStarship(starship.id)
+                    _starshipState.value = _starshipState.value.copy(
+                        item = starship,
+                        errorMessage = null
                     )
-                    _starshipOfTheDay.value = starship
+                } else {
+                    _starshipState.value = _starshipState.value.copy(
+                        errorMessage = "No starship available"
+                    )
                 }
-            }.onFailure {
-                // TODO Handle failure to get the flow
+            }.onFailure { error ->
+                _starshipState.value = _starshipState.value.copy(
+                    errorMessage = "Failed to load starship: ${error.message}"
+                )
             }
         } catch (e: Exception) {
-            // TODO Handle other exceptions, e.g., during flow collection
+            _starshipState.value = _starshipState.value.copy(
+                errorMessage = "Unexpected error: ${e.message}"
+            )
         }
     }
 
@@ -68,9 +84,24 @@ class HomeViewModel @Inject constructor(
                 .first()
                 .firstOrNull()
 
-            _starshipOfTheDay.value = starship
+            if (starship != null) {
+                _starshipState.value = _starshipState.value.copy(
+                    item = starship,
+                    errorMessage = null
+                )
+            } else {
+                fetchAndSaveNewStarship()
+            }
         } catch (e: Exception) {
             fetchAndSaveNewStarship()
         }
+    }
+
+    fun retryStarship() {
+        loadStarshipOfTheDay()
+    }
+
+    fun clearStarshipError() {
+        _starshipState.value = _starshipState.value.copy(errorMessage = null)
     }
 }

@@ -1,6 +1,7 @@
 package com.example.starwarsgarage.data.local
 
 import android.content.Context
+import android.icu.util.Calendar
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
@@ -22,24 +23,30 @@ class ShowstopperDataStoreManager @Inject constructor(
     private val dataStore = context.dataStore
 
     private object PreferencesKeys {
-        val LAST_FETCH_TIMESTAMP = longPreferencesKey("last_fetch_timestamp")
+        val LAST_FETCH_DAY = longPreferencesKey("last_fetch_day")
         val DAILY_STARSHIP_ID = stringPreferencesKey("daily_starship_id")
     }
 
-    private companion object {
-        const val TWENTY_FOUR_HOURS_MS = 24 * 60 * 60 * 1000
-    }
-
-    suspend fun saveDailyStarship(starshipId: String, timestamp: Long){
+    suspend fun saveDailyStarship(starshipId: String){
+        val currentDay =  getCurrentDayTimestamp()
         dataStore.edit { preferences ->
-            preferences[PreferencesKeys.LAST_FETCH_TIMESTAMP] = timestamp
+            preferences[PreferencesKeys.LAST_FETCH_DAY] = currentDay
             preferences[PreferencesKeys.DAILY_STARSHIP_ID] = starshipId
         }
     }
 
+    private fun getCurrentDayTimestamp(): Long {
+        return Calendar.getInstance().apply {
+            set(Calendar.HOUR_OF_DAY, 0)
+            set(Calendar.MINUTE, 0)
+            set(Calendar.SECOND, 0)
+            set(Calendar.MILLISECOND, 0)
+        }.timeInMillis
+    }
+
     private suspend fun getLastFetchTimeStamp(): Long {
         return dataStore.data.map { preferences ->
-            preferences[PreferencesKeys.LAST_FETCH_TIMESTAMP] ?: 0L
+            preferences[PreferencesKeys.LAST_FETCH_DAY] ?: 0L
         }.first()
     }
 
@@ -51,7 +58,7 @@ class ShowstopperDataStoreManager @Inject constructor(
 
     suspend fun isNewStarshipNeeded(): Boolean {
         val lastFetchTime = getLastFetchTimeStamp()
-        val currentTime = System.currentTimeMillis()
-        return lastFetchTime == 0L || (currentTime - lastFetchTime) > TWENTY_FOUR_HOURS_MS
+        val currentDay = getCurrentDayTimestamp()
+        return lastFetchTime == 0L || currentDay > lastFetchTime
     }
 }

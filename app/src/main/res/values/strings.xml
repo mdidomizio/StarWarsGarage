@@ -48,6 +48,9 @@
     <string name="no_favorites_yet">Your garage is empty now.\nTap the rocket icon on a starship to add it to your garage.</string>
     <string name="favorite_icon_content_description">Favourite</string>
     <string name="showstopper_starship_title">Starship of the Day:</string>
+    <string name="showstopper_error">...Ooops!</string>
+    <string name="dismiss_button_text">Dismiss</string>
+    <string name="no_starship_available">No starship available</string>
 
 
 </resources>

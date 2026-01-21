@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -42,7 +43,7 @@ fun HomeScreen(
     sharedViewModel: SharedViewModel,
     homeViewModel: HomeViewModel = hiltViewModel()
 ) {
-    val starship by homeViewModel.starshipOfTheDay.collectAsState()
+    val starshipState by homeViewModel.starshipState.collectAsState()
 
     LaunchedEffect(Unit) {
         sharedViewModel.updateTopAppBar(
@@ -60,7 +61,7 @@ fun HomeScreen(
             contentDescription = null,
             modifier = Modifier
                 .fillMaxSize()
-                .semantics{ contentDescription = "Decorative"},
+                .semantics { contentDescription = "Decorative" },
             contentScale = ContentScale.Crop
         )
         Column(
@@ -97,14 +98,14 @@ fun HomeScreen(
                 color = Color.White
             )
             Spacer(modifier = Modifier.height(32.dp))
-            starship?.let{ starshipData ->
-                StarshipShowstopper(
-                    starship = starshipData,
-                    onClick = {
-                        navController.navigate(Screen.Pdp.createRoute(starshipData.id))
-                    }
-                )
-            }
+            StarshipShowstopperContainer(
+                state = starshipState,
+                onRetry = { homeViewModel.retryStarship() },
+                onDismiss = { homeViewModel.clearStarshipError() },
+                onStarshipClick = { starshipId ->
+                    navController.navigate(Screen.Pdp.createRoute(starshipId))
+                }
+            )
             Spacer(modifier = Modifier.height(32.dp))
             DriverShowstopper(
                 onClick = {},
