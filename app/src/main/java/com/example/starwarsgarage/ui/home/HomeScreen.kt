@@ -34,7 +34,6 @@ import com.example.starwarsgarage.ui.HomeViewModel
 import com.example.starwarsgarage.ui.SharedViewModel
 import com.example.starwarsgarage.ui.TopAppBarState
 import com.example.starwarsgarage.ui.theme.starJediFontFamily
-import timber.log.Timber
 
 @Composable
 fun HomeScreen(
@@ -102,7 +101,6 @@ fun HomeScreen(
                 StarshipShowstopper(
                     starship = starshipData,
                     onClick = {
-                        Timber.tag("miriam").d("Navigating to PDP with starship: ${starshipData.id}")
                         navController.navigate(Screen.Pdp.createRoute(starshipData.id))
                     }
                 )

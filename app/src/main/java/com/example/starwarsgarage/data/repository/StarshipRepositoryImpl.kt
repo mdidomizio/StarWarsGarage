@@ -75,24 +75,12 @@ class StarshipRepositoryImpl @Inject constructor(
         }
 
     override suspend fun getRandomStarship(): Result<Starship?> {
+        // TODO try to do just one call with the limit of 1 (each pagewill contain just one item) - instead of going page by page (27 calls!)
         return try {
-            if (allStarshipsCache.isEmpty()) {
-                val fetchedStarships = mutableListOf<StarshipBasic>()
-                var currentPage = 1
-                var hasNextPage = true
-
-                while (hasNextPage) {
-                    val response = starshipApi.getStarships(page = currentPage)
-                    fetchedStarships.addAll(response.data)
-
-                    hasNextPage = response.info.next != null
-                    if (hasNextPage) currentPage++
-                }
-                allStarshipsCache = fetchedStarships.map {
-                    it.toStarship(null)
-                }
-            }
-            Result.success(allStarshipsCache.randomOrNull())
+            val randomPage = (1..267).random()
+            val response =  starshipApi.getStarships(page = randomPage, limit = 1)
+            val starship =  response.data.firstOrNull()?.toStarship(null)
+            Result.success(starship)
         } catch (e: Exception) {
             e.printStackTrace()
             Result.failure(e)

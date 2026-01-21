@@ -15,7 +15,6 @@ import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
-import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
@@ -32,7 +31,6 @@ class StarshipsCatalogViewModel @Inject constructor(
     val uiState: StateFlow<CatalogUiState> =
         favoritesRepository.getFavoritesStarshipIds()
             .catch { exception ->
-                Timber.e(exception, "Failed to fetch favorite IDs.")
                 emit(emptySet())
             }
             .map { ids -> CatalogUiState(favoriteIds = ids) }
