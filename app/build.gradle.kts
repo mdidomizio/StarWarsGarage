@@ -91,8 +91,8 @@ dependencies {
 
     // room
     implementation("androidx.room:room-runtime:$roomVersion")
-    ksp("androidx.room:room-compiler:$roomVersion") // Use ksp instead of kapt for Kotlin
-    implementation("androidx.room:room-ktx:$roomVersion") // Kotlin Extensions and Coroutines support
+    ksp("androidx.room:room-compiler:$roomVersion")
+    implementation("androidx.room:room-ktx:$roomVersion")
     implementation("androidx.room:room-paging:$roomVersion") // Room Paging 3 integration
 
     testImplementation(libs.junit)

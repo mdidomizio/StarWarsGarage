@@ -21,7 +21,7 @@ fun StarshipShowstopperContainer(
 ){
     when {
         state.isLoading -> {
-            CircularProgressIndicator(color = Color.White)
+            StarshipShowstopperLoadingView()
         }
         state.errorMessage != null -> {
             StarshipShowstopperErrorView(
