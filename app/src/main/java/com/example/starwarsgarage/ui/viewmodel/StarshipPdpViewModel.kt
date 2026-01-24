@@ -1,4 +1,4 @@
-package com.example.starwarsgarage.ui
+package com.example.starwarsgarage.ui.viewmodel
 
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel

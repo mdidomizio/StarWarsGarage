@@ -50,8 +50,8 @@ import com.example.starwarsgarage.domain.model.STARSHIP_ID_MAP
 import com.example.starwarsgarage.domain.model.Starship
 import com.example.starwarsgarage.navigation.AppDestinations.PDP_SCREEN_ROUTE
 import com.example.starwarsgarage.ui.ErrorScreen
-import com.example.starwarsgarage.ui.SharedViewModel
-import com.example.starwarsgarage.ui.StarshipsCatalogViewModel
+import com.example.starwarsgarage.ui.viewmodel.SharedViewModel
+import com.example.starwarsgarage.ui.viewmodel.StarshipsCatalogViewModel
 import com.example.starwarsgarage.ui.TopAppBarState
 import com.example.starwarsgarage.ui.pdp.StarshipImage
 import com.example.starwarsgarage.ui.theme.starJediFontFamily

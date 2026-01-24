@@ -24,9 +24,9 @@ import com.example.starwarsgarage.domain.model.STARSHIP_ID_MAP
 import com.example.starwarsgarage.domain.model.Starship
 import com.example.starwarsgarage.navigation.AppDestinations
 import com.example.starwarsgarage.ui.ErrorScreen
-import com.example.starwarsgarage.ui.FavoritesUiState
-import com.example.starwarsgarage.ui.FavoritesViewModel
-import com.example.starwarsgarage.ui.SharedViewModel
+import com.example.starwarsgarage.ui.viewmodel.FavoritesUiState
+import com.example.starwarsgarage.ui.viewmodel.FavoritesViewModel
+import com.example.starwarsgarage.ui.viewmodel.SharedViewModel
 import com.example.starwarsgarage.ui.TopAppBarState
 import com.example.starwarsgarage.ui.catalog.StarshipBasicCard
 import com.example.starwarsgarage.ui.catalog.StarshipExtendedCard

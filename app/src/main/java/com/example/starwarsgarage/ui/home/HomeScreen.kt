@@ -30,8 +30,8 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.example.starwarsgarage.R
 import com.example.starwarsgarage.navigation.Screen
-import com.example.starwarsgarage.ui.HomeViewModel
-import com.example.starwarsgarage.ui.SharedViewModel
+import com.example.starwarsgarage.ui.viewmodel.HomeViewModel
+import com.example.starwarsgarage.ui.viewmodel.SharedViewModel
 import com.example.starwarsgarage.ui.TopAppBarState
 import com.example.starwarsgarage.ui.theme.starJediFontFamily
 

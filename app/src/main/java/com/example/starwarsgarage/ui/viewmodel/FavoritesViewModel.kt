@@ -1,5 +1,6 @@
-package com.example.starwarsgarage.ui
+package com.example.starwarsgarage.ui.viewmodel
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.starwarsgarage.domain.model.Starship
@@ -31,6 +32,11 @@ class FavoritesViewModel @Inject constructor(
     private val starshipRepository: StarshipRepository
 ) : ViewModel() {
 
+    init {
+        Log.d("HiltDebug", "ViewModel initialized: ${this.hashCode()}")
+        Log.d("HiltDebug", "Repository instance: ${favoritesRepository.hashCode()}")
+    }
+
     private val retryTrigger = MutableSharedFlow<Unit>(replay = 1)
 
     @OptIn(ExperimentalCoroutinesApi::class)
@@ -39,7 +45,7 @@ class FavoritesViewModel @Inject constructor(
             favoritesRepository.getFavoritesStarshipIds()
                 .flatMapLatest { favoriteIds ->
                     if (favoriteIds.isEmpty()) {
-                        flowOf(FavoritesUiState.Success(emptyList()))
+                       flowOf(FavoritesUiState.Success(emptyList()))
                     } else {
                         starshipRepository.getStarshipsByIds(favoriteIds)
                             .map<List<Starship>, FavoritesUiState> { starships ->

@@ -20,7 +20,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.compose.rememberNavController
 import com.example.starwarsgarage.navigation.AppNavigation
 import com.example.starwarsgarage.ui.AppBottomNavigation
-import com.example.starwarsgarage.ui.SharedViewModel
+import com.example.starwarsgarage.ui.viewmodel.SharedViewModel
 import com.example.starwarsgarage.ui.theme.StarWarsGarageTheme
 import dagger.hilt.android.AndroidEntryPoint
 

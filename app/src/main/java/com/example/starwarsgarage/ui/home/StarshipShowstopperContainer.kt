@@ -1,6 +1,5 @@
 package com.example.starwarsgarage.ui.home
 
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -8,7 +7,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.sp
 import com.example.starwarsgarage.domain.model.Starship
-import com.example.starwarsgarage.ui.ShowstopperState
+import com.example.starwarsgarage.ui.viewmodel.ShowstopperState
 import com.example.starwarsgarage.R
 
 @Composable

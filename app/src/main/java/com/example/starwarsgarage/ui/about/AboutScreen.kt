@@ -35,7 +35,7 @@ import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.starwarsgarage.R
-import com.example.starwarsgarage.ui.SharedViewModel
+import com.example.starwarsgarage.ui.viewmodel.SharedViewModel
 import com.example.starwarsgarage.ui.TopAppBarState
 import com.example.starwarsgarage.ui.theme.starJediFontFamily
 

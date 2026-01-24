@@ -1,4 +1,4 @@
-package com.example.starwarsgarage.ui
+package com.example.starwarsgarage.ui.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -36,7 +36,7 @@ class StarshipsCatalogViewModel @Inject constructor(
             .map { ids -> CatalogUiState(favoriteIds = ids) }
             .stateIn(
                 scope = viewModelScope,
-                started = SharingStarted.WhileSubscribed(5000L),
+                started = SharingStarted.Companion.WhileSubscribed(5000L),
                 initialValue = CatalogUiState()
             )
 

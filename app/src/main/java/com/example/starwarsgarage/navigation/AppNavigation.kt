@@ -7,7 +7,7 @@ import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
-import com.example.starwarsgarage.ui.SharedViewModel
+import com.example.starwarsgarage.ui.viewmodel.SharedViewModel
 import com.example.starwarsgarage.ui.about.AboutScreen
 import com.example.starwarsgarage.ui.catalog.StarshipsCatalogScreen
 import com.example.starwarsgarage.ui.favourites.StarshipsFavoritesScreen
