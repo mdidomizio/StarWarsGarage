@@ -4,8 +4,6 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Text
@@ -17,19 +15,14 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
-import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.example.starwarsgarage.R
-import com.example.starwarsgarage.domain.model.STARSHIP_ID_MAP
-import com.example.starwarsgarage.domain.model.Starship
 import com.example.starwarsgarage.navigation.AppDestinations
 import com.example.starwarsgarage.ui.ErrorScreen
 import com.example.starwarsgarage.ui.viewmodel.FavoritesUiState
 import com.example.starwarsgarage.ui.viewmodel.FavoritesViewModel
 import com.example.starwarsgarage.ui.viewmodel.SharedViewModel
 import com.example.starwarsgarage.ui.TopAppBarState
-import com.example.starwarsgarage.ui.catalog.StarshipBasicCard
-import com.example.starwarsgarage.ui.catalog.StarshipExtendedCard
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -63,7 +56,7 @@ fun StarshipsFavoritesScreen(
 
         is FavoritesUiState.Success -> {
             if (state.favoriteStarship.isEmpty()) {
-                EmptyFavouritesMessage(PaddingValues())
+                EmptyFavoritesMessage(PaddingValues())
             } else {
                 FavoritesList(
                     starships = state.favoriteStarship,
@@ -84,57 +77,5 @@ fun StarshipsFavoritesScreen(
                 onRetry = { viewModel.onRetry() }
             )
         }
-    }
-}
-
-@Composable
-fun FavoritesList(
-    starships: List<Starship>,
-    innerPadding: PaddingValues,
-    onToggleFavorite: (Starship) -> Unit,
-    onStarshipClick: (String) -> Unit
-) {
-    LazyColumn(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(innerPadding)
-    ) {
-        items(
-            items = starships,
-            key = { starship -> starship.id }
-        ) { starship ->
-            val hasExtendedDetails =
-                starship.name != null && STARSHIP_ID_MAP.contains(starship.name)
-            if (hasExtendedDetails) {
-                StarshipExtendedCard(
-                    starship = starship,
-                    isFavorite = true,
-                    onToggleFavourite = { onToggleFavorite(starship) },
-                    onClick = { onStarshipClick(starship.id) }
-                )
-            } else {
-                StarshipBasicCard(
-                    starship = starship,
-                    isFavorite = true,
-                    onToggleFavourite = { onToggleFavorite(starship) },
-                    onClick = { onStarshipClick(starship.id) }
-                )
-            }
-        }
-    }
-}
-
-@Composable
-fun EmptyFavouritesMessage(innerPadding: PaddingValues) {
-    Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(innerPadding),
-        contentAlignment = Alignment.Center
-    ) {
-        Text(
-            text = stringResource(id = R.string.no_favorites_yet),
-            textAlign = TextAlign.Center
-        )
     }
 }
