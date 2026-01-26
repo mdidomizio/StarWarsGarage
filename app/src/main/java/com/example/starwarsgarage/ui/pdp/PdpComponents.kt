@@ -34,6 +34,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
 import coil.compose.AsyncImage
+import coil.request.CachePolicy
 import coil.request.ImageRequest
 import com.example.starwarsgarage.R
 import com.example.starwarsgarage.domain.model.Starship
@@ -97,6 +98,10 @@ fun StarshipImage(
                 .data(starship.image)
                 .size (500, 500)
                 .crossfade(enable = true)
+                .memoryCacheKey(starship.image)
+                .diskCacheKey(starship.image)
+                .diskCachePolicy(CachePolicy.ENABLED)
+                .memoryCachePolicy(CachePolicy.ENABLED)
                 .build()
         }
 

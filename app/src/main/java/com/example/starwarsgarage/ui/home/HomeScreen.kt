@@ -26,7 +26,6 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.example.starwarsgarage.R
 import com.example.starwarsgarage.navigation.Screen
@@ -40,7 +39,7 @@ fun HomeScreen(
     navController: NavHostController,
     modifier: Modifier = Modifier,
     sharedViewModel: SharedViewModel,
-    homeViewModel: HomeViewModel = hiltViewModel()
+    homeViewModel: HomeViewModel
 ) {
     val starshipState by homeViewModel.starshipState.collectAsState()
 

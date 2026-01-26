@@ -35,9 +35,9 @@ import com.example.starwarsgarage.ui.catalog.StarshipExtendedCard
 @Composable
 fun StarshipsFavoritesScreen(
     navController: NavHostController,
-    modifier: Modifier = Modifier,
-    viewModel: FavoritesViewModel = hiltViewModel(),
-    sharedViewModel: SharedViewModel
+    viewModel: FavoritesViewModel,
+    sharedViewModel: SharedViewModel,
+    modifier: Modifier = Modifier
 ) {
     val uiState by viewModel.uiState.collectAsState()
     val screenTitle = stringResource(id = R.string.favorites_title)

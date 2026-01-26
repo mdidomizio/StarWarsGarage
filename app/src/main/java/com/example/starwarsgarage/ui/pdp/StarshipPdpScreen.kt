@@ -22,7 +22,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.example.starwarsgarage.R
 import com.example.starwarsgarage.domain.model.Starship
@@ -36,7 +35,7 @@ import com.example.starwarsgarage.ui.catalog.FavoriteIconButton
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun StarshipPdpScreen(
-    viewModel: StarshipPdpViewModel = hiltViewModel(),
+    viewModel: StarshipPdpViewModel,
     navController: NavHostController,
     modifier: Modifier = Modifier,
     sharedViewModel: SharedViewModel

@@ -1,6 +1,5 @@
 package com.example.starwarsgarage.ui.viewmodel
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.starwarsgarage.domain.model.Starship
@@ -31,11 +30,6 @@ class FavoritesViewModel @Inject constructor(
     private val favoritesRepository: FavoritesRepository,
     private val starshipRepository: StarshipRepository
 ) : ViewModel() {
-
-    init {
-        Log.d("HiltDebug", "ViewModel initialized: ${this.hashCode()}")
-        Log.d("HiltDebug", "Repository instance: ${favoritesRepository.hashCode()}")
-    }
 
     private val retryTrigger = MutableSharedFlow<Unit>(replay = 1)
 

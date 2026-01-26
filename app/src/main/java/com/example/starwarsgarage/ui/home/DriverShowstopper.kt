@@ -20,6 +20,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
 import coil.compose.AsyncImage
+import coil.request.CachePolicy
 import coil.request.ImageRequest
 import com.example.starwarsgarage.ui.theme.starJediFontFamily
 
@@ -82,6 +83,10 @@ fun BaseImage(
                 .data(imageUrl)
                 .size(500, 500)
                 .crossfade(enable = true)
+                .memoryCacheKey(imageUrl)
+                .diskCacheKey(imageUrl)
+                .diskCachePolicy(CachePolicy.ENABLED)
+                .memoryCachePolicy(CachePolicy.ENABLED)
                 .build()
         }
         AsyncImage(
