@@ -1,5 +1,6 @@
-package com.example.starwarsgarage.data.remote
+package com.example.starwarsgarage.data.remote.api
 
+import com.example.starwarsgarage.data.remote.StarshipDetails
 import retrofit2.http.GET
 import retrofit2.http.Path
 

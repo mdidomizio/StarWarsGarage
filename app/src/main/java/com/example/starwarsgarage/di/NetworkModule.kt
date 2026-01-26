@@ -1,7 +1,7 @@
 package com.example.starwarsgarage.di
 
-import com.example.starwarsgarage.data.remote.StarshipApi
-import com.example.starwarsgarage.data.remote.StarshipVehicleDetailsApi
+import com.example.starwarsgarage.data.remote.api.StarshipApi
+import com.example.starwarsgarage.data.remote.api.StarshipVehicleDetailsApi
 import com.squareup.moshi.Moshi
 import dagger.Module
 import dagger.Provides

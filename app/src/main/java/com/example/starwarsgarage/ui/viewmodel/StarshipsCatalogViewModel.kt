@@ -9,9 +9,13 @@ import com.example.starwarsgarage.domain.repository.FavoritesRepository
 import com.example.starwarsgarage.domain.repository.StarshipRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.debounce
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
@@ -26,8 +30,17 @@ class StarshipsCatalogViewModel @Inject constructor(
     data class CatalogUiState(
         val favoriteIds: Set<String> = emptySet()
     )
-    val starships: Flow<PagingData<Starship>> = starshipRepository.getStarshipsStream()
+    private val _searchQuery = MutableStateFlow("")
+    val searchQuery: StateFlow<String> = _searchQuery
+    val starships = _searchQuery
+        .debounce(300)
+        .distinctUntilChanged()
+        .flatMapLatest { query ->
+            starshipRepository.getStarshipsStream(query)
+        }
         .cachedIn(viewModelScope)
+    /*val starships: Flow<PagingData<Starship>> = starshipRepository.getStarshipsStream(null)
+        .cachedIn(viewModelScope)*/
     val uiState: StateFlow<CatalogUiState> =
         favoritesRepository.getFavoritesStarshipIds()
             .catch { exception ->
@@ -36,7 +49,7 @@ class StarshipsCatalogViewModel @Inject constructor(
             .map { ids -> CatalogUiState(favoriteIds = ids) }
             .stateIn(
                 scope = viewModelScope,
-                started = SharingStarted.Companion.WhileSubscribed(5000L),
+                started = SharingStarted.WhileSubscribed(5000L),
                 initialValue = CatalogUiState()
             )
 
@@ -44,5 +57,9 @@ class StarshipsCatalogViewModel @Inject constructor(
         viewModelScope.launch {
             favoritesRepository.toggleFavorite(starship.id)
         }
+    }
+
+    fun onSearchQueryChanged(newQuery: String) {
+        _searchQuery.value = newQuery
     }
 }

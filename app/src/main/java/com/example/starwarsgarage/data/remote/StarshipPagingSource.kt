@@ -2,6 +2,7 @@ package com.example.starwarsgarage.data.remote
 
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
+import com.example.starwarsgarage.data.remote.api.StarshipApi
 
 class StarshipPagingSource(
     private val starshipApi: StarshipApi

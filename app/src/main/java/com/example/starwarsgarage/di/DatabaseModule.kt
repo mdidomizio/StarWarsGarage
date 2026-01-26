@@ -1,9 +1,11 @@
 package com.example.starwarsgarage.di
 
 import android.content.Context
+import androidx.room.Database
 import androidx.room.Room
 import com.example.starwarsgarage.data.local.FavoriteStarshipDao
 import com.example.starwarsgarage.data.local.StarWarsDatabase
+import com.example.starwarsgarage.data.local.StarshipDao
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -30,5 +32,10 @@ object DatabaseModule {
     @Provides
     fun provideFavoriteStarshipDao(database: StarWarsDatabase): FavoriteStarshipDao {
         return database.favoriteStarshipDao()
+    }
+
+    @Provides
+    fun provideStarshipDao(database: StarWarsDatabase): StarshipDao{
+        return database.starshipDao()
     }
 }

@@ -1,5 +1,6 @@
 package com.example.starwarsgarage.ui
 
+import android.icu.text.StringSearch
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.runtime.Composable
 

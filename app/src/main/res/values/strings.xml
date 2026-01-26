@@ -51,6 +51,7 @@
     <string name="showstopper_error">...Ooops!</string>
     <string name="dismiss_button_text">Dismiss</string>
     <string name="no_starship_available">No starship available</string>
+    <string name="search_bar_placeholder">Search Starship by name</string>
 
 
 </resources>
