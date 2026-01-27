@@ -1,8 +1,8 @@
 package com.example.starwarsgarage.data.repository
 
 import com.example.starwarsgarage.domain.repository.FavoritesRepository
-import com.example.starwarsgarage.data.local.FavoriteStarshipEntity
-import com.example.starwarsgarage.data.local.FavoriteStarshipDao
+import com.example.starwarsgarage.data.local.entity.FavoriteStarshipEntity
+import com.example.starwarsgarage.data.local.dao.FavoriteStarshipDao
 import com.example.starwarsgarage.data.local.StarWarsDatabase
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map

@@ -1,6 +1,6 @@
 package com.example.starwarsgarage.data.remote
 
-import com.example.starwarsgarage.data.local.StarshipItemEntity
+import com.example.starwarsgarage.data.local.entity.StarshipItemEntity
 
 fun StarshipBasic.toEntity(page: Int) = StarshipItemEntity(
     id = id,

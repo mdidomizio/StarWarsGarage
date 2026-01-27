@@ -5,8 +5,10 @@ import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import androidx.paging.map
+import com.example.starwarsgarage.data.local.dao.RemoteKeysDao
 import com.example.starwarsgarage.data.local.StarWarsDatabase
-import com.example.starwarsgarage.data.local.StarshipItemEntity
+import com.example.starwarsgarage.data.local.dao.StarshipDao
+import com.example.starwarsgarage.data.local.entity.StarshipItemEntity
 import com.example.starwarsgarage.data.remote.api.StarshipApi
 import com.example.starwarsgarage.data.remote.StarshipBasic
 import com.example.starwarsgarage.data.remote.StarshipDetails
@@ -23,30 +25,53 @@ import timber.log.Timber
 import javax.inject.Inject
 import javax.inject.Singleton
 import com.example.starwarsgarage.domain.model.STARSHIP_ID_MAP
+import kotlinx.coroutines.flow.flowOf
 
 @Singleton
 class StarshipRepositoryImpl @Inject constructor(
     private val starshipApi: StarshipApi,
     private val starshipVehicleDetailsApi: StarshipVehicleDetailsApi,
-    private val database: StarWarsDatabase
+    private val database: StarWarsDatabase,
+    private val starshipDao: StarshipDao,
+    private val remoteKeysDao: RemoteKeysDao
 ) : StarshipRepository {
 
     @OptIn(ExperimentalPagingApi::class)
-    override fun getStarshipsStream(query: String?): Flow<PagingData<Starship>> {
+    override fun getStarshipsStream(): Flow<PagingData<Starship>> {
         return Pager(
             config = PagingConfig(
                 pageSize = 10,
-                enablePlaceholders = false
+                enablePlaceholders = false,
+                prefetchDistance = 5
             ),
-            remoteMediator = StarshipItemRemoteMediator(starshipApi, database),
-            pagingSourceFactory = {
-            database.starshipDao().pagingSearchItems(query ?: "")
-            }
+            remoteMediator = StarshipItemRemoteMediator(
+                api = starshipApi,
+                database = database
+            ),
+            pagingSourceFactory = { starshipDao.pagingSource() }
         ).flow.map { pagingData ->
             pagingData.map { starshipItemEntity ->
                 starshipItemEntity.toStarshipBasic().toStarship(null)
             }
         }
+    }
+    suspend fun syncAllStarshipItems(): Result<Unit> {
+        return try {
+            val allStarshipItems = starshipApi.getStarships()
+            starshipDao.clearAll()
+            starshipDao.insertAll(allStarshipItems)
+            Result.success(Unit)
+        }catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+
+    fun searchItems(query: String): Flow<List<Starship>> {
+        return (if (query.isEmpty()) {
+            flowOf(emptyList())
+        } else {
+            starshipDao.searchByName("%$query%")
+        }) as Flow<List<Starship>>
     }
 
     override suspend fun getStarshipDetailsById(id: String): Result<Starship> {

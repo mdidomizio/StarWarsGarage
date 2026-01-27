@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material.OutlinedTextField
 import androidx.compose.material.TextField
 import androidx.compose.material.pullrefresh.PullRefreshIndicator
 import androidx.compose.material.pullrefresh.pullRefresh
@@ -82,7 +83,7 @@ fun StarshipsCatalogScreen(
             )
         } else {
             Column {
-                TextField(
+                OutlinedTextField(
                     value = search,
                     onValueChange = { newValue ->
                         search = newValue

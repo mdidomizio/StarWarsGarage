@@ -15,4 +15,9 @@ interface StarshipApi {
 
     @GET("api/v1/vehicles/{id}")
     suspend fun getStarshipById(@Path("id") id: String): StarshipBasic
+
+    @GET("api/v1/vehicles")
+    suspend fun getAllStarships(
+        @Query("limit") limit: Int = 500
+    ): StarshipResponse
 }

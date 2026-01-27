@@ -1,15 +1,16 @@
-package com.example.starwarsgarage.data.local
+package com.example.starwarsgarage.data.local.dao
 
 import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
+import com.example.starwarsgarage.data.local.entity.FavoriteStarshipEntity
 import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface FavoriteStarshipDao {
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    @Insert(onConflict = OnConflictStrategy.Companion.REPLACE)
     suspend fun insert(favorite: FavoriteStarshipEntity)
 
     @Delete
