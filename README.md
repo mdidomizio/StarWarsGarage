@@ -1,8 +1,29 @@
 # Star Wars Garage App 🚀
 
-An Android app that displays **Star Wars starships**, fetching data from a public API and presenting it with a modern, clean UI built using **Jetpack Compose**.
+![Kotlin](https://img.shields.io/badge/Kotlin-100%25-blueviolet)
+![Jetpack Compose](https://img.shields.io/badge/Jetpack%20Compose-UI-blue)
+![MVVM](https://img.shields.io/badge/Architecture-MVVM-success)
+![CI](https://img.shields.io/badge/CI-Bitrise-yellow)
+![Platform](https://img.shields.io/badge/Platform-Android-green)
 
-This project is part of my **Android/Kotlin portfolio** and focuses on best practices in architecture, performance, and modern Android development.
+An Android app that displays **Star Wars starships**, fetching data from a public API and presenting
+it with a modern, clean UI built using **Jetpack Compose**.
+
+This project is part of my **Android/Kotlin portfolio** and focuses on best practices in
+architecture, performance, and modern Android development.
+
+---
+
+## 📸 Screenshots
+
+<p float="left">
+  <img src="screenshots/home.png" width="250" />
+  <img src="screenshots/catalog.png" width="250" />
+  <img src="screenshots/pdp.png" width="250" />
+  <img src="screenshots/favorite.png" width="250" />
+  <img src="screenshots/about.png" width="250" />
+  <img src="screenshots/bitrise.png" width="250" />
+</p>
 
 ---
 
