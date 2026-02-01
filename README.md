@@ -3,7 +3,7 @@
 ![Kotlin](https://img.shields.io/badge/Kotlin-100%25-blueviolet)
 ![Jetpack Compose](https://img.shields.io/badge/Jetpack%20Compose-UI-blue)
 ![MVVM](https://img.shields.io/badge/Architecture-MVVM-success)
-![CI](https://img.shields.io/badge/CI-Bitrise-yellow)
+![Bitrise](https://app.bitrise.io/app/07c46f3c-9f35-47f3-9795-b30bb2220683/status.svg?token=C9t_fxzPUlKOATFpkXaESg&branch=main)
 ![Platform](https://img.shields.io/badge/Platform-Android-green)
 
 An Android app that displays **Star Wars starships**, fetching data from two public APIs 
