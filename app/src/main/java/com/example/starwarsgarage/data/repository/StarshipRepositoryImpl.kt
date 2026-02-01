@@ -1,10 +1,12 @@
 package com.example.starwarsgarage.data.repository
 
+import android.util.Log
 import androidx.paging.ExperimentalPagingApi
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import androidx.paging.map
+import androidx.room.withTransaction
 import com.example.starwarsgarage.data.local.dao.RemoteKeysDao
 import com.example.starwarsgarage.data.local.StarWarsDatabase
 import com.example.starwarsgarage.data.local.dao.StarshipDao
@@ -14,6 +16,7 @@ import com.example.starwarsgarage.data.remote.StarshipBasic
 import com.example.starwarsgarage.data.remote.StarshipDetails
 import com.example.starwarsgarage.data.remote.StarshipItemRemoteMediator
 import com.example.starwarsgarage.data.remote.api.StarshipVehicleDetailsApi
+import com.example.starwarsgarage.data.remote.toEntity
 import com.example.starwarsgarage.domain.model.Starship
 import com.example.starwarsgarage.domain.repository.StarshipRepository
 import kotlinx.coroutines.async
@@ -31,10 +34,9 @@ import kotlinx.coroutines.flow.flowOf
 class StarshipRepositoryImpl @Inject constructor(
     private val starshipApi: StarshipApi,
     private val starshipVehicleDetailsApi: StarshipVehicleDetailsApi,
-    private val database: StarWarsDatabase,
-    private val starshipDao: StarshipDao,
-    private val remoteKeysDao: RemoteKeysDao
+    private val database: StarWarsDatabase
 ) : StarshipRepository {
+    private val starshipDao = database.starshipDao()
 
     @OptIn(ExperimentalPagingApi::class)
     override fun getStarshipsStream(): Flow<PagingData<Starship>> {
@@ -42,31 +44,69 @@ class StarshipRepositoryImpl @Inject constructor(
             config = PagingConfig(
                 pageSize = 10,
                 enablePlaceholders = false,
-                prefetchDistance = 5
+                prefetchDistance = 5,
+                initialLoadSize = 20
             ),
             remoteMediator = StarshipItemRemoteMediator(
                 api = starshipApi,
                 database = database
             ),
             pagingSourceFactory = { starshipDao.pagingSource() }
-        ).flow.map { pagingData ->
+        ).flow
+            /*.map { pagingData ->
             pagingData.map { starshipItemEntity ->
                 starshipItemEntity.toStarshipBasic().toStarship(null)
             }
-        }
+        }*/
     }
-    suspend fun syncAllStarshipItems(): Result<Unit> {
+    suspend fun syncAllStarshipItemsSequential(): Result<Unit> {
         return try {
-            val allStarshipItems = starshipApi.getStarships()
-            starshipDao.clearAll()
-            starshipDao.insertAll(allStarshipItems)
+            val allStarshipItems = mutableListOf<Starship>()
+            var currentPage = 1
+            val pageSize = 50
+            val firstResponse = starshipApi.getStarships(
+                page = currentPage,
+                limit = pageSize
+            )
+            val totalPages = firstResponse.info.pages ?: 1
+            val totalCount = firstResponse.info.count ?: 0
+
+            Log.d("StarshipRepository", "Starting sync: $totalCount items across $totalPages pages")
+
+            allStarshipItems.addAll(firstResponse.data.map { it.toEntity() } )
+            currentPage++
+
+            while (currentPage <= totalPages) {
+                val response = starshipApi.getStarships(
+                    page = currentPage,
+                    limit = pageSize
+                )
+                val starships = response.data.map { it.toEntity() }
+                allStarshipItems.addAll(starships)
+                Log.d("StarshipRepository", "Fetched page $currentPage/$totalPages (${allStarshipItems.size}/$totalCount items)")
+                currentPage++
+
+                if (currentPage> 100) {
+                    Log.w("StarshipRepository", "Reached safety limit at page 100")
+                    break
+                }
+            }
+
+            database.withTransaction {
+                starshipDao.clearAll()
+                starshipDao.insertAll(allStarshipItems)
+            }
+
+            Log.d("StarshipRepository", "Sync complete: ${allStarshipItems.size} starships saved")
             Result.success(Unit)
-        }catch (e: Exception) {
+
+        } catch (e: Exception) {
+            Log.d("StarshipRepository", "Sync complete: ${allStarshipItems.size} starships saved")
             Result.failure(e)
         }
     }
 
-    fun searchItems(query: String): Flow<List<Starship>> {
+    fun searchStarshipItems(query: String): Flow<List<Starship>> {
         return (if (query.isEmpty()) {
             flowOf(emptyList())
         } else {

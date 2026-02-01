@@ -27,6 +27,10 @@ class StarshipsCatalogViewModel @Inject constructor(
     private val favoritesRepository: FavoritesRepository
 ): ViewModel() {
 
+    init {
+        starshipRepository.syncAllStarshipItemsSequential()
+    }
+
     data class CatalogUiState(
         val favoriteIds: Set<String> = emptySet()
     )
