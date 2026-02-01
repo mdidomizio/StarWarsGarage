@@ -24,7 +24,6 @@ architecture, performance, and modern Android development.
   <img src="screenshots/pdp.png" width="250" />
   <img src="screenshots/favorite.png" width="250" />
   <img src="screenshots/about.png" width="250" />
-  <img src="screenshots/bitrise.png" width="250" />
 </p>
 
 ---
